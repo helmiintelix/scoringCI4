@@ -1,0 +1,2852 @@
+<?php	if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+Class Assignment_model Extends CI_model 
+{
+
+	function get_product(){
+		$kode_product = array('196','197','198');
+	}
+
+	function get_account_by_cif_list($no_cif)
+	{
+		$aColumns				= array('list_number', 'no_rekening', 'first_name', 'city','kode_cabang', 'assign_to_id', 'assign_to_name');
+		$iDisplayStart	= $this->input->get_post('page', true);
+		$iDisplayLength = $this->input->get_post('rows', true);
+		$iSortCol_0			= $this->input->get_post('sidx', true);
+		$iSortingCols		= $this->input->get_post('sord', true);
+		$sSearch				= $this->input->get_post('_search', true);
+		$sEcho					= $this->input->get_post('sEcho', true);
+		$searchOper			= $this->input->get_post('searchOper', true);
+		$searchString			= $this->input->get_post('searchString', true);
+		$searchField			= $this->input->get_post('searchField', true);
+		
+		// Paging
+		if(isset($iDisplayStart) && $iDisplayLength != '-1')
+		{
+			$this->db->limit($this->db->escape_str($iDisplayLength), ($this->db->escape_str($iDisplayStart)-1) * $this->db->escape_str($iDisplayLength));
+		}
+		
+		// Ordering
+		if(isset($iSortCol_0))
+		{
+			$this->db->_protect_identifiers=false;
+			$this->db->order_by($iSortCol_0, $iSortingCols);
+		}
+
+		
+		//Search filter function
+		if ($sSearch == 'true') {
+			$filters = $this->input->get_post('filters', true);
+			if($filters){
+				//echo "xxx".$filters."vsdv";
+				$filters = json_decode($filters);
+				$where = '';
+				$whereArray = array();
+				$rules = $filters->rules;
+				$groupOperation = $filters->groupOp;
+				foreach($rules as $rule) {
+		
+					$fieldName = $rule->field;
+					$fieldData = mysql_real_escape_string($rule->data);
+		
+						$fieldOperation = $fieldName.' LIKE "%'.$fieldData.'%"';
+		
+					if($fieldOperation != '') $whereArray[] = $fieldOperation;
+				}
+				if (count($whereArray)>0) {
+					$where .= join(' '.$groupOperation.' ', $whereArray);
+				} else {
+					$where = '';
+				}
+			}else{
+		
+				$ops = array(
+				//'eq' => '=', //equal
+				'eq' => 'LIKE', // contains
+				'ne' => '<>',//not equal
+				'lt' => '<', //less than
+				'le' => '<=',//less than or equal
+				'gt' => '>', //greater than
+				'ge' => '>=',//greater than or equal
+				'bw' => 'LIKE', //begins with
+				'bn' => 'NOT LIKE', //doesn't begin with
+				'in' => 'LIKE', //is in
+				'ni' => 'NOT LIKE', //is not in
+				'ew' => 'LIKE', //ends with
+				'en' => 'NOT LIKE', //doesn't end with
+				'cn' => 'LIKE', // contains
+				'nc' => 'NOT LIKE'	//doesn't contain
+				);
+		
+				foreach ($ops as $key=>$value){
+					if ($searchOper==$key) {
+						$ops = $value;
+					}
+				}
+				//if($searchOper == 'eq' ) $searchString = $searchString;
+				if($searchOper == 'bw' || $searchOper == 'bn') $searchString .= '%';
+				if($searchOper == 'ew' || $searchOper == 'en' ) $searchString = '%'.$searchString;
+				if($searchOper == 'eq' || $searchOper == 'cn' || $searchOper == 'nc' || $searchOper == 'in' || $searchOper == 'ni') $searchString = '%'.$searchString.'%';
+		
+				$where = "$searchField $ops '$searchString' ";
+			}
+		}
+		
+		$select = array('"" AS list_number', 'assign_type','cust.no_rekening','dpd','kolektibilitas','plafond','cust.no_cif','concat(kode_produk," - ",product_name)kode_produk','date_format(cust.next_payment_date,"%d %b %Y")next_payment_date','restruktur_status',
+		 'first_name', 'city','concat(cust.kode_kcu," - ",kcu.kcu_name) kcu','zip_code','credit_line_number',
+		 'date_format((tgl_pencairan),"%d %b %Y")tgl_pencairan','date_format(ori_maturity_date,"%d %b %Y")ori_maturity_date','baki_debet','concat(cust_address_1," ",cust_address_2)cust_address_1',
+		 'concat(kode_AO," - ",officer_name)kode_AO','concat(kcu_group.kcu_id," - ",kcu_group.kcu_name)group_kcu',
+			'concat(agent_id," - ",usr.name)agent_id','ass.bucket','if(assign_by="SYSTEM",assign_by,concat(assign_by," - ",assign.name))assign_by','date_format(cust.next_payment_date,"%d %b %Y")next_payment_date','restruktur_status','status_rekening');
+		$kode_product = array();
+		$query = $this->db->query("select product_list,assignment_type from cms_bisnis_unit where bisnis_unit_id='".$this->session->userdata('PRODUK_GROUP')."'");
+		foreach($query->result_array() as $aRow){
+			//$kode_product[]= $aRow['product_id'];
+			$kode_product= explode(";",$aRow['product_list']);
+			$assignment_type = $aRow['assignment_type'];
+		}
+
+		// Select Data
+//		$this->db->distinct();
+		$this->db->from('cms_customer_profile AS cust');	
+		$this->db->join('cms_assignment_agent AS ass', 'cust.no_rekening = ass.no_rekening','LEFT');
+		$this->db->join('cc_user AS usr', 'ass.agent_id = usr.id','LEFT');
+		$this->db->join('cc_user AS assign', 'ass.assign_by= assign.id',"left");
+		$this->db->join('cms_kcu_cabang AS kcu', 'cust.kode_kcu = kcu.kcu_id');
+		$this->db->join('tmp_group_kcu_to_kcu AS map', 'cust.kode_kcu = map.kcu_id and map.bisnis_unit="' .$this->session->userdata('PRODUK_GROUP') .'"');
+		$this->db->join('cms_product_group AS prod', 'cust.kode_produk = prod.product_id');
+		$this->db->join('cms_kcu AS kcu_group', "map.group_kcu_id  = kcu_group.kcu_id and kcu_group.bisnis_unit = map.bisnis_unit and kcu_group.bisnis_unit='" .$this->session->userdata('PRODUK_GROUP') ."'",'LEFT');
+		$this->db->where("cust.no_cif",$no_cif);
+		//$this->db->where("chargeoff_status != 'C'");
+		//$this->db->where("cust.dpd > '30'");
+		//$this->db->group_by("kcu_group.kcu_id");
+//		$this->db->join('cms_area_kcu AS area', 'area.kcu_id = kcu_group.kcu_id');
+// Tri :20151029 tutup karena sudah join di cms_assignment		
+// Tri : tutup sudah ada di cms_assignment_agent
+		$this->db->where_in("kode_produk",$kode_product);
+
+//		
+		$this->db->select('SQL_CALC_FOUND_ROWS '.str_replace(' , ', ' ', implode(', ', $select)), false);
+		if(!empty($where))
+			$this->db->where($where);
+			
+		$rResult = $this->db->get();
+		
+		// Data set length after filtering
+		$this->db->select('FOUND_ROWS() AS found_rows');
+		
+		$iFilteredTotal = $this->db->get()->row()->found_rows;
+		
+		// Total data set length	
+		$iTotal = $rResult->num_rows();
+		if( $iTotal > 0 )
+		{
+			$total_pages = ceil($iFilteredTotal/$iDisplayLength);
+		}
+		else
+		{
+			$total_pages = 0;
+		}		
+		
+		// Output
+		$output = array();
+		$list = array();
+		$row_number = 0;
+		$list_number = ($iDisplayStart-1)*10;
+		//$row_number = ($iDisplayStart-1)*10;
+		//echo ($iDisplayStart-1)*10;
+		foreach($rResult->result_array() as $aRow)
+		{
+			//$output[] = $aRow;
+			//$output['rows'][] = $aRow;
+			$list[] = array(
+				"id" => $aRow['no_rekening'], 
+				"cell" => $aRow
+			);
+			
+			$list[$row_number]["cell"]["list_number"] = ($list_number+1).".";
+			
+			$list_number++;
+			$row_number++;
+		}		
+		
+		$output = array(
+			'page'	=> $iDisplayStart,
+			'total' => $total_pages,
+			'rows'	=> $list,
+			'records' => $iFilteredTotal
+		);	
+		echo json_encode($output); 					
+	}
+	
+	function get_account_assignment_to_dc_list()
+	{
+		$aColumns				= array('list_number', 'no_rekening', 'first_name', 'city','kode_cabang', 'assign_to_id', 'assign_to_name');
+		$iDisplayStart	= $this->input->get_post('page', true);
+		$iDisplayLength = $this->input->get_post('rows', true);
+		$iSortCol_0			= $this->input->get_post('sidx', true);
+		$iSortingCols		= $this->input->get_post('sord', true);
+		$sSearch				= $this->input->get_post('_search', true);
+		$sEcho					= $this->input->get_post('sEcho', true);
+		$searchOper			= $this->input->get_post('searchOper', true);
+		$searchString			= $this->input->get_post('searchString', true);
+		$searchField			= $this->input->get_post('searchField', true);
+		
+		// Paging
+		if(isset($iDisplayStart) && $iDisplayLength != '-1')
+		{
+			$this->db->limit($this->db->escape_str($iDisplayLength), ($this->db->escape_str($iDisplayStart)-1) * $this->db->escape_str($iDisplayLength));
+		}
+		
+		// Ordering
+		if(isset($iSortCol_0))
+		{
+			$this->db->_protect_identifiers=false;
+			$this->db->order_by($iSortCol_0, $iSortingCols);
+		}
+
+		
+		//Search filter function
+		if ($sSearch == 'true') {
+			$filters = $this->input->get_post('filters', true);
+			if($filters){
+				//echo "xxx".$filters."vsdv";
+				$filters = json_decode($filters);
+				$where = '';
+				$whereArray = array();
+				$rules = $filters->rules;
+				$groupOperation = $filters->groupOp;
+				foreach($rules as $rule) {
+		
+					$fieldName = $rule->field;
+					$fieldData = mysql_real_escape_string($rule->data);
+		
+						$fieldOperation = $fieldName.' LIKE "%'.$fieldData.'%"';
+		
+					if($fieldOperation != '') $whereArray[] = $fieldOperation;
+				}
+				if (count($whereArray)>0) {
+					$where .= join(' '.$groupOperation.' ', $whereArray);
+				} else {
+					$where = '';
+				}
+			}else{
+		
+				$ops = array(
+				//'eq' => '=', //equal
+				'eq' => 'LIKE', // contains
+				'ne' => '<>',//not equal
+				'lt' => '<', //less than
+				'le' => '<=',//less than or equal
+				'gt' => '>', //greater than
+				'ge' => '>=',//greater than or equal
+				'bw' => 'LIKE', //begins with
+				'bn' => 'NOT LIKE', //doesn't begin with
+				'in' => 'LIKE', //is in
+				'ni' => 'NOT LIKE', //is not in
+				'ew' => 'LIKE', //ends with
+				'en' => 'NOT LIKE', //doesn't end with
+				'cn' => 'LIKE', // contains
+				'nc' => 'NOT LIKE'	//doesn't contain
+				);
+		
+				foreach ($ops as $key=>$value){
+					if ($searchOper==$key) {
+						$ops = $value;
+					}
+				}
+				//if($searchOper == 'eq' ) $searchString = $searchString;
+				if($searchOper == 'bw' || $searchOper == 'bn') $searchString .= '%';
+				if($searchOper == 'ew' || $searchOper == 'en' ) $searchString = '%'.$searchString;
+				if($searchOper == 'eq' || $searchOper == 'cn' || $searchOper == 'nc' || $searchOper == 'in' || $searchOper == 'ni') $searchString = '%'.$searchString.'%';
+		
+				$where = "$searchField $ops '$searchString' ";
+			}
+		}
+		
+		$select = array('"" AS list_number', 'assign_type','cust.no_rekening','credit_line_number','max(dpd) dpd','max(kolektibilitas)kolektibilitas','sum(plafond) plafond','cust.no_cif','concat(kode_produk," - ",product_name)kode_produk','date_format(cust.next_payment_date,"%d %b %Y")next_payment_date',
+		 'first_name', 'city','concat(cust.kode_kcu," - ",kcu.kcu_name) kcu','zip_code','status_rekening',
+		 'date_format(min(tgl_pencairan),"%d %b %Y")tgl_pencairan','date_format(max(ori_maturity_date),"%d %b %Y")ori_maturity_date','baki_debet','concat(cust_address_1," ",cust_address_2)cust_address_1',
+		 'concat(kode_AO," - ",officer_name)kode_AO','concat(kcu_group.kcu_id," - ",kcu_group.kcu_name)group_kcu','date_format(cust.next_payment_date,"%d %b %Y")next_payment_date','restruktur_status',
+			'concat(agent_id," - ",usr.name)agent_id','ass.bucket','if(assign_by="SYSTEM",assign_by,concat(assign_by," - ",assign.name))assign_by');
+		$kode_product = array();
+		$query = $this->db->query("select product_list,assignment_type from cms_bisnis_unit where bisnis_unit_id='".$this->session->userdata('PRODUK_GROUP')."'");
+		foreach($query->result_array() as $aRow){
+			//$kode_product[]= $aRow['product_id'];
+			$kode_product= explode(";",$aRow['product_list']);
+			$assignment_type = $aRow['assignment_type'];
+		}
+
+		// Select Data
+//		$this->db->distinct();
+		$this->db->from('cms_customer_profile AS cust');	
+		$this->db->join('cms_assignment_agent AS ass', 'cust.no_rekening = ass.no_rekening');
+		$this->db->join('cc_user AS usr', 'ass.agent_id = usr.id');
+		$this->db->join('cc_user AS assign', 'ass.assign_by= assign.id',"left");
+		$this->db->join('cms_kcu_cabang AS kcu', 'cust.kode_kcu = kcu.kcu_id');
+		$this->db->join('tmp_group_kcu_to_kcu AS map', 'cust.kode_kcu = map.kcu_id and map.bisnis_unit="' .$this->session->userdata('PRODUK_GROUP') .'"');
+		$this->db->join('cms_product_group AS prod', 'cust.kode_produk = prod.product_id');
+		$this->db->join('cms_kcu AS kcu_group', "map.group_kcu_id  = kcu_group.kcu_id and kcu_group.bisnis_unit = map.bisnis_unit and kcu_group.bisnis_unit='" .$this->session->userdata('PRODUK_GROUP') ."'",'LEFT');
+		$this->db->group_by("cust.no_cif");
+//		$this->db->where("chargeoff_status != 'C'");
+//		$this->db->where("cust.dpd > '30'");
+		//$this->db->group_by("kcu_group.kcu_id");
+//		$this->db->join('cms_area_kcu AS area', 'area.kcu_id = kcu_group.kcu_id');
+// Tri :20151029 tutup karena sudah join di cms_assignment		
+		if(($this->session->userdata('LEVEL_GROUP')=="SUPERVISOR")){
+			$this->db->where("kcu_group.kcu_id",$this->session->userdata('KCU'));			
+		} else 
+		if(($this->session->userdata('LEVEL_GROUP')=="AGENT")){
+			$this->db->where("kcu_group.kcu_id",$this->session->userdata('KCU'));
+		}
+		
+// Tri : tutup sudah ada di cms_assignment_agent
+		$this->db->where_in("kode_produk",$kode_product);
+
+//		
+		$this->db->select('SQL_CALC_FOUND_ROWS '.str_replace(' , ', ' ', implode(', ', $select)), false);
+		if(!empty($where))
+			$this->db->where($where);
+			
+		$rResult = $this->db->get();
+		
+		// Data set length after filtering
+		$this->db->select('FOUND_ROWS() AS found_rows');
+		
+		$iFilteredTotal = $this->db->get()->row()->found_rows;
+		
+		// Total data set length	
+		$iTotal = $rResult->num_rows();
+		if( $iTotal > 0 )
+		{
+			$total_pages = ceil($iFilteredTotal/$iDisplayLength);
+		}
+		else
+		{
+			$total_pages = 0;
+		}		
+		
+		// Output
+		$output = array();
+		$list = array();
+		$row_number = 0;
+		$list_number = ($iDisplayStart-1)*10;
+		//$row_number = ($iDisplayStart-1)*10;
+		//echo ($iDisplayStart-1)*10;
+		foreach($rResult->result_array() as $aRow)
+		{
+			//$output[] = $aRow;
+			//$output['rows'][] = $aRow;
+			$list[] = array(
+				"id" => $aRow['no_cif'], 
+				"cell" => $aRow
+			);
+			
+			$list[$row_number]["cell"]["list_number"] = ($list_number+1).".";
+			
+			$list_number++;
+			$row_number++;
+		}		
+		
+		$output = array(
+			'page'	=> $iDisplayStart,
+			'total' => $total_pages,
+			'rows'	=> $list,
+			'records' => $iFilteredTotal
+		);	
+		echo json_encode($output); 					
+	}
+	function get_account_unassignment_to_dc_list()
+	{
+		$aColumns				= array('list_number', 'no_rekening', 'first_name', 'city','kode_cabang', 'assign_to_id', 'assign_to_name');
+		$iDisplayStart	= $this->input->get_post('page', true);
+		$iDisplayLength = $this->input->get_post('rows', true);
+		$iSortCol_0			= $this->input->get_post('sidx', true);
+		$iSortingCols		= $this->input->get_post('sord', true);
+		$sSearch				= $this->input->get_post('_search', true);
+		$sEcho					= $this->input->get_post('sEcho', true);
+		$searchOper			= $this->input->get_post('searchOper', true);
+		$searchString			= $this->input->get_post('searchString', true);
+		$searchField			= $this->input->get_post('searchField', true);
+		
+		// Paging
+		if(isset($iDisplayStart) && $iDisplayLength != '-1')
+		{
+			$this->db->limit($this->db->escape_str($iDisplayLength), ($this->db->escape_str($iDisplayStart)-1) * $this->db->escape_str($iDisplayLength));
+		}
+		
+		// Ordering
+		if(isset($iSortCol_0))
+		{
+			$this->db->_protect_identifiers=false;
+			$this->db->order_by($iSortCol_0, $iSortingCols);
+		}
+
+		
+		//Search filter function
+		if ($sSearch == 'true') {
+			$filters = $this->input->get_post('filters', true);
+			if($filters){
+				//echo "xxx".$filters."vsdv";
+				$filters = json_decode($filters);
+				$where = '';
+				$whereArray = array();
+				$rules = $filters->rules;
+				$groupOperation = $filters->groupOp;
+				foreach($rules as $rule) {
+		
+					$fieldName = $rule->field;
+					$fieldData = mysql_real_escape_string($rule->data);
+		
+						$fieldOperation = $fieldName.' LIKE "%'.$fieldData.'%"';
+		
+					if($fieldOperation != '') $whereArray[] = $fieldOperation;
+				}
+				if (count($whereArray)>0) {
+					$where .= join(' '.$groupOperation.' ', $whereArray);
+				} else {
+					$where = '';
+				}
+			}else{
+		
+				$ops = array(
+				//'eq' => '=', //equal
+				'eq' => 'LIKE', // contains
+				'ne' => '<>',//not equal
+				'lt' => '<', //less than
+				'le' => '<=',//less than or equal
+				'gt' => '>', //greater than
+				'ge' => '>=',//greater than or equal
+				'bw' => 'LIKE', //begins with
+				'bn' => 'NOT LIKE', //doesn't begin with
+				'in' => 'LIKE', //is in
+				'ni' => 'NOT LIKE', //is not in
+				'ew' => 'LIKE', //ends with
+				'en' => 'NOT LIKE', //doesn't end with
+				'cn' => 'LIKE', // contains
+				'nc' => 'NOT LIKE'	//doesn't contain
+				);
+		
+				foreach ($ops as $key=>$value){
+					if ($searchOper==$key) {
+						$ops = $value;
+					}
+				}
+				//if($searchOper == 'eq' ) $searchString = $searchString;
+				if($searchOper == 'bw' || $searchOper == 'bn') $searchString .= '%';
+				if($searchOper == 'ew' || $searchOper == 'en' ) $searchString = '%'.$searchString;
+				if($searchOper == 'eq' || $searchOper == 'cn' || $searchOper == 'nc' || $searchOper == 'in' || $searchOper == 'ni') $searchString = '%'.$searchString.'%';
+		
+				$where = "$searchField $ops '$searchString' ";
+			}
+		}
+		
+		$select = array('"" AS list_number', 'cust.no_rekening','credit_line_number','max(dpd) dpd','max(kolektibilitas)kolektibilitas','date_format(cust.next_payment_date,"%d %b %Y")next_payment_date','sum(plafond) plafond','cust.no_cif','concat(kode_produk," - ",product_name)kode_produk',
+		 'first_name', 'city','concat(cust.kode_kcu," - ",kcu.kcu_name) kcu','zip_code',
+		 'date_format(min(tgl_pencairan),"%d %b %Y")tgl_pencairan','date_format(max(ori_maturity_date),"%d %b %Y")ori_maturity_date','baki_debet','concat(cust_address_1," ",cust_address_2)cust_address_1',
+		 'concat(kode_AO," - ",officer_name)kode_AO','concat(kcu_group.kcu_id," - ",kcu_group.kcu_name)group_kcu','date_format(cust.next_payment_date,"%d %b %Y")next_payment_date','restruktur_status','status_rekening');
+		$kode_product = array();
+		$query = $this->db->query("select product_list,assignment_type from cms_bisnis_unit where bisnis_unit_id='".$this->session->userdata('PRODUK_GROUP')."'");
+		foreach($query->result_array() as $aRow){
+			//$kode_product[]= $aRow['product_id'];
+			$kode_product= explode(";",$aRow['product_list']);
+			$assignment_type = $aRow['assignment_type'];
+		}
+
+		// Select Data
+//		$this->db->distinct();
+		$this->db->query("update cms_customer_profile a,cms_assignment_agent b set a.assign_to = b.agent_id where a.no_rekening = b.no_rekening;");
+		$this->db->from('cms_customer_profile AS cust');	
+		$this->db->join('cms_kcu_cabang AS kcu', 'cust.kode_kcu = kcu.kcu_id');
+		$this->db->join('tmp_group_kcu_to_kcu AS map', 'cust.kode_kcu = map.kcu_id');
+		$this->db->join('cms_product_group AS prod', 'cust.kode_produk = prod.product_id');
+		$this->db->join('cms_kcu AS kcu_group', "map.group_kcu_id  = kcu_group.kcu_id and kcu_group.bisnis_unit = map.bisnis_unit and kcu_group.bisnis_unit='" .$this->session->userdata('PRODUK_GROUP') ."'");
+		$this->db->group_by("cust.no_cif");
+		$this->db->where("cust.assign_to is null");
+		$this->db->where("cust.dpd > '30'");
+		$this->db->where("cust.chargeoff_status !=","C");
+		//$this->db->group_by("kcu_group.kcu_id");
+//		$this->db->join('cms_area_kcu AS area', 'area.kcu_id = kcu_group.kcu_id');
+// Tri :20151029 tutup karena sudah join di cms_assignment		
+		if(($this->session->userdata('LEVEL_GROUP')=="SUPERVISOR")){
+			$this->db->where("kcu_group.kcu_id",$this->session->userdata('KCU'));			
+		} else 
+/*		if(($this->session->userdata('LEVEL_GROUP')=="COORDINATOR")){
+			$this->db->where("assigned_area",$this->session->userdata('AREA'));
+		}
+*/		
+// Tri : tutup sudah ada di cms_assignment_agent
+		$this->db->where_in("kode_produk",$kode_product);
+
+//		
+		$this->db->select('SQL_CALC_FOUND_ROWS '.str_replace(' , ', ' ', implode(', ', $select)), false);
+		if(!empty($where))
+			$this->db->where($where);
+			
+		$rResult = $this->db->get();
+		
+		// Data set length after filtering
+		$this->db->select('FOUND_ROWS() AS found_rows');
+		
+		$iFilteredTotal = $this->db->get()->row()->found_rows;
+		
+		// Total data set length	
+		$iTotal = $rResult->num_rows();
+		if( $iTotal > 0 )
+		{
+			$total_pages = ceil($iFilteredTotal/$iDisplayLength);
+		}
+		else
+		{
+			$total_pages = 0;
+		}		
+		
+		// Output
+		$output = array();
+		$list = array();
+		$row_number = 0;
+		$list_number = ($iDisplayStart-1)*10;
+		//$row_number = ($iDisplayStart-1)*10;
+		//echo ($iDisplayStart-1)*10;
+		foreach($rResult->result_array() as $aRow)
+		{
+			//$output[] = $aRow;
+			//$output['rows'][] = $aRow;
+			$list[] = array(
+				"id" => $aRow['no_cif'], 
+				"cell" => $aRow
+			);
+			
+			$list[$row_number]["cell"]["list_number"] = ($list_number+1).".";
+			
+			$list_number++;
+			$row_number++;
+		}		
+		
+		$output = array(
+			'page'	=> $iDisplayStart,
+			'total' => $total_pages,
+			'rows'	=> $list,
+			'records' => $iFilteredTotal
+		);	
+		echo json_encode($output); 					
+	}
+
+	function get_account_unassignment_to_dc_wo_list()
+	{
+		$aColumns				= array('list_number', 'no_rekening', 'first_name', 'city','kode_cabang', 'assign_to_id', 'assign_to_name');
+		$iDisplayStart	= $this->input->get_post('page', true);
+		$iDisplayLength = $this->input->get_post('rows', true);
+		$iSortCol_0			= $this->input->get_post('sidx', true);
+		$iSortingCols		= $this->input->get_post('sord', true);
+		$sSearch				= $this->input->get_post('_search', true);
+		$sEcho					= $this->input->get_post('sEcho', true);
+		$searchOper			= $this->input->get_post('searchOper', true);
+		$searchString			= $this->input->get_post('searchString', true);
+		$searchField			= $this->input->get_post('searchField', true);
+		
+		// Paging
+		if(isset($iDisplayStart) && $iDisplayLength != '-1')
+		{
+			$this->db->limit($this->db->escape_str($iDisplayLength), ($this->db->escape_str($iDisplayStart)-1) * $this->db->escape_str($iDisplayLength));
+		}
+		
+		// Ordering
+		if(isset($iSortCol_0))
+		{
+			$this->db->_protect_identifiers=false;
+			$this->db->order_by($iSortCol_0, $iSortingCols);
+		}
+
+		
+		//Search filter function
+		if ($sSearch == 'true') {
+			$filters = $this->input->get_post('filters', true);
+			if($filters){
+				//echo "xxx".$filters."vsdv";
+				$filters = json_decode($filters);
+				$where = '';
+				$whereArray = array();
+				$rules = $filters->rules;
+				$groupOperation = $filters->groupOp;
+				foreach($rules as $rule) {
+		
+					$fieldName = $rule->field;
+					$fieldData = mysql_real_escape_string($rule->data);
+		
+						$fieldOperation = $fieldName.' LIKE "%'.$fieldData.'%"';
+		
+					if($fieldOperation != '') $whereArray[] = $fieldOperation;
+				}
+				if (count($whereArray)>0) {
+					$where .= join(' '.$groupOperation.' ', $whereArray);
+				} else {
+					$where = '';
+				}
+			}else{
+		
+				$ops = array(
+				//'eq' => '=', //equal
+				'eq' => 'LIKE', // contains
+				'ne' => '<>',//not equal
+				'lt' => '<', //less than
+				'le' => '<=',//less than or equal
+				'gt' => '>', //greater than
+				'ge' => '>=',//greater than or equal
+				'bw' => 'LIKE', //begins with
+				'bn' => 'NOT LIKE', //doesn't begin with
+				'in' => 'LIKE', //is in
+				'ni' => 'NOT LIKE', //is not in
+				'ew' => 'LIKE', //ends with
+				'en' => 'NOT LIKE', //doesn't end with
+				'cn' => 'LIKE', // contains
+				'nc' => 'NOT LIKE'	//doesn't contain
+				);
+		
+				foreach ($ops as $key=>$value){
+					if ($searchOper==$key) {
+						$ops = $value;
+					}
+				}
+				//if($searchOper == 'eq' ) $searchString = $searchString;
+				if($searchOper == 'bw' || $searchOper == 'bn') $searchString .= '%';
+				if($searchOper == 'ew' || $searchOper == 'en' ) $searchString = '%'.$searchString;
+				if($searchOper == 'eq' || $searchOper == 'cn' || $searchOper == 'nc' || $searchOper == 'in' || $searchOper == 'ni') $searchString = '%'.$searchString.'%';
+		
+				$where = "$searchField $ops '$searchString' ";
+			}
+		}
+		$this->db->query("update cms_customer_profile a,cms_assignment_agent b set a.assign_to = b.agent_id where a.no_rekening = b.no_rekening;");
+		$kode_product = array();
+		$query = $this->db->query("select product_list,assignment_type from cms_bisnis_unit where bisnis_unit_id='".$this->session->userdata('PRODUK_GROUP')."'");
+		foreach($query->result_array() as $aRow){
+			//$kode_product[]= $aRow['product_id'];
+			$kode_product= explode(";",$aRow['product_list']);
+			$assignment_type = $aRow['assignment_type'];
+		}
+		
+		$select = array('"" AS list_number', 'cust.no_rekening','credit_line_number','max(dpd) dpd','max(kolektibilitas)kolektibilitas','date_format(cust.next_payment_date,"%d %b %Y")tanggal_angsuran','sum(plafond) plafond','cust.no_cif','concat(kode_produk," - ",product_name)kode_produk',
+		 'first_name', 'city','concat(cust.kode_kcu," - ",kcu.kcu_name) kcu','zip_code',
+		 'date_format(min(tgl_pencairan),"%d %b %Y")tgl_pencairan','date_format(max(ori_maturity_date),"%d %b %Y")ori_maturity_date','baki_debet','concat(cust_address_1," ",cust_address_2)cust_address_1',
+		 'concat(kode_AO," - ",officer_name)kode_AO','concat(kcu_group.kcu_id," - ",kcu_group.kcu_name)group_kcu','date_format(cust.next_payment_date,"%d %b %Y")next_payment_date','restruktur_status','status_rekening');
+		$this->db->select('SQL_CALC_FOUND_ROWS '.str_replace(' , ', ' ', implode(', ', $select)), false);
+
+		// Select Data
+//		$this->db->distinct();
+		$this->db->from('cms_customer_profile AS cust');	
+		$this->db->join('cms_kcu_cabang AS kcu', 'cust.kode_kcu = kcu.kcu_id');
+		$this->db->join('tmp_group_kcu_to_kcu AS map', 'cust.kode_kcu = map.kcu_id');
+		$this->db->join('cms_product_group AS prod', 'cust.kode_produk = prod.product_id');
+		$this->db->join('cms_kcu AS kcu_group', "map.group_kcu_id  = kcu_group.kcu_id and kcu_group.bisnis_unit = map.bisnis_unit and kcu_group.bisnis_unit='" .$this->session->userdata('PRODUK_GROUP') ."'");
+		$this->db->group_by("cust.no_cif");
+		$this->db->where("cust.assign_to is null");
+		$this->db->where("cust.chargeoff_status = 'C'");
+		$this->db->where_in("kode_produk",$kode_product);
+		//$this->db->group_by("kcu_group.kcu_id");
+//		$this->db->join('cms_area_kcu AS area', 'area.kcu_id = kcu_group.kcu_id');
+// Tri :20151029 tutup karena sudah join di cms_assignment		
+			if(($this->session->userdata('LEVEL_GROUP')!="ADMIN")){
+				if(($this->session->userdata('LEVEL_GROUP')!="ROOT")){
+								$this->db->where("kcu_group.kcu_id",$this->session->userdata('KCU'));			
+							}
+		} else 
+/*		if(($this->session->userdata('LEVEL_GROUP')=="COORDINATOR")){
+			$this->db->where("assigned_area",$this->session->userdata('AREA'));
+		}
+*/		
+// Tri : tutup sudah ada di cms_assignment_agent
+		
+
+//		
+		if(!empty($where))
+			$this->db->where($where);
+			
+		$rResult = $this->db->get();
+		
+		// Data set length after filtering
+		$this->db->select('FOUND_ROWS() AS found_rows');
+		
+		$iFilteredTotal = $this->db->get()->row()->found_rows;
+		
+		// Total data set length	
+		$iTotal = $rResult->num_rows();
+		if( $iTotal > 0 )
+		{
+			$total_pages = ceil($iFilteredTotal/$iDisplayLength);
+		}
+		else
+		{
+			$total_pages = 0;
+		}		
+		
+		// Output
+		$output = array();
+		$list = array();
+		$row_number = 0;
+		$list_number = ($iDisplayStart-1)*10;
+		//$row_number = ($iDisplayStart-1)*10;
+		//echo ($iDisplayStart-1)*10;
+		foreach($rResult->result_array() as $aRow)
+		{
+			//$output[] = $aRow;
+			//$output['rows'][] = $aRow;
+			$list[] = array(
+				"id" => $aRow['no_cif'], 
+				"cell" => $aRow
+			);
+			
+			$list[$row_number]["cell"]["list_number"] = ($list_number+1).".";
+			
+			$list_number++;
+			$row_number++;
+		}		
+		
+		$output = array(
+			'page'	=> $iDisplayStart,
+			'total' => $total_pages,
+			'rows'	=> $list,
+			'records' => $iFilteredTotal
+		);	
+		echo json_encode($output); 					
+	}
+
+//Assignment fc
+	function get_account_assignment_to_fc_list()
+	{
+		$aColumns				= array('list_number', 'no_rekening', 'first_name', 'city','kode_cabang', 'assign_to_id', 'assign_to_name');
+		$iDisplayStart	= $this->input->get_post('page', true);
+		$iDisplayLength = $this->input->get_post('rows', true);
+		$iSortCol_0			= $this->input->get_post('sidx', true);
+		$iSortingCols		= $this->input->get_post('sord', true);
+		$sSearch				= $this->input->get_post('_search', true);
+		$sEcho					= $this->input->get_post('sEcho', true);
+		$searchOper			= $this->input->get_post('searchOper', true);
+		$searchString			= $this->input->get_post('searchString', true);
+		$searchField			= $this->input->get_post('searchField', true);
+		
+		// Paging
+		if(isset($iDisplayStart) && $iDisplayLength != '-1')
+		{
+			$this->db->limit($this->db->escape_str($iDisplayLength), ($this->db->escape_str($iDisplayStart)-1) * $this->db->escape_str($iDisplayLength));
+		}
+		
+		// Ordering
+		if(isset($iSortCol_0))
+		{
+			$this->db->_protect_identifiers=false;
+			$this->db->order_by($iSortCol_0, $iSortingCols,false);
+		}
+		
+		//Search filter function
+		if ($sSearch == 'true') {
+			$filters = $this->input->get_post('filters', true);
+			if($filters){
+				//echo "xxx".$filters."vsdv";
+				$filters = json_decode($filters);
+				$where = '';
+				$whereArray = array();
+				$rules = $filters->rules;
+				$groupOperation = $filters->groupOp;
+				foreach($rules as $rule) {
+		
+					$fieldName = $rule->field;
+					$fieldData = mysql_real_escape_string($rule->data);
+		
+						$fieldOperation = $fieldName.' LIKE "%'.$fieldData.'%"';
+		
+					if($fieldOperation != '') $whereArray[] = $fieldOperation;
+				}
+				if (count($whereArray)>0) {
+					$where .= join(' '.$groupOperation.' ', $whereArray);
+				} else {
+					$where = '';
+				}
+			}else{
+		
+				$ops = array(
+				//'eq' => '=', //equal
+				'eq' => 'LIKE', // contains
+				'ne' => '<>',//not equal
+				'lt' => '<', //less than
+				'le' => '<=',//less than or equal
+				'gt' => '>', //greater than
+				'ge' => '>=',//greater than or equal
+				'bw' => 'LIKE', //begins with
+				'bn' => 'NOT LIKE', //doesn't begin with
+				'in' => 'LIKE', //is in
+				'ni' => 'NOT LIKE', //is not in
+				'ew' => 'LIKE', //ends with
+				'en' => 'NOT LIKE', //doesn't end with
+				'cn' => 'LIKE', // contains
+				'nc' => 'NOT LIKE'	//doesn't contain
+				);
+		
+				foreach ($ops as $key=>$value){
+					if ($searchOper==$key) {
+						$ops = $value;
+					}
+				}
+				//if($searchOper == 'eq' ) $searchString = $searchString;
+				if($searchOper == 'bw' || $searchOper == 'bn') $searchString .= '%';
+				if($searchOper == 'ew' || $searchOper == 'en' ) $searchString = '%'.$searchString;
+				if($searchOper == 'eq' || $searchOper == 'cn' || $searchOper == 'nc' || $searchOper == 'in' || $searchOper == 'ni') $searchString = '%'.$searchString.'%';
+		
+				$where = "$searchField $ops '$searchString' ";
+			}
+		}
+		
+		$select = array('"" AS list_number','assign_type','cust.no_rekening','dpd','kolektibilitas','plafond','no_cif','concat(kode_produk," - ",product_name)kode_produk',
+		 'first_name', 'city','concat(cust.kode_kcu," - ",kcu.kcu_name) kcu', 'concat(assigned_area," - ",ar.area_name)assigned_area','zip_code',
+		 'date_format(tgl_pencairan,"%d %b %Y")tgl_pencairan','date_format(ori_maturity_date,"%d %b %Y")ori_maturity_date','baki_debet','concat(cust_address_1," ",cust_address_2)cust_address_1',
+		 'concat(kode_AO," - ",officer_name)kode_AO','concat(assigned_fc," - ",usr.name)assigned_fc','concat(kcu_group.kcu_id," - ",kcu_group.kcu_name)group_kcu','concat(ass_by.id, " - ", ass_by.name)assigned_by','date_format(cust.next_payment_date,"%d %b %Y")next_payment_date','restruktur_status','status_rekening'
+		 
+		 );
+		$kode_product = array();
+		$query = $this->db->query("select product_list,assignment_type from cms_bisnis_unit where bisnis_unit_id='".$this->session->userdata('PRODUK_GROUP')."'");
+		foreach($query->result_array() as $aRow){
+			//$kode_product[]= $aRow['product_id'];
+			$kode_product= explode(";",$aRow['product_list']);
+			$assignment_type = $aRow['assignment_type'];
+		}
+
+		// Select Data
+		$this->db->from('cms_customer_profile AS cust');	
+		//$this->db->join('cms_account_last_status AS st', 'cust.no_rekening = st.no_rekening and wo_status = "on"');
+		$this->db->join('cms_assignment AS ass', 'cust.no_rekening = ass.no_rekening');
+		$this->db->join('cc_user AS ass_by', 'ass.assigned_fc_by = ass_by.id', 'LEFT');
+		$this->db->join('cc_user AS usr', 'ass.assigned_fc = usr.id');
+		$this->db->join('cms_area_kcu AS ar', 'assigned_area = area_id');
+		$this->db->join('cms_kcu_cabang AS kcu', 'cust.kode_kcu = kcu.kcu_id', 'LEFT');
+		$this->db->join('cms_product_group AS prod', 'cust.kode_produk = prod.product_id', 'LEFT');
+		$this->db->join('tmp_group_kcu_to_kcu map','cust.kode_kcu = map.kcu_id and map.bisnis_unit="'.$this->session->userdata('PRODUK_GROUP') .'"','LEFT');
+		$this->db->join('cms_kcu AS kcu_group', 'map.group_kcu_id = kcu_group.kcu_id  and kcu_group.bisnis_unit="' .$this->session->userdata('PRODUK_GROUP') .'"','LEFT');
+		$this->db->join('cms_account_last_status AS st', 'cust.no_rekening = st.no_rekening ','LEFT');
+		$this->db->where("(wo_status != 'on' or (wo_status is null and chargeoff_status != 'C'))");
+		//$this->db->join('cms_kcu AS kcu_group', 'kcu_group.kcu_id = map.group_kcu_id and kcu_group.bisnis_unit="' .$this->session->userdata('PRODUK_GROUP') .'"','LEFT');
+
+		
+// Tri :20151029 tutup karena sudah join di cms_assignment		
+		if(($this->session->userdata('LEVEL_GROUP')=="SUPERVISOR")){
+			$this->db->where("kcu_group.kcu_id",$this->session->userdata('KCU'));			
+		} else 
+		if(($this->session->userdata('LEVEL_GROUP')=="COORDINATOR")||($this->session->userdata('LEVEL_GROUP')=="AGENT")){
+			$this->db->where("assigned_area",$this->session->userdata('AREA'));
+		}
+		
+		$this->db->where_in("kode_produk",$kode_product);
+
+//		
+		$this->db->select('SQL_CALC_FOUND_ROWS '.str_replace(' , ', ' ', implode(', ', $select)), false);
+		if(!empty($where))
+			$this->db->where($where);
+			
+		$rResult = $this->db->get();
+		
+		// Data set length after filtering
+		$this->db->select('FOUND_ROWS() AS found_rows');
+		
+		$iFilteredTotal = $this->db->get()->row()->found_rows;
+		
+		// Total data set length	
+		$iTotal = $rResult->num_rows();
+		if( $iTotal > 0 )
+		{
+			$total_pages = ceil($iFilteredTotal/$iDisplayLength);
+		}
+		else
+		{
+			$total_pages = 0;
+		}		
+		
+		// Output
+		$output = array();
+		$list = array();
+		$row_number = 0;
+		$list_number = ($iDisplayStart-1)*10;
+		//$row_number = ($iDisplayStart-1)*10;
+		//echo ($iDisplayStart-1)*10;
+		foreach($rResult->result_array() as $aRow)
+		{
+			//$output[] = $aRow;
+			//$output['rows'][] = $aRow;
+			$list[] = array(
+				"id" => $aRow['no_rekening'], 
+				"cell" => $aRow
+			);
+			
+			$list[$row_number]["cell"]["list_number"] = ($list_number+1).".";
+			
+			$list_number++;
+			$row_number++;
+		}		
+		
+		$output = array(
+			'page'	=> $iDisplayStart,
+			'total' => $total_pages,
+			'rows'	=> $list,
+			'records' => $iFilteredTotal
+		);	
+		echo json_encode($output); 					
+	}
+
+	function get_account_assignment_fc_list($fc_id)
+	{
+		$aColumns				= array('list_number', 'no_rekening', 'first_name', 'city','kode_cabang', 'assign_to_id', 'assign_to_name');
+		$iDisplayStart	= $this->input->get_post('page', true);
+		$iDisplayLength = $this->input->get_post('rows', true);
+		$iSortCol_0			= $this->input->get_post('sidx', true);
+		$iSortingCols		= $this->input->get_post('sord', true);
+		$sSearch				= $this->input->get_post('_search', true);
+		$sEcho					= $this->input->get_post('sEcho', true);
+		$searchOper			= $this->input->get_post('searchOper', true);
+		$searchString			= $this->input->get_post('searchString', true);
+		$searchField			= $this->input->get_post('searchField', true);
+		
+		// Paging
+		if(isset($iDisplayStart) && $iDisplayLength != '-1')
+		{
+			$this->db->limit($this->db->escape_str($iDisplayLength), ($this->db->escape_str($iDisplayStart)-1) * $this->db->escape_str($iDisplayLength));
+		}
+		
+		// Ordering
+		if(isset($iSortCol_0))
+		{
+			$this->db->_protect_identifiers=false;
+			$this->db->order_by($iSortCol_0, $iSortingCols);
+		}
+
+		
+		//Search filter function
+		if ($sSearch == 'true') {
+			$filters = $this->input->get_post('filters', true);
+			if($filters){
+				//echo "xxx".$filters."vsdv";
+				$filters = json_decode($filters);
+				$where = '';
+				$whereArray = array();
+				$rules = $filters->rules;
+				$groupOperation = $filters->groupOp;
+				foreach($rules as $rule) {
+		
+					$fieldName = $rule->field;
+					$fieldData = mysql_real_escape_string($rule->data);
+		
+						$fieldOperation = $fieldName.' LIKE "%'.$fieldData.'%"';
+		
+					if($fieldOperation != '') $whereArray[] = $fieldOperation;
+				}
+				if (count($whereArray)>0) {
+					$where .= join(' '.$groupOperation.' ', $whereArray);
+				} else {
+					$where = '';
+				}
+			}else{
+		
+				$ops = array(
+				//'eq' => '=', //equal
+				'eq' => 'LIKE', // contains
+				'ne' => '<>',//not equal
+				'lt' => '<', //less than
+				'le' => '<=',//less than or equal
+				'gt' => '>', //greater than
+				'ge' => '>=',//greater than or equal
+				'bw' => 'LIKE', //begins with
+				'bn' => 'NOT LIKE', //doesn't begin with
+				'in' => 'LIKE', //is in
+				'ni' => 'NOT LIKE', //is not in
+				'ew' => 'LIKE', //ends with
+				'en' => 'NOT LIKE', //doesn't end with
+				'cn' => 'LIKE', // contains
+				'nc' => 'NOT LIKE'	//doesn't contain
+				);
+		
+				foreach ($ops as $key=>$value){
+					if ($searchOper==$key) {
+						$ops = $value;
+					}
+				}
+				//if($searchOper == 'eq' ) $searchString = $searchString;
+				if($searchOper == 'bw' || $searchOper == 'bn') $searchString .= '%';
+				if($searchOper == 'ew' || $searchOper == 'en' ) $searchString = '%'.$searchString;
+				if($searchOper == 'eq' || $searchOper == 'cn' || $searchOper == 'nc' || $searchOper == 'in' || $searchOper == 'ni') $searchString = '%'.$searchString.'%';
+		
+				$where = "$searchField $ops '$searchString' ";
+			}
+		}
+		$kode_product = array();
+		$query = $this->db->query("select product_list,assignment_type from cms_bisnis_unit where bisnis_unit_id='".$this->session->userdata('PRODUK_GROUP')."'");
+		foreach($query->result_array() as $aRow){
+			//$kode_product[]= $aRow['product_id'];
+			$kode_product= explode(";",$aRow['product_list']);
+			$assignment_type = $aRow['assignment_type'];
+		}
+		if($assignment_type == "NON_OWNERSHIP"){
+		$select = array('"" AS list_number', 'cust.no_rekening','dpd','kolektibilitas','plafond','cust.no_cif','concat(kode_produk," - ",product_name)kode_produk',
+		 'first_name','assign_type', 'city','concat(cust.kode_kcu," - ",kcu.kcu_name) kcu', 'concat(area_id," - ",ar.area_name)assigned_area','zip_code',
+		 'date_format(tgl_pencairan,"%d %b %Y")tgl_pencairan','date_format(ori_maturity_date,"%d %b %Y")ori_maturity_date','baki_debet','concat(cust_address_1," ",cust_address_2)cust_address_1',
+		 'concat(kode_AO," - ",officer_name)kode_AO','concat(assigned_fc," - ",usr.name)assigned_fc','concat(kcu_group.kcu_id," - ",kcu_group.kcu_name)group_kcu','date_format(cust.next_payment_date,"%d %b %Y")next_payment_date','restruktur_status','status_rekening');
+		}else{
+					$select = array('"" AS list_number', 'cust.no_rekening','dpd','kolektibilitas','plafond','cust.no_cif','concat(kode_produk," - ",product_name)kode_produk',
+		 'first_name','assign_type', 'city','concat(cust.kode_kcu," - ",kcu.kcu_name) kcu', 'concat(area_id," - ",ar.area_name)assigned_area','zip_code',
+		 'date_format(tgl_pencairan,"%d %b %Y")tgl_pencairan','date_format(ori_maturity_date,"%d %b %Y")ori_maturity_date','baki_debet','concat(cust_address_1," ",cust_address_2)cust_address_1',
+		 'concat(kode_AO," - ",officer_name)kode_AO','concat(agent_id," - ",usr.name)assigned_fc','concat(kcu_group.kcu_id," - ",kcu_group.kcu_name)group_kcu','date_format(cust.next_payment_date,"%d %b %Y")next_payment_date','restruktur_status','status_rekening');
+		}	
+		// Select Data
+		$this->db->from('cms_customer_profile AS cust');	
+		if($assignment_type == "NON_OWNERSHIP"){
+			$this->db->join('cms_assignment AS ass', 'cust.no_rekening = ass.no_rekening');
+			$this->db->join('cc_user AS usr', 'ass.assigned_fc = usr.id');
+			$this->db->where("assigned_fc",$fc_id);
+		}else{
+			$this->db->join('cms_assignment_agent AS ass', 'cust.no_rekening = ass.no_rekening');
+			$this->db->join('cc_user AS usr', 'ass.agent_id = usr.id');
+			$this->db->where("ass.agent_id",$fc_id);
+		}
+		
+		$this->db->join('cms_area_kcu AS ar', 'usr.area = area_id','LEFT');
+		$this->db->join('cms_kcu_cabang AS kcu', 'cust.kode_kcu = kcu.kcu_id', 'LEFT');
+		$this->db->join('cms_product_group AS prod', 'cust.kode_produk = prod.product_id', 'LEFT');
+		$this->db->join('cms_kcu AS kcu_group', 'kcu_group.kcu_id = usr.kcu and kcu_group.bisnis_unit="' .$this->session->userdata('PRODUK_GROUP') .'"','LEFT');
+		$this->db->join('cms_account_last_status AS st', 'cust.no_rekening = st.no_rekening ','LEFT');
+		
+		$this->db->where("(wo_status != 'on' or (wo_status is null and chargeoff_status != 'C'))");
+		
+		
+//		$this->db->where_in("kode_produk",$kode_product);
+
+//		
+		
+		$this->db->select('SQL_CALC_FOUND_ROWS '.str_replace(' , ', ' ', implode(', ', $select)), false);
+		if(!empty($where))
+			$this->db->where($where);
+			
+		$rResult = $this->db->get();
+		
+		// Data set length after filtering
+		$this->db->select('FOUND_ROWS() AS found_rows');
+		
+		$iFilteredTotal = $this->db->get()->row()->found_rows;
+		
+		// Total data set length	
+		$iTotal = $rResult->num_rows();
+		if( $iTotal > 0 )
+		{
+			$total_pages = ceil($iFilteredTotal/$iDisplayLength);
+		}
+		else
+		{
+			$total_pages = 0;
+		}		
+		
+		// Output
+		$output = array();
+		$list = array();
+		$row_number = 0;
+		$list_number = ($iDisplayStart-1)*10;
+		//$row_number = ($iDisplayStart-1)*10;
+		//echo ($iDisplayStart-1)*10;
+		foreach($rResult->result_array() as $aRow)
+		{
+			//$output[] = $aRow;
+			//$output['rows'][] = $aRow;
+			$list[] = array(
+				"id" => $aRow['no_rekening'], 
+				"cell" => $aRow
+			);
+			
+			$list[$row_number]["cell"]["list_number"] = ($list_number+1).".";
+			
+			$list_number++;
+			$row_number++;
+		}		
+		
+		$output = array(
+			'page'	=> $iDisplayStart,
+			'total' => $total_pages,
+			'rows'	=> $list,
+			'records' => $iFilteredTotal
+		);	
+		echo json_encode($output); 					
+	}
+	function get_account_assignment_monitoring_list($fc_id)
+	{
+		$aColumns				= array('list_number', 'no_rekening', 'first_name', 'city','kode_cabang', 'assign_to_id', 'assign_to_name');
+		$iDisplayStart	= $this->input->get_post('page', true);
+		$iDisplayLength = $this->input->get_post('rows', true);
+		$iSortCol_0			= $this->input->get_post('sidx', true);
+		$iSortingCols		= $this->input->get_post('sord', true);
+		$sSearch				= $this->input->get_post('_search', true);
+		$sEcho					= $this->input->get_post('sEcho', true);
+		$searchOper			= $this->input->get_post('searchOper', true);
+		$searchString			= $this->input->get_post('searchString', true);
+		$searchField			= $this->input->get_post('searchField', true);
+		
+		// Paging
+		if(isset($iDisplayStart) && $iDisplayLength != '-1')
+		{
+			$this->db->limit($this->db->escape_str($iDisplayLength), ($this->db->escape_str($iDisplayStart)-1) * $this->db->escape_str($iDisplayLength));
+		}
+		
+		// Ordering
+		if(isset($iSortCol_0))
+		{
+			$this->db->_protect_identifiers=false;
+			$this->db->order_by($iSortCol_0, $iSortingCols);
+		}
+
+		
+		//Search filter function
+		if ($sSearch == 'true') {
+			$filters = $this->input->get_post('filters', true);
+			if($filters){
+				//echo "xxx".$filters."vsdv";
+				$filters = json_decode($filters);
+				$where = '';
+				$whereArray = array();
+				$rules = $filters->rules;
+				$groupOperation = $filters->groupOp;
+				foreach($rules as $rule) {
+		
+					$fieldName = $rule->field;
+					$fieldData = mysql_real_escape_string($rule->data);
+		
+						$fieldOperation = $fieldName.' LIKE "%'.$fieldData.'%"';
+		
+					if($fieldOperation != '') $whereArray[] = $fieldOperation;
+				}
+				if (count($whereArray)>0) {
+					$where .= join(' '.$groupOperation.' ', $whereArray);
+				} else {
+					$where = '';
+				}
+			}else{
+		
+				$ops = array(
+				//'eq' => '=', //equal
+				'eq' => 'LIKE', // contains
+				'ne' => '<>',//not equal
+				'lt' => '<', //less than
+				'le' => '<=',//less than or equal
+				'gt' => '>', //greater than
+				'ge' => '>=',//greater than or equal
+				'bw' => 'LIKE', //begins with
+				'bn' => 'NOT LIKE', //doesn't begin with
+				'in' => 'LIKE', //is in
+				'ni' => 'NOT LIKE', //is not in
+				'ew' => 'LIKE', //ends with
+				'en' => 'NOT LIKE', //doesn't end with
+				'cn' => 'LIKE', // contains
+				'nc' => 'NOT LIKE'	//doesn't contain
+				);
+		
+				foreach ($ops as $key=>$value){
+					if ($searchOper==$key) {
+						$ops = $value;
+					}
+				}
+				//if($searchOper == 'eq' ) $searchString = $searchString;
+				if($searchOper == 'bw' || $searchOper == 'bn') $searchString .= '%';
+				if($searchOper == 'ew' || $searchOper == 'en' ) $searchString = '%'.$searchString;
+				if($searchOper == 'eq' || $searchOper == 'cn' || $searchOper == 'nc' || $searchOper == 'in' || $searchOper == 'ni') $searchString = '%'.$searchString.'%';
+		
+				$where = "$searchField $ops '$searchString' ";
+			}
+		}
+		$kode_product = array();
+		$query = $this->db->query("select product_list,assignment_type from cms_bisnis_unit where bisnis_unit_id='".$this->session->userdata('PRODUK_GROUP')."'");
+		foreach($query->result_array() as $aRow){
+			//$kode_product[]= $aRow['product_id'];
+			$kode_product= explode(";",$aRow['product_list']);
+			$assignment_type = $aRow['assignment_type'];
+		}
+		if($assignment_type == "NON_OWNERSHIP"){
+		$select = array('"" AS list_number', 'cust.no_rekening','dpd','kolektibilitas','plafond','cust.no_cif','concat(kode_produk," - ",product_name)kode_produk',
+		 'first_name','assign_type', 'city','concat(cust.kode_kcu," - ",kcu.kcu_name) kcu', 'concat(area_id," - ",ar.area_name)assigned_area','zip_code',
+		 'date_format(tgl_pencairan,"%d %b %Y")tgl_pencairan','date_format(ori_maturity_date,"%d %b %Y")ori_maturity_date','baki_debet','concat(cust_address_1," ",cust_address_2)cust_address_1',
+		 'concat(kode_AO," - ",officer_name)kode_AO','concat(assigned_fc," - ",usr.name)assigned_fc','concat(assigned_fc_by," - ",usr_ass.name)assigned_by','concat(kcu_group.kcu_id," - ",kcu_group.kcu_name)group_kcu','date_format(cust.next_payment_date,"%d %b %Y")next_payment_date','restruktur_status','status_rekening');
+		}else{
+					$select = array('"" AS list_number', 'cust.no_rekening','dpd','kolektibilitas','plafond','cust.no_cif','concat(kode_produk," - ",product_name)kode_produk',
+		 'first_name','assign_type', 'city','concat(cust.kode_kcu," - ",kcu.kcu_name) kcu', 'concat(area_id," - ",ar.area_name)assigned_area','zip_code',
+		 'date_format(tgl_pencairan,"%d %b %Y")tgl_pencairan','date_format(ori_maturity_date,"%d %b %Y")ori_maturity_date','baki_debet','concat(cust_address_1," ",cust_address_2)cust_address_1',
+		 'concat(kode_AO," - ",officer_name)kode_AO','concat(agent_id," - ",usr.name)assigned_fc','concat(kcu_group.kcu_id," - ",kcu_group.kcu_name)group_kcu','date_format(cust.next_payment_date,"%d %b %Y")next_payment_date','restruktur_status','status_rekening');
+		}	
+		// Select Data
+		$this->db->from('cms_customer_profile AS cust');	
+		if($assignment_type == "NON_OWNERSHIP"){
+			$this->db->join('cms_assignment AS ass', 'cust.no_rekening = ass.no_rekening');
+			$this->db->join('cc_user AS usr', 'ass.assigned_fc = usr.id');
+			$this->db->join('cc_user AS usr_ass', 'ass.assigned_fc_by = usr_ass.id','LEFT');
+			$this->db->where("assigned_fc",$fc_id);
+		}else{
+			$this->db->join('cms_assignment_agent AS ass', 'cust.no_rekening = ass.no_rekening');
+			$this->db->join('cc_user AS usr', 'ass.agent_id = usr.id');
+			$this->db->where("ass.agent_id",$fc_id);
+		}
+		
+		$this->db->join('cms_area_kcu AS ar', 'usr.area = area_id','LEFT');
+		$this->db->join('cms_kcu_cabang AS kcu', 'cust.kode_kcu = kcu.kcu_id', 'LEFT');
+		$this->db->join('cms_product_group AS prod', 'cust.kode_produk = prod.product_id', 'LEFT');
+		$this->db->join('cms_kcu AS kcu_group', 'kcu_group.kcu_id = usr.kcu and kcu_group.bisnis_unit="' .$this->session->userdata('PRODUK_GROUP') .'"','LEFT');
+		$this->db->join('cms_account_last_status AS st', 'cust.no_rekening = st.no_rekening ','LEFT');
+		
+		//$this->db->where("(wo_status != 'on' or (wo_status is null and chargeoff_status != 'C'))");
+		
+		
+//		$this->db->where_in("kode_produk",$kode_product);
+
+//		
+		
+		$this->db->select('SQL_CALC_FOUND_ROWS '.str_replace(' , ', ' ', implode(', ', $select)), false);
+		if(!empty($where))
+			$this->db->where($where);
+			
+		$rResult = $this->db->get();
+		
+		// Data set length after filtering
+		$this->db->select('FOUND_ROWS() AS found_rows');
+		
+		$iFilteredTotal = $this->db->get()->row()->found_rows;
+		
+		// Total data set length	
+		$iTotal = $rResult->num_rows();
+		if( $iTotal > 0 )
+		{
+			$total_pages = ceil($iFilteredTotal/$iDisplayLength);
+		}
+		else
+		{
+			$total_pages = 0;
+		}		
+		
+		// Output
+		$output = array();
+		$list = array();
+		$row_number = 0;
+		$list_number = ($iDisplayStart-1)*10;
+		//$row_number = ($iDisplayStart-1)*10;
+		//echo ($iDisplayStart-1)*10;
+		foreach($rResult->result_array() as $aRow)
+		{
+			//$output[] = $aRow;
+			//$output['rows'][] = $aRow;
+			$list[] = array(
+				"id" => $aRow['no_rekening'], 
+				"cell" => $aRow
+			);
+			
+			$list[$row_number]["cell"]["list_number"] = ($list_number+1).".";
+			
+			$list_number++;
+			$row_number++;
+		}		
+		
+		$output = array(
+			'page'	=> $iDisplayStart,
+			'total' => $total_pages,
+			'rows'	=> $list,
+			'records' => $iFilteredTotal
+		);	
+		echo json_encode($output); 					
+	}
+
+	function get_account_assignment_to_fc_wo_list()
+	{
+		$aColumns				= array('list_number', 'no_rekening', 'first_name', 'city','kode_cabang', 'assign_to_id', 'assign_to_name');
+		$iDisplayStart	= $this->input->get_post('page', true);
+		$iDisplayLength = $this->input->get_post('rows', true);
+		$iSortCol_0			= $this->input->get_post('sidx', true);
+		$iSortingCols		= $this->input->get_post('sord', true);
+		$sSearch				= $this->input->get_post('_search', true);
+		$sEcho					= $this->input->get_post('sEcho', true);
+		$searchOper			= $this->input->get_post('searchOper', true);
+		$searchString			= $this->input->get_post('searchString', true);
+		$searchField			= $this->input->get_post('searchField', true);
+		
+		// Paging
+		if(isset($iDisplayStart) && $iDisplayLength != '-1')
+		{
+			$this->db->limit($this->db->escape_str($iDisplayLength), ($this->db->escape_str($iDisplayStart)-1) * $this->db->escape_str($iDisplayLength));
+		}
+		
+		// Ordering
+		if(isset($iSortCol_0))
+		{
+			$this->db->_protect_identifiers=false;
+			$this->db->order_by($iSortCol_0, $iSortingCols);
+		}
+
+		
+		//Search filter function
+		if ($sSearch == 'true') {
+			$filters = $this->input->get_post('filters', true);
+			if($filters){
+				//echo "xxx".$filters."vsdv";
+				$filters = json_decode($filters);
+				$where = '';
+				$whereArray = array();
+				$rules = $filters->rules;
+				$groupOperation = $filters->groupOp;
+				foreach($rules as $rule) {
+		
+					$fieldName = $rule->field;
+					$fieldData = mysql_real_escape_string($rule->data);
+		
+						$fieldOperation = $fieldName.' LIKE "%'.$fieldData.'%"';
+		
+					if($fieldOperation != '') $whereArray[] = $fieldOperation;
+				}
+				if (count($whereArray)>0) {
+					$where .= join(' '.$groupOperation.' ', $whereArray);
+				} else {
+					$where = '';
+				}
+			}else{
+		
+				$ops = array(
+				//'eq' => '=', //equal
+				'eq' => 'LIKE', // contains
+				'ne' => '<>',//not equal
+				'lt' => '<', //less than
+				'le' => '<=',//less than or equal
+				'gt' => '>', //greater than
+				'ge' => '>=',//greater than or equal
+				'bw' => 'LIKE', //begins with
+				'bn' => 'NOT LIKE', //doesn't begin with
+				'in' => 'LIKE', //is in
+				'ni' => 'NOT LIKE', //is not in
+				'ew' => 'LIKE', //ends with
+				'en' => 'NOT LIKE', //doesn't end with
+				'cn' => 'LIKE', // contains
+				'nc' => 'NOT LIKE'	//doesn't contain
+				);
+		
+				foreach ($ops as $key=>$value){
+					if ($searchOper==$key) {
+						$ops = $value;
+					}
+				}
+				//if($searchOper == 'eq' ) $searchString = $searchString;
+				if($searchOper == 'bw' || $searchOper == 'bn') $searchString .= '%';
+				if($searchOper == 'ew' || $searchOper == 'en' ) $searchString = '%'.$searchString;
+				if($searchOper == 'eq' || $searchOper == 'cn' || $searchOper == 'nc' || $searchOper == 'in' || $searchOper == 'ni') $searchString = '%'.$searchString.'%';
+		
+				$where = "$searchField $ops '$searchString' ";
+			}
+		}
+		
+		$select = array('"" AS list_number', 'assign_type','cust.no_rekening','dpd','kolektibilitas','plafond','cust.no_cif','concat(kode_produk," - ",product_name)kode_produk',
+		 'first_name', 'city','concat(cust.kode_kcu," - ",kcu.kcu_name) kcu', 'concat(assigned_area," - ",ar.area_name)assigned_area','zip_code',
+		 'date_format(tgl_pencairan,"%d %b %Y")tgl_pencairan','date_format(ori_maturity_date,"%d %b %Y")ori_maturity_date','baki_debet','concat(cust_address_1," ",cust_address_2)cust_address_1',
+		 'concat(kode_AO," - ",officer_name)kode_AO','concat(assigned_fc," - ",usr.name)assigned_fc','concat(kcu_group.kcu_id," - ",kcu_group.kcu_name)group_kcu','concat(ass_by.id, " - ", ass_by.name)assigned_by','date_format(cust.next_payment_date,"%d %b %Y")next_payment_date','restruktur_status','status_rekening');
+		$kode_product = array();
+		$query = $this->db->query("select product_list,assignment_type from cms_bisnis_unit where bisnis_unit_id='".$this->session->userdata('PRODUK_GROUP')."'");
+		foreach($query->result_array() as $aRow){
+			//$kode_product[]= $aRow['product_id'];
+			$kode_product= explode(";",$aRow['product_list']);
+			$assignment_type = $aRow['assignment_type'];
+		}
+
+		// Select Data
+		$this->db->from('cms_customer_profile AS cust');	
+		$this->db->join('cms_account_last_status AS st', 'cust.no_rekening = st.no_rekening','LEFT');
+		$this->db->join('cms_assignment AS ass', 'cust.no_rekening = ass.no_rekening');
+		$this->db->join('cc_user AS ass_by', 'ass.assigned_fc_by = ass_by.id', 'LEFT');
+
+		$this->db->join('cc_user AS usr', 'ass.assigned_fc = usr.id');
+		$this->db->join('cms_area_kcu AS ar', 'assigned_area = area_id');
+		$this->db->join('cms_kcu_cabang AS kcu', 'cust.kode_kcu = kcu.kcu_id', 'LEFT');
+		$this->db->join('cms_product_group AS prod', 'cust.kode_produk = prod.product_id', 'LEFT');
+		$this->db->join('tmp_group_kcu_to_kcu map','cust.kode_kcu = map.kcu_id and map.bisnis_unit="'.$this->session->userdata('PRODUK_GROUP') .'"','LEFT');
+		$this->db->join('cms_kcu AS kcu_group', 'map.group_kcu_id = kcu_group.kcu_id  and kcu_group.bisnis_unit="' .$this->session->userdata('PRODUK_GROUP') .'"','LEFT');
+		$this->db->where("(wo_status = 'on' or chargeoff_status = 'C')");
+
+		//$this->db->join('cms_kcu AS kcu_group', 'kcu_group.kcu_id = map.group_kcu_id and kcu_group.bisnis_unit="' .$this->session->userdata('PRODUK_GROUP') .'"','LEFT');
+
+		
+// Tri :20151029 tutup karena sudah join di cms_assignment		
+		if(($this->session->userdata('LEVEL_GROUP')=="SUPERVISOR")){
+					$kode_kcu= array();
+						$query = $this->db->query("select kcu_list from cms_kcu where kcu_id='".$this->session->userdata('KCU')."' and bisnis_unit = '".$this->session->userdata('PRODUK_GROUP')."'");
+						foreach($query->result_array() as $aRow){
+							$kode_kcu= explode(';',$aRow['kcu_list']);
+						}
+			$this->db->where_in("kode_kcu",$kode_kcu);
+		} else 
+		if(($this->session->userdata('LEVEL_GROUP')=="COORDINATOR")||($this->session->userdata('LEVEL_GROUP')=="AGENT")){
+			$this->db->where("assigned_area",$this->session->userdata('AREA'));
+		}
+		
+		$this->db->where_in("kode_produk",$kode_product);
+
+//		
+		$this->db->select('SQL_CALC_FOUND_ROWS '.str_replace(' , ', ' ', implode(', ', $select)), false);
+		if(!empty($where))
+			$this->db->where($where);
+			
+		$rResult = $this->db->get();
+		
+		// Data set length after filtering
+		$this->db->select('FOUND_ROWS() AS found_rows');
+		
+		$iFilteredTotal = $this->db->get()->row()->found_rows;
+		
+		// Total data set length	
+		$iTotal = $rResult->num_rows();
+		if( $iTotal > 0 )
+		{
+			$total_pages = ceil($iFilteredTotal/$iDisplayLength);
+		}
+		else
+		{
+			$total_pages = 0;
+		}		
+		
+		// Output
+		$output = array();
+		$list = array();
+		$row_number = 0;
+		$list_number = ($iDisplayStart-1)*10;
+		//$row_number = ($iDisplayStart-1)*10;
+		//echo ($iDisplayStart-1)*10;
+		foreach($rResult->result_array() as $aRow)
+		{
+			//$output[] = $aRow;
+			//$output['rows'][] = $aRow;
+			$list[] = array(
+				"id" => $aRow['no_rekening'], 
+				"cell" => $aRow
+			);
+			
+			$list[$row_number]["cell"]["list_number"] = ($list_number+1).".";
+			
+			$list_number++;
+			$row_number++;
+		}		
+		
+		$output = array(
+			'page'	=> $iDisplayStart,
+			'total' => $total_pages,
+			'rows'	=> $list,
+			'records' => $iFilteredTotal
+		);	
+		echo json_encode($output); 					
+	}
+
+	function get_account_unassignment_to_fc_list()
+	{
+		$aColumns				= array('list_number', 'no_rekening', 'first_name', 'city','kode_cabang', 'assign_to_id', 'assign_to_name');
+		$iDisplayStart	= $this->input->get_post('page', true);
+		$iDisplayLength = $this->input->get_post('rows', true);
+		$iSortCol_0			= $this->input->get_post('sidx', true);
+		$iSortingCols		= $this->input->get_post('sord', true);
+		$sSearch				= $this->input->get_post('_search', true);
+		$sEcho					= $this->input->get_post('sEcho', true);
+		$searchOper			= $this->input->get_post('searchOper', true);
+		$searchString			= $this->input->get_post('searchString', true);
+		$searchField			= $this->input->get_post('searchField', true);
+		
+		// Paging
+		if(isset($iDisplayStart) && $iDisplayLength != '-1')
+		{
+			$this->db->limit($this->db->escape_str($iDisplayLength), ($this->db->escape_str($iDisplayStart)-1) * $this->db->escape_str($iDisplayLength));
+		}
+		
+		// Ordering
+		if(isset($iSortCol_0))
+		{
+			$this->db->_protect_identifiers=false;
+			$this->db->order_by($iSortCol_0, $iSortingCols);
+		}
+
+		
+		//Search filter function
+		if ($sSearch == 'true') {
+			$filters = $this->input->get_post('filters', true);
+			if($filters){
+				//echo "xxx".$filters."vsdv";
+				$filters = json_decode($filters);
+				$where = '';
+				$whereArray = array();
+				$rules = $filters->rules;
+				$groupOperation = $filters->groupOp;
+				foreach($rules as $rule) {
+		
+					$fieldName = $rule->field;
+					$fieldData = mysql_real_escape_string($rule->data);
+		
+						$fieldOperation = $fieldName.' LIKE "%'.$fieldData.'%"';
+		
+					if($fieldOperation != '') $whereArray[] = $fieldOperation;
+				}
+				if (count($whereArray)>0) {
+					$where .= join(' '.$groupOperation.' ', $whereArray);
+				} else {
+					$where = '';
+				}
+			}else{
+		
+				$ops = array(
+				//'eq' => '=', //equal
+				'eq' => 'LIKE', // contains
+				'ne' => '<>',//not equal
+				'lt' => '<', //less than
+				'le' => '<=',//less than or equal
+				'gt' => '>', //greater than
+				'ge' => '>=',//greater than or equal
+				'bw' => 'LIKE', //begins with
+				'bn' => 'NOT LIKE', //doesn't begin with
+				'in' => 'LIKE', //is in
+				'ni' => 'NOT LIKE', //is not in
+				'ew' => 'LIKE', //ends with
+				'en' => 'NOT LIKE', //doesn't end with
+				'cn' => 'LIKE', // contains
+				'nc' => 'NOT LIKE'	//doesn't contain
+				);
+		
+				foreach ($ops as $key=>$value){
+					if ($searchOper==$key) {
+						$ops = $value;
+					}
+				}
+				//if($searchOper == 'eq' ) $searchString = $searchString;
+				if($searchOper == 'bw' || $searchOper == 'bn') $searchString .= '%';
+				if($searchOper == 'ew' || $searchOper == 'en' ) $searchString = '%'.$searchString;
+				if($searchOper == 'eq' || $searchOper == 'cn' || $searchOper == 'nc' || $searchOper == 'in' || $searchOper == 'ni') $searchString = '%'.$searchString.'%';
+		
+				$where = "$searchField $ops '$searchString' ";
+			}
+		}
+		
+		$kode_product = array();
+		$query = $this->db->query("select product_list,assignment_type from cms_bisnis_unit where bisnis_unit_id='".$this->session->userdata('PRODUK_GROUP')."'");
+		foreach($query->result_array() as $aRow){
+			//$kode_product[]= $aRow['product_id'];
+			$kode_product= explode(";",$aRow['product_list']);
+			$assignment_type = $aRow['assignment_type'];
+		}
+		
+		$select = array('"" AS list_number', 'cust.no_rekening','dpd','kolektibilitas','plafond','cust.no_cif','concat(kode_produk," - ",product_name)kode_produk',
+		 'first_name', 'city','concat(cust.kode_kcu," - ",kcu.kcu_name) kcu', 'concat(assigned_area," - ",ar.area_name)assigned_area','zip_code',
+		 'date_format(tgl_pencairan,"%d %b %Y")tgl_pencairan','date_format(ori_maturity_date,"%d %b %Y")ori_maturity_date','baki_debet','concat(cust_address_1," ",cust_address_2)cust_address_1',
+		 'concat(kode_AO," - ",officer_name)kode_AO','assigned_fc','concat(kcu_group.kcu_id," - ",kcu_group.kcu_name)group_kcu','concat(ass_by.id, " - ", ass_by.name)assigned_by','date_format(cust.next_payment_date,"%d %b %Y")next_payment_date','restruktur_status','status_rekening');
+		
+		// Select Data
+		$this->db->from('cms_customer_profile AS cust');	
+		$this->db->join('cms_assignment AS ass', 'cust.no_rekening = ass.no_rekening', 'LEFT');
+		$this->db->join('cc_user AS ass_by', 'ass.assigned_area_by = ass_by.id', 'LEFT');
+		$this->db->join('cc_user AS usr', 'ass.assigned_fc = usr.id', 'LEFT');
+		$this->db->join('cms_area_kcu AS ar', 'assigned_area = area_id');
+		$this->db->join('cms_kcu_cabang AS kcu', 'cust.kode_kcu = kcu.kcu_id', 'LEFT');
+		$this->db->join('cms_product_group AS prod', 'cust.kode_produk = prod.product_id', 'LEFT');
+		$this->db->join('tmp_group_kcu_to_kcu map','cust.kode_kcu = map.kcu_id and map.bisnis_unit="'.$this->session->userdata('PRODUK_GROUP') .'"','LEFT');
+		$this->db->join('cms_kcu AS kcu_group', 'map.group_kcu_id = kcu_group.kcu_id  and kcu_group.bisnis_unit="' .$this->session->userdata('PRODUK_GROUP') .'"','LEFT');
+		$this->db->join('cms_account_last_status AS st', 'cust.no_rekening = st.no_rekening ','LEFT');
+		$this->db->where("(wo_status != 'on' or (wo_status is null and chargeoff_status != 'C'))");
+		//$this->db->join('cms_kcu AS kcu_group', 'kcu_group.kcu_id = map.group_kcu_id and kcu_group.bisnis_unit="' .$this->session->userdata('PRODUK_GROUP') .'"','LEFT');
+
+		$this->db->where("usr.id is null");			
+		
+		if(($this->session->userdata('LEVEL_GROUP')=="SUPERVISOR")){
+					$kode_kcu= array();
+						$query = $this->db->query("select kcu_list from cms_kcu where kcu_id='".$this->session->userdata('KCU')."' and bisnis_unit = '".$this->session->userdata('PRODUK_GROUP')."'");
+						foreach($query->result_array() as $aRow){
+							$kode_kcu= explode(';',$aRow['kcu_list']);
+						}
+			$this->db->where_in("kode_kcu",$kode_kcu);
+		} else 
+		if(($this->session->userdata('LEVEL_GROUP')=="COORDINATOR")||($this->session->userdata('LEVEL_GROUP')=="AGENT")){
+			$this->db->where("assigned_area",$this->session->userdata('AREA'));
+		}
+		
+		$this->db->where_in("kode_produk",$kode_product); //kode_produk
+		
+		$this->db->select('SQL_CALC_FOUND_ROWS '.str_replace(' , ', ' ', implode(', ', $select)), false);
+		if(!empty($where))
+			$this->db->where($where);
+			
+		$rResult = $this->db->get();
+		
+		// Data set length after filtering
+		$this->db->select('FOUND_ROWS() AS found_rows');
+		
+		$iFilteredTotal = $this->db->get()->row()->found_rows;
+		
+		// Total data set length	
+		$iTotal = $rResult->num_rows();
+		if( $iTotal > 0 )
+		{
+			$total_pages = ceil($iFilteredTotal/$iDisplayLength);
+		}
+		else
+		{
+			$total_pages = 0;
+		}		
+		
+		// Output
+		$output = array();
+		$list = array();
+		$row_number = 0;
+		$list_number = ($iDisplayStart-1)*10;
+		//$row_number = ($iDisplayStart-1)*10;
+		//echo ($iDisplayStart-1)*10;
+		foreach($rResult->result_array() as $aRow)
+		{
+			//$output[] = $aRow;
+			//$output['rows'][] = $aRow;
+			$list[] = array(
+				"id" => $aRow['no_rekening'], 
+				"cell" => $aRow
+			);
+			
+			$list[$row_number]["cell"]["list_number"] = ($list_number+1).".";
+			
+			$list_number++;
+			$row_number++;
+		}		
+		
+		$output = array(
+			'page'	=> $iDisplayStart,
+			'total' => $total_pages,
+			'rows'	=> $list,
+			'records' => $iFilteredTotal
+		);	
+		echo json_encode($output); 					
+	}
+
+	function get_account_unassignment_to_fc_wo_list()
+	{
+		$aColumns				= array('list_number', 'no_rekening', 'first_name', 'city','kode_cabang', 'assign_to_id', 'assign_to_name');
+		$iDisplayStart	= $this->input->get_post('page', true);
+		$iDisplayLength = $this->input->get_post('rows', true);
+		$iSortCol_0			= $this->input->get_post('sidx', true);
+		$iSortingCols		= $this->input->get_post('sord', true);
+		$sSearch				= $this->input->get_post('_search', true);
+		$sEcho					= $this->input->get_post('sEcho', true);
+		$searchOper			= $this->input->get_post('searchOper', true);
+		$searchString			= $this->input->get_post('searchString', true);
+		$searchField			= $this->input->get_post('searchField', true);
+		
+		// Paging
+		if(isset($iDisplayStart) && $iDisplayLength != '-1')
+		{
+			$this->db->limit($this->db->escape_str($iDisplayLength), ($this->db->escape_str($iDisplayStart)-1) * $this->db->escape_str($iDisplayLength));
+		}
+		
+		// Ordering
+		if(isset($iSortCol_0))
+		{
+			$this->db->_protect_identifiers=false;
+			$this->db->order_by($iSortCol_0, $iSortingCols);
+		}
+
+		
+		//Search filter function
+		if ($sSearch == 'true') {
+			$filters = $this->input->get_post('filters', true);
+			if($filters){
+				//echo "xxx".$filters."vsdv";
+				$filters = json_decode($filters);
+				$where = '';
+				$whereArray = array();
+				$rules = $filters->rules;
+				$groupOperation = $filters->groupOp;
+				foreach($rules as $rule) {
+		
+					$fieldName = $rule->field;
+					$fieldData = mysql_real_escape_string($rule->data);
+		
+						$fieldOperation = $fieldName.' LIKE "%'.$fieldData.'%"';
+		
+					if($fieldOperation != '') $whereArray[] = $fieldOperation;
+				}
+				if (count($whereArray)>0) {
+					$where .= join(' '.$groupOperation.' ', $whereArray);
+				} else {
+					$where = '';
+				}
+			}else{
+		
+				$ops = array(
+				//'eq' => '=', //equal
+				'eq' => 'LIKE', // contains
+				'ne' => '<>',//not equal
+				'lt' => '<', //less than
+				'le' => '<=',//less than or equal
+				'gt' => '>', //greater than
+				'ge' => '>=',//greater than or equal
+				'bw' => 'LIKE', //begins with
+				'bn' => 'NOT LIKE', //doesn't begin with
+				'in' => 'LIKE', //is in
+				'ni' => 'NOT LIKE', //is not in
+				'ew' => 'LIKE', //ends with
+				'en' => 'NOT LIKE', //doesn't end with
+				'cn' => 'LIKE', // contains
+				'nc' => 'NOT LIKE'	//doesn't contain
+				);
+		
+				foreach ($ops as $key=>$value){
+					if ($searchOper==$key) {
+						$ops = $value;
+					}
+				}
+				//if($searchOper == 'eq' ) $searchString = $searchString;
+				if($searchOper == 'bw' || $searchOper == 'bn') $searchString .= '%';
+				if($searchOper == 'ew' || $searchOper == 'en' ) $searchString = '%'.$searchString;
+				if($searchOper == 'eq' || $searchOper == 'cn' || $searchOper == 'nc' || $searchOper == 'in' || $searchOper == 'ni') $searchString = '%'.$searchString.'%';
+		
+				$where = "$searchField $ops '$searchString' ";
+			}
+		}
+		
+		$kode_product = array();
+		$query = $this->db->query("select product_list,assignment_type from cms_bisnis_unit where bisnis_unit_id='".$this->session->userdata('PRODUK_GROUP')."'");
+		foreach($query->result_array() as $aRow){
+			//$kode_product[]= $aRow['product_id'];
+			$kode_product= explode(";",$aRow['product_list']);
+			$assignment_type = $aRow['assignment_type'];
+		}
+		
+		$select = array('"" AS list_number', 'cust.no_rekening','dpd','kolektibilitas','plafond','cust.no_cif','concat(kode_produk," - ",product_name)kode_produk',
+		 'first_name', 'city','concat(cust.kode_kcu," - ",kcu.kcu_name) kcu', 'concat(assigned_area," - ",ar.area_name)assigned_area','zip_code',
+		 'date_format(tgl_pencairan,"%d %b %Y")tgl_pencairan','date_format(ori_maturity_date,"%d %b %Y")ori_maturity_date','baki_debet','concat(cust_address_1," ",cust_address_2)cust_address_1',
+		 'concat(kode_AO," - ",officer_name)kode_AO','assigned_fc','concat(kcu_group.kcu_id," - ",kcu_group.kcu_name)group_kcu','concat(ass_by.id, " - ", ass_by.name)assigned_by','date_format(cust.next_payment_date,"%d %b %Y")next_payment_date','restruktur_status','status_rekening');
+		
+		// Select Data
+		$this->db->from('cms_customer_profile AS cust');	
+		$this->db->join('cms_account_last_status AS st', 'cust.no_rekening = st.no_rekening ','LEFT');
+		$this->db->join('cms_assignment AS ass', 'cust.no_rekening = ass.no_rekening', 'LEFT');
+		$this->db->join('cc_user AS ass_by', 'ass.assigned_area_by = ass_by.id', 'LEFT');
+		$this->db->join('cc_user AS usr', 'ass.assigned_fc = usr.id', 'LEFT');
+		$this->db->join('cms_area_kcu AS ar', 'assigned_area = area_id');
+		$this->db->join('cms_kcu_cabang AS kcu', 'cust.kode_kcu = kcu.kcu_id', 'LEFT');
+		$this->db->join('cms_product_group AS prod', 'cust.kode_produk = prod.product_id', 'LEFT');
+		$this->db->join('tmp_group_kcu_to_kcu map','cust.kode_kcu = map.kcu_id and map.bisnis_unit="'.$this->session->userdata('PRODUK_GROUP') .'"','LEFT');
+		$this->db->join('cms_kcu AS kcu_group', 'map.group_kcu_id = kcu_group.kcu_id  and kcu_group.bisnis_unit="' .$this->session->userdata('PRODUK_GROUP') .'"','LEFT');
+
+		$whwo = '(wo_status = "on" or chargeoff_status = "C")';
+		//2018-01-04 Tri
+		$whwo = '(wo_status = "on" and chargeoff_status = "C")';
+		$this->db->where($whwo);
+
+		//$this->db->join('cms_kcu AS kcu_group', 'kcu_group.kcu_id = map.group_kcu_id and kcu_group.bisnis_unit="' .$this->session->userdata('PRODUK_GROUP') .'"','LEFT');
+
+		$this->db->where("usr.id is null");			
+		
+		if(($this->session->userdata('LEVEL_GROUP')=="SUPERVISOR")){
+/*					$kode_kcu= array();
+						$query = $this->db->query("select kcu_list from cms_kcu where kcu_id='".$this->session->userdata('KCU')."' and bisnis_unit = '".$this->session->userdata('PRODUK_GROUP')."'");
+						foreach($query->result_array() as $aRow){
+							$kode_kcu= explode(';',$aRow['kcu_list']);
+						}
+*/
+			$this->db->where_in("kcu_group.kcu_id",$this->session->userdata('KCU'));
+		} else 
+		if(($this->session->userdata('LEVEL_GROUP')=="COORDINATOR")||($this->session->userdata('LEVEL_GROUP')=="AGENT")){
+			$this->db->where("assigned_area",$this->session->userdata('AREA'));
+		}
+		
+		$this->db->where_in("kode_produk",$kode_product); //kode_produk
+		
+		$this->db->select('SQL_CALC_FOUND_ROWS '.str_replace(' , ', ' ', implode(', ', $select)), false);
+		if(!empty($where))
+			$this->db->where($where);
+			
+		$rResult = $this->db->get();
+		
+		// Data set length after filtering
+		$this->db->select('FOUND_ROWS() AS found_rows');
+		
+		$iFilteredTotal = $this->db->get()->row()->found_rows;
+		
+		// Total data set length	
+		$iTotal = $rResult->num_rows();
+		if( $iTotal > 0 )
+		{
+			$total_pages = ceil($iFilteredTotal/$iDisplayLength);
+		}
+		else
+		{
+			$total_pages = 0;
+		}		
+		
+		// Output
+		$output = array();
+		$list = array();
+		$row_number = 0;
+		$list_number = ($iDisplayStart-1)*10;
+		//$row_number = ($iDisplayStart-1)*10;
+		//echo ($iDisplayStart-1)*10;
+		foreach($rResult->result_array() as $aRow)
+		{
+			//$output[] = $aRow;
+			//$output['rows'][] = $aRow;
+			$list[] = array(
+				"id" => $aRow['no_rekening'], 
+				"cell" => $aRow
+			);
+			
+			$list[$row_number]["cell"]["list_number"] = ($list_number+1).".";
+			
+			$list_number++;
+			$row_number++;
+		}		
+		
+		$output = array(
+			'page'	=> $iDisplayStart,
+			'total' => $total_pages,
+			'rows'	=> $list,
+			'records' => $iFilteredTotal
+		);	
+		echo json_encode($output); 					
+	}
+
+	function save_account_to_fc_assignment($cd_customers, $id_fc,$assignment_type,$assignment_date) {
+		//log_message('debug',__METHOD__);
+		
+		$cd_customers = explode("xsplitx", $cd_customers);
+		/*
+		$this->db->set('assign_to', $id_user);
+		$this->db->where_in('no_registration', $no_registrations);
+		$return = $this->db->update('aav_assignment_account');
+		*/
+		
+		foreach($cd_customers as $cd_customer)
+		{
+			//cari dulu sudah 
+			$this->db->select("no_rekening");
+			$this->db->from("cms_assignment");
+			$this->db->where("no_rekening",$cd_customer);
+			$rResult = $this->db->get();
+			$iTotal = $rResult->num_rows();
+			if( $iTotal > 0 )
+			{
+				//update
+				if($assignment_type == "PERMANENT"){
+					$data = array(
+					   'assigned_fc' => $id_fc,
+					   'assigned_fc_permanen' => $id_fc,
+					   'assign_type' => $assignment_type,
+					   'assign_tmp_until' => $assignment_date,
+					   'assigned_fc_time' => date('Y-m-d H:i:s'),
+					   'assigned_fc_by' => $this->session->userdata('USER_ID')
+					);
+				}else{
+					$data = array(
+					   'assigned_fc' => $id_fc,
+					   'assign_type' => $assignment_type,
+					   'assign_tmp_until' => $assignment_date,
+					   'assigned_fc_time' => date('Y-m-d H:i:s'),
+					   'assigned_fc_by' => $this->session->userdata('USER_ID')
+					);
+					
+					
+				}
+				$this->db->where('no_rekening', $cd_customer);
+				$return = $this->db->update('cms_assignment', $data); 
+				
+			}
+			else
+			{
+				//insert
+				$data = array(
+				   'no_rekening' => $cd_customer,
+				   'assigned_fc' => $id_fc,
+				   'assigned_fc_time' => date('Y-m-d H:i:s'),
+				   'assigned_fc_by' => $this->session->userdata('USER_ID')
+				);
+				
+				$return = $this->db->insert('cms_assignment', $data); 
+			}		
+
+			
+		}
+		
+		return $return;
+	}
+	function save_account_to_dc_assignment($cd_customers, $id_fc,$assignment_type,$assignment_date) {
+		//log_message('debug',__METHOD__);
+				$query = $this->db->query("select product_list,assignment_type from cms_bisnis_unit where bisnis_unit_id='".$this->session->userdata('PRODUK_GROUP')."'");
+		
+		foreach($query->result_array() as $aRow){
+			//$kode_product[]= $aRow['product_id'];
+			//$kode_product= str_replace(";","','",$aRow['product_list']);
+			$kode_product= explode(";",$aRow['product_list']);
+			$assignment_type = $aRow['assignment_type'];
+		}
+
+		$cd_customers = explode("xsplitx", $cd_customers);
+		/*
+		$this->db->set('assign_to', $id_user);
+		$this->db->where_in('no_registration', $no_registrations);
+		$return = $this->db->update('aav_assignment_account');
+		*/
+		
+		foreach($cd_customers as $cd_customer)
+		{
+			//assignment berdasarkan cif
+			//cari rekening yg sudah ada di cms_assignment
+			$this->db->select("a.no_rekening");
+			$this->db->from("cms_customer_profile a");
+			$this->db->join("cms_assignment_agent b","a.no_rekening=b.no_rekening");
+			$this->db->where("a.no_cif",$cd_customer);
+			$this->db->where_in("kode_produk",$kode_product); 
+			$rResult = $this->db->get();
+			$i=0;
+			foreach($rResult->result_array() as $row){ 					
+				$i++;
+
+				if($assignment_type == "PERMANENT"){
+					$data = array(
+					   'agent_id' => $id_fc,
+					   'dc_permanen' => $id_fc,
+					   'no_cif' => $cd_customer,
+					   'assign_type' => $assignment_type,
+					   'bisnis_unit' => $this->session->userdata('PRODUK_GROUP'),
+					   //'assign_until' => $assignment_date,
+					   'assign_time' => date('Y-m-d H:i:s'),
+					   'assign_by' => $this->session->userdata('USER_ID')
+					);
+				}else{
+					$data = array(
+					   'agent_id' => $id_fc,
+					   'no_cif' => $cd_customer,
+					   'assign_type' => $assignment_type,
+					   'bisnis_unit' => $this->session->userdata('PRODUK_GROUP'),
+					   'assignment_until' => $assignment_date,
+					   'assign_time' => date('Y-m-d H:i:s'),
+					   'assign_by' => $this->session->userdata('USER_ID')
+					);
+				}
+				$this->db->where('no_rekening', $row["no_rekening"]);
+				$return = $this->db->update('cms_assignment_agent', $data); 
+			}
+			
+			//cari yang belum ada di assignment agent
+			$this->db->select("a.no_rekening");
+			$this->db->from("cms_customer_profile a");
+			$this->db->join("cms_assignment_agent b","a.no_rekening=b.no_rekening","LEFT");
+			$this->db->where_in("kode_produk",$kode_product); 
+			$this->db->where("a.no_cif",$cd_customer);
+			$this->db->where("agent_id is null");
+			$rResult = $this->db->get();
+			foreach($rResult->result_array() as $row){ 					
+				$data = array(
+				   'no_rekening' => $row['no_rekening'],
+					   'agent_id' => $id_fc,
+					   'dc_permanen' => $id_fc,
+					   'no_cif' => $cd_customer,
+					   'assign_type' => $assignment_type,
+					   'bisnis_unit' => $this->session->userdata('PRODUK_GROUP'),
+					   'assignment_until' => $assignment_date,
+					   'assign_time' => date('Y-m-d H:i:s'),
+					   'created_time' => date('Y-m-d H:i:s'),
+					   'assign_by' => $this->session->userdata('USER_ID')
+				);
+				
+				$return = $this->db->replace('cms_assignment_agent', $data); 
+			}
+			
+			
+/*			// berdasarkan no_rekening
+			//cari dulu sudah 
+			$this->db->select("no_rekening");
+			$this->db->from("cms_assignment_agent");
+			$this->db->where("no_rekening",$cd_customer);
+			$rResult = $this->db->get();
+			$iTotal = $rResult->num_rows();
+			if( $iTotal > 0 )
+			{
+				//update
+				if($assignment_type == "PERMANENT"){
+					$data = array(
+					   'agent_id' => $id_fc,
+					   'dc_permanen' => $id_fc,
+					   'assignment_type' => $assignment_type,
+					   //'assign_until' => $assignment_date,
+					   'assign_time' => date('Y-m-d H:i:s'),
+					   'assign_by' => $this->session->userdata('USER_ID')
+					);
+				}else{
+					$data = array(
+					   'agent_id' => $id_fc,
+					   'assignment_type' => $assignment_type,
+					   'assignment_until' => $assignment_date,
+					   'assign_time' => date('Y-m-d H:i:s'),
+					   'assign_by' => $this->session->userdata('USER_ID')
+					);
+					
+					
+				}
+				$this->db->where('no_rekening', $cd_customer);
+				$return = $this->db->update('cms_assignment_agent', $data); 
+				
+			}
+			else
+			{
+				//insert
+				$data = array(
+				   'no_rekening' => $cd_customer,
+					   'agent_id' => $id_fc,
+					   'dc_permanen' => $id_fc,
+					   'assignment_type' => $assignment_type,
+					   //'assign_until' => $assignment_date,
+					   'assign_time' => date('Y-m-d H:i:s'),
+					   'assign_by' => $this->session->userdata('USER_ID')
+				);
+				
+				$return = $this->db->insert('cms_assignment_agent', $data); 
+			}		
+*/
+			
+		}
+		
+		return $return;
+	}
+	
+	function clear_account_to_fc_assignment($cd_customers) {
+		//log_message('debug',__METHOD__);
+		
+		$cd_customers = explode("xsplitx", $cd_customers);
+		
+				$data = array(
+				   'assigned_fc' => '',
+				   'assigned_fc_time' => date('Y-m-d H:i:s'),
+				   'assigned_fc_by' => $this->session->userdata('USER_ID')
+				);
+		$this->db->set($data);
+		$this->db->where_in('no_rekening', $cd_customers);
+		$return = $this->db->update('cms_assignment');
+		
+		return $return;
+	}
+//end Assignment fc
+	function get_unmapped_account_list()
+	{
+		$aColumns				= array('list_number', 'no_rekening', 'first_name', 'city','kode_cabang', 'assign_to_id', 'assign_to_name');
+		$iDisplayStart	= $this->input->get_post('page', true);
+		$iDisplayLength = $this->input->get_post('rows', true);
+		$iSortCol_0			= $this->input->get_post('sidx', true);
+		$iSortingCols		= $this->input->get_post('sord', true);
+		$sSearch				= $this->input->get_post('_search', true);
+		$sEcho					= $this->input->get_post('sEcho', true);
+		$searchOper			= $this->input->get_post('searchOper', true);
+		$searchString			= $this->input->get_post('searchString', true);
+		$searchField			= $this->input->get_post('searchField', true);
+		
+		// Paging
+		if(isset($iDisplayStart) && $iDisplayLength != '-1')
+		{
+			$this->db->limit($this->db->escape_str($iDisplayLength), ($this->db->escape_str($iDisplayStart)-1) * $this->db->escape_str($iDisplayLength));
+		}
+		
+		// Ordering
+		if(isset($iSortCol_0))
+		{
+			$this->db->_protect_identifiers=false;
+			$this->db->order_by($iSortCol_0, $iSortingCols);
+		}
+
+		
+		//Search filter function
+		if ($sSearch == 'true') {
+			$filters = $this->input->get_post('filters', true);
+			if($filters){
+				//echo "xxx".$filters."vsdv";
+				$filters = json_decode($filters);
+				$where = '';
+				$whereArray = array();
+				$rules = $filters->rules;
+				$groupOperation = $filters->groupOp;
+				foreach($rules as $rule) {
+		
+					$fieldName = $rule->field;
+					$fieldData = mysql_real_escape_string($rule->data);
+		
+						$fieldOperation = $fieldName.' LIKE "%'.$fieldData.'%"';
+		
+					if($fieldOperation != '') $whereArray[] = $fieldOperation;
+				}
+				if (count($whereArray)>0) {
+					$where .= join(' '.$groupOperation.' ', $whereArray);
+				} else {
+					$where = '';
+				}
+			}else{
+		
+				$ops = array(
+				//'eq' => '=', //equal
+				'eq' => 'LIKE', // contains
+				'ne' => '<>',//not equal
+				'lt' => '<', //less than
+				'le' => '<=',//less than or equal
+				'gt' => '>', //greater than
+				'ge' => '>=',//greater than or equal
+				'bw' => 'LIKE', //begins with
+				'bn' => 'NOT LIKE', //doesn't begin with
+				'in' => 'LIKE', //is in
+				'ni' => 'NOT LIKE', //is not in
+				'ew' => 'LIKE', //ends with
+				'en' => 'NOT LIKE', //doesn't end with
+				'cn' => 'LIKE', // contains
+				'nc' => 'NOT LIKE'	//doesn't contain
+				);
+		
+				foreach ($ops as $key=>$value){
+					if ($searchOper==$key) {
+						$ops = $value;
+					}
+				}
+				//if($searchOper == 'eq' ) $searchString = $searchString;
+				if($searchOper == 'bw' || $searchOper == 'bn') $searchString .= '%';
+				if($searchOper == 'ew' || $searchOper == 'en' ) $searchString = '%'.$searchString;
+				if($searchOper == 'eq' || $searchOper == 'cn' || $searchOper == 'nc' || $searchOper == 'in' || $searchOper == 'ni') $searchString = '%'.$searchString.'%';
+		
+				$where = "$searchField $ops '$searchString' ";
+			}
+		}
+		//cari assignment_type 
+				$query = $this->db->query("select product_list,assignment_type from cms_bisnis_unit where bisnis_unit_id='".$this->session->userdata('PRODUK_GROUP')."'");
+				foreach($query->result_array() as $aRow){
+					//$kode_product[]= $aRow['product_id'];
+					$kode_product= explode(";",$aRow['product_list']);
+					$assignment_type = $aRow['assignment_type'];
+				}
+		
+		$select = array('"" AS list_number', 'assign_type','cust.no_rekening','dpd','kolektibilitas','plafond','cust.no_cif','concat(kode_produk," - ",product_name)kode_produk',
+		 'first_name', 'city','concat(cust.kode_kcu," - ",kcu.kcu_name) kcu', 'assigned_area','zip_code',
+		 'date_format(tgl_pencairan,"%d %b %Y")tgl_pencairan','date_format(ori_maturity_date,"%d %b %Y")ori_maturity_date','baki_debet','concat(cust_address_1," ",cust_address_2)cust_address_1',
+		 'concat(kode_AO," - ",officer_name)kode_AO','assigned_fc','concat(kcu_group.kcu_id," - ",kcu_group.kcu_name)group_kcu','date_format(cust.next_payment_date,"%d %b %Y")next_payment_date','restruktur_status','status_rekening'
+		 
+		 );
+		// Select Data
+		$this->db->from('cms_customer_profile AS cust');	
+		$this->db->join('cms_assignment AS ass', 'cust.no_rekening = ass.no_rekening', 'LEFT');
+		$this->db->join('cms_product_group AS prod', 'cust.kode_produk = prod.product_id', 'LEFT');
+		$this->db->join('cms_kcu_cabang AS kcu', 'cust.kode_kcu = kcu.kcu_id', 'LEFT');
+		$this->db->join('cms_area_kcu AS ar', 'assigned_area = area_id','LEFT');
+		//$this->db->join('cms_kcu AS kcu_group', 'kcu_group.kcu_id = ar.kcu_id','LEFT');
+		$this->db->join('tmp_group_kcu_to_kcu map','cust.kode_kcu = map.kcu_id and map.bisnis_unit="'.$this->session->userdata('PRODUK_GROUP') .'"','LEFT');
+		$this->db->join('cms_kcu AS kcu_group', 'map.group_kcu_id = kcu_group.kcu_id  and kcu_group.bisnis_unit="' .$this->session->userdata('PRODUK_GROUP') .'"','LEFT');
+		$this->db->where("area_id is null");
+		$this->db->where("chargeoff_status != 'C'");
+		$this->db->join('cms_account_last_status AS st', 'cust.no_rekening = st.no_rekening ','LEFT');
+		$this->db->where("(wo_status != 'on' or (wo_status is null and chargeoff_status != 'C'))");
+
+		$this->db->where_in("kode_produk",$kode_product); //kode_produk
+
+		//if(($this->session->userdata('LEVEL_GROUP')=="SUPERVISOR")||($this->session->userdata('LEVEL_GROUP')=="COORDINATOR")){
+		if(($this->session->userdata('LEVEL_GROUP')!="ADMIN")){
+				if(($this->session->userdata('LEVEL_GROUP')!="ROOT")){
+//			$this->db->where("kode_cabang",$this->session->userdata('KCU'));
+					$kode_kcu= array();
+						$query = $this->db->query("select kcu_list from cms_kcu where kcu_id='".$this->session->userdata('KCU')."' and bisnis_unit = '".$this->session->userdata('PRODUK_GROUP')."'");
+						foreach($query->result_array() as $aRow){
+							$kode_kcu= explode(';',$aRow['kcu_list']);
+						}
+			$this->db->where_in("kode_kcu",$kode_kcu);
+			}
+			
+		}
+		$this->db->select('SQL_CALC_FOUND_ROWS '.str_replace(' , ', ' ', implode(', ', $select)), false);
+		if(!empty($where))
+			$this->db->where($where);
+			
+		$rResult = $this->db->get();
+		
+		// Data set length after filtering
+		$this->db->select('FOUND_ROWS() AS found_rows');
+		
+		$iFilteredTotal = $this->db->get()->row()->found_rows;
+		
+		// Total data set length	
+		$iTotal = $rResult->num_rows();
+		if( $iTotal > 0 )
+		{
+			$total_pages = ceil($iFilteredTotal/$iDisplayLength);
+		}
+		else
+		{
+			$total_pages = 0;
+		}		
+		
+		// Output
+		$output = array();
+		$list = array();
+		$row_number = 0;
+		$list_number = ($iDisplayStart-1)*10;
+		//$row_number = ($iDisplayStart-1)*10;
+		//echo ($iDisplayStart-1)*10;
+		foreach($rResult->result_array() as $aRow)
+		{
+			//$output[] = $aRow;
+			//$output['rows'][] = $aRow;
+			$list[] = array(
+				"id" => $aRow['no_rekening'], 
+				"cell" => $aRow
+			);
+			
+			$list[$row_number]["cell"]["list_number"] = ($list_number+1).".";
+			
+			$list_number++;
+			$row_number++;
+		}		
+		
+		$output = array(
+			'page'	=> $iDisplayStart,
+			'total' => $total_pages,
+			'rows'	=> $list,
+			'records' => $iFilteredTotal
+		);	
+		echo json_encode($output); 					
+	}
+
+	function get_unmapped_account_wo_list()
+	{
+		$aColumns				= array('list_number', 'no_rekening', 'first_name', 'city','kode_cabang', 'assign_to_id', 'assign_to_name');
+		$iDisplayStart	= $this->input->get_post('page', true);
+		$iDisplayLength = $this->input->get_post('rows', true);
+		$iSortCol_0			= $this->input->get_post('sidx', true);
+		$iSortingCols		= $this->input->get_post('sord', true);
+		$sSearch				= $this->input->get_post('_search', true);
+		$sEcho					= $this->input->get_post('sEcho', true);
+		$searchOper			= $this->input->get_post('searchOper', true);
+		$searchString			= $this->input->get_post('searchString', true);
+		$searchField			= $this->input->get_post('searchField', true);
+		
+		// Paging
+		if(isset($iDisplayStart) && $iDisplayLength != '-1')
+		{
+			$this->db->limit($this->db->escape_str($iDisplayLength), ($this->db->escape_str($iDisplayStart)-1) * $this->db->escape_str($iDisplayLength));
+		}
+		
+		// Ordering
+		if(isset($iSortCol_0))
+		{
+			$this->db->_protect_identifiers=false;
+			$this->db->order_by($iSortCol_0, $iSortingCols);
+		}
+
+		
+		//Search filter function
+		if ($sSearch == 'true') {
+			$filters = $this->input->get_post('filters', true);
+			if($filters){
+				//echo "xxx".$filters."vsdv";
+				$filters = json_decode($filters);
+				$where = '';
+				$whereArray = array();
+				$rules = $filters->rules;
+				$groupOperation = $filters->groupOp;
+				foreach($rules as $rule) {
+		
+					$fieldName = $rule->field;
+					$fieldData = mysql_real_escape_string($rule->data);
+		
+						$fieldOperation = $fieldName.' LIKE "%'.$fieldData.'%"';
+		
+					if($fieldOperation != '') $whereArray[] = $fieldOperation;
+				}
+				if (count($whereArray)>0) {
+					$where .= join(' '.$groupOperation.' ', $whereArray);
+				} else {
+					$where = '';
+				}
+			}else{
+		
+				$ops = array(
+				//'eq' => '=', //equal
+				'eq' => 'LIKE', // contains
+				'ne' => '<>',//not equal
+				'lt' => '<', //less than
+				'le' => '<=',//less than or equal
+				'gt' => '>', //greater than
+				'ge' => '>=',//greater than or equal
+				'bw' => 'LIKE', //begins with
+				'bn' => 'NOT LIKE', //doesn't begin with
+				'in' => 'LIKE', //is in
+				'ni' => 'NOT LIKE', //is not in
+				'ew' => 'LIKE', //ends with
+				'en' => 'NOT LIKE', //doesn't end with
+				'cn' => 'LIKE', // contains
+				'nc' => 'NOT LIKE'	//doesn't contain
+				);
+		
+				foreach ($ops as $key=>$value){
+					if ($searchOper==$key) {
+						$ops = $value;
+					}
+				}
+				//if($searchOper == 'eq' ) $searchString = $searchString;
+				if($searchOper == 'bw' || $searchOper == 'bn') $searchString .= '%';
+				if($searchOper == 'ew' || $searchOper == 'en' ) $searchString = '%'.$searchString;
+				if($searchOper == 'eq' || $searchOper == 'cn' || $searchOper == 'nc' || $searchOper == 'in' || $searchOper == 'ni') $searchString = '%'.$searchString.'%';
+		
+				$where = "$searchField $ops '$searchString' ";
+			}
+		}
+		//cari assignment_type 
+				$query = $this->db->query("select product_list,assignment_type from cms_bisnis_unit where bisnis_unit_id='".$this->session->userdata('PRODUK_GROUP')."'");
+				foreach($query->result_array() as $aRow){
+					//$kode_product[]= $aRow['product_id'];
+					$kode_product= explode(";",$aRow['product_list']);
+					$assignment_type = $aRow['assignment_type'];
+				}
+		
+		$select = array('"" AS list_number', 'cust.no_rekening','dpd','kolektibilitas','plafond','cust.no_cif','concat(kode_produk," - ",product_name)kode_produk',
+		 'first_name', 'city','concat(cust.kode_kcu," - ",kcu.kcu_name) kcu', 'concat(assigned_area," - ",ar.area_name)assigned_area','zip_code',
+		 'date_format(tgl_pencairan,"%d %b %Y")tgl_pencairan','date_format(ori_maturity_date,"%d %b %Y")ori_maturity_date','baki_debet','concat(cust_address_1," ",cust_address_2)cust_address_1',
+		 'concat(kode_AO," - ",officer_name)kode_AO','assigned_fc','concat(kcu_group.kcu_id," - ",kcu_group.kcu_name)group_kcu','date_format(cust.next_payment_date,"%d %b %Y")next_payment_date','restruktur_status','status_rekening');
+
+		// Select Data
+		$this->db->from('cms_customer_profile AS cust');	
+		$this->db->join('cms_account_last_status AS st', 'cust.no_rekening = st.no_rekening','LEFT');
+		$this->db->join('cms_assignment AS ass', 'cust.no_rekening = ass.no_rekening', 'LEFT');
+		$this->db->join('cms_kcu_cabang AS kcu', 'cust.kode_kcu = kcu.kcu_id', 'LEFT');
+		$this->db->where("area_id is null");
+		$this->db->join('cms_area_kcu AS ar', 'assigned_area = area_id','LEFT');
+		$this->db->join('cms_product_group AS prod', 'cust.kode_produk = prod.product_id', 'LEFT');
+		$this->db->join('tmp_group_kcu_to_kcu map','cust.kode_kcu = map.kcu_id and map.bisnis_unit="'.$this->session->userdata('PRODUK_GROUP') .'"','LEFT');
+
+		$this->db->join('cms_kcu AS kcu_group', 'map.group_kcu_id = kcu_group.kcu_id  and kcu_group.bisnis_unit="' .$this->session->userdata('PRODUK_GROUP') .'"','LEFT');
+		
+		$whwo = '(wo_status = "on" or chargeoff_status = "C")';
+		$this->db->where($whwo);
+		
+		
+		$this->db->where_in("kode_produk",$kode_product); //kode_produk
+		//$this->db->where_or("chargeoff_status = 'C'");
+		//if(($this->session->userdata('LEVEL_GROUP')=="SUPERVISOR")||($this->session->userdata('LEVEL_GROUP')=="COORDINATOR")){
+			if(($this->session->userdata('LEVEL_GROUP')!="ADMIN")){
+				if(($this->session->userdata('LEVEL_GROUP')!="ROOT")){
+//			$this->db->where("kode_cabang",$this->session->userdata('KCU'));
+					$kode_kcu= array();
+						$query = $this->db->query("select kcu_list from cms_kcu where kcu_id='".$this->session->userdata('KCU')."' and bisnis_unit = '".$this->session->userdata('PRODUK_GROUP')."'");
+						foreach($query->result_array() as $aRow){
+							$kode_kcu= explode(';',$aRow['kcu_list']);
+						}
+					$this->db->where_in("kode_kcu",$kode_kcu);
+				}
+			
+		}
+		$this->db->select('SQL_CALC_FOUND_ROWS '.str_replace(' , ', ' ', implode(', ', $select)), false);
+		if(!empty($where))
+			$this->db->where($where);
+			
+		$rResult = $this->db->get();
+		
+		// Data set length after filtering
+		$this->db->select('FOUND_ROWS() AS found_rows');
+		
+		$iFilteredTotal = $this->db->get()->row()->found_rows;
+		
+		// Total data set length	
+		$iTotal = $rResult->num_rows();
+		if( $iTotal > 0 )
+		{
+			$total_pages = ceil($iFilteredTotal/$iDisplayLength);
+		}
+		else
+		{
+			$total_pages = 0;
+		}		
+		
+		// Output
+		$output = array();
+		$list = array();
+		$row_number = 0;
+		$list_number = ($iDisplayStart-1)*10;
+		//$row_number = ($iDisplayStart-1)*10;
+		//echo ($iDisplayStart-1)*10;
+		foreach($rResult->result_array() as $aRow)
+		{
+			//$output[] = $aRow;
+			//$output['rows'][] = $aRow;
+			$list[] = array(
+				"id" => $aRow['no_rekening'], 
+				"cell" => $aRow
+			);
+			
+			$list[$row_number]["cell"]["list_number"] = ($list_number+1).".";
+			
+			$list_number++;
+			$row_number++;
+		}		
+		
+		$output = array(
+			'page'	=> $iDisplayStart,
+			'total' => $total_pages,
+			'rows'	=> $list,
+			'records' => $iFilteredTotal
+		);	
+		echo json_encode($output); 					
+	}
+
+//Assignment Area
+	function get_account_assignment_to_area_list()
+	{
+		$aColumns				= array('list_number', 'no_rekening', 'first_name', 'city','kode_cabang', 'assign_to_id', 'assign_to_name');
+		$iDisplayStart	= $this->input->get_post('page', true);
+		$iDisplayLength = $this->input->get_post('rows', true);
+		$iSortCol_0			= $this->input->get_post('sidx', true);
+		$iSortingCols		= $this->input->get_post('sord', true);
+		$sSearch				= $this->input->get_post('_search', true);
+		$sEcho					= $this->input->get_post('sEcho', true);
+		$searchOper			= $this->input->get_post('searchOper', true);
+		$searchString			= $this->input->get_post('searchString', true);
+		$searchField			= $this->input->get_post('searchField', true);
+		
+		// Paging
+		if(isset($iDisplayStart) && $iDisplayLength != '-1')
+		{
+			$this->db->limit($this->db->escape_str($iDisplayLength), ($this->db->escape_str($iDisplayStart)-1) * $this->db->escape_str($iDisplayLength));
+		}
+		
+		// Ordering
+		if(isset($iSortCol_0))
+		{
+			$this->db->_protect_identifiers=false;
+			$this->db->order_by($iSortCol_0, $iSortingCols);
+		}
+
+		
+		//Search filter function
+		if ($sSearch == 'true') {
+			$filters = $this->input->get_post('filters', true);
+			if($filters){
+				//echo "xxx".$filters."vsdv";
+				$filters = json_decode($filters);
+				$where = '';
+				$whereArray = array();
+				$rules = $filters->rules;
+				$groupOperation = $filters->groupOp;
+				foreach($rules as $rule) {
+		
+					$fieldName = $rule->field;
+					$fieldData = mysql_real_escape_string($rule->data);
+		
+						$fieldOperation = $fieldName.' LIKE "%'.$fieldData.'%"';
+		
+					if($fieldOperation != '') $whereArray[] = $fieldOperation;
+				}
+				if (count($whereArray)>0) {
+					$where .= join(' '.$groupOperation.' ', $whereArray);
+				} else {
+					$where = '';
+				}
+			}else{
+		
+				$ops = array(
+				//'eq' => '=', //equal
+				'eq' => 'LIKE', // contains
+				'ne' => '<>',//not equal
+				'lt' => '<', //less than
+				'le' => '<=',//less than or equal
+				'gt' => '>', //greater than
+				'ge' => '>=',//greater than or equal
+				'bw' => 'LIKE', //begins with
+				'bn' => 'NOT LIKE', //doesn't begin with
+				'in' => 'LIKE', //is in
+				'ni' => 'NOT LIKE', //is not in
+				'ew' => 'LIKE', //ends with
+				'en' => 'NOT LIKE', //doesn't end with
+				'cn' => 'LIKE', // contains
+				'nc' => 'NOT LIKE'	//doesn't contain
+				);
+		
+				foreach ($ops as $key=>$value){
+					if ($searchOper==$key) {
+						$ops = $value;
+					}
+				}
+				//if($searchOper == 'eq' ) $searchString = $searchString;
+				if($searchOper == 'bw' || $searchOper == 'bn') $searchString .= '%';
+				if($searchOper == 'ew' || $searchOper == 'en' ) $searchString = '%'.$searchString;
+				if($searchOper == 'eq' || $searchOper == 'cn' || $searchOper == 'nc' || $searchOper == 'in' || $searchOper == 'ni') $searchString = '%'.$searchString.'%';
+		
+				$where = "$searchField $ops '$searchString' ";
+			}
+		}
+		
+		$select = array('"" AS list_number', 'assign_type','cust.no_rekening','dpd','kolektibilitas','plafond','cust.no_cif','concat(kode_produk," - ",product_name)kode_produk',
+		 'first_name', 'city','concat(cust.kode_kcu," - ",kcu.kcu_name) kcu', 'concat(assigned_area," - ",ar.area_name)assigned_area','zip_code',
+		 'date_format(tgl_pencairan,"%d %b %Y")tgl_pencairan','date_format(ori_maturity_date,"%d %b %Y")ori_maturity_date','baki_debet','concat(cust_address_1," ",cust_address_2)cust_address_1',
+		 'concat(kode_AO," - ",officer_name)kode_AO','assigned_fc','concat(kcu_group.kcu_id, " - ", kcu_group.kcu_name)group_kcu','concat(ass_by.id, " - ", ass_by.name)assigned_by','date_format(cust.next_payment_date,"%d %b %Y")next_payment_date','restruktur_status','status_rekening');
+		
+		//group_kcu_lama -> ,'concat(kcu_group.kcu_id," - ",kcu_group.kcu_name)group_kcu'
+
+		$kode_product = array();
+		$query = $this->db->query("select product_list,assignment_type from cms_bisnis_unit where bisnis_unit_id='".$this->session->userdata('PRODUK_GROUP')."'");
+		foreach($query->result_array() as $aRow){
+			//$kode_product[]= $aRow['product_id'];
+			$kode_product= explode(";",$aRow['product_list']);
+			$assignment_type = $aRow['assignment_type'];
+		}
+
+		// Select Data
+		$this->db->from('cms_customer_profile AS cust');	
+		$this->db->join('cms_assignment AS ass', 'cust.no_rekening = ass.no_rekening', 'LEFT');
+		$this->db->join('cc_user AS ass_by', 'ass.assigned_area_by = ass_by.id', 'LEFT');
+		$this->db->join('cms_kcu_cabang AS kcu', 'cust.kode_kcu = kcu.kcu_id', 'LEFT');
+		$this->db->join('cms_area_kcu AS ar', 'assigned_area = area_id');
+		$this->db->join('cms_product_group AS prod', 'cust.kode_produk = prod.product_id', 'LEFT');
+		$this->db->join('tmp_group_kcu_to_kcu map','cust.kode_kcu = map.kcu_id and map.bisnis_unit="'.$this->session->userdata('PRODUK_GROUP') .'"','LEFT');
+		$this->db->join('cms_kcu AS kcu_group', 'map.group_kcu_id = kcu_group.kcu_id and kcu_group.bisnis_unit="' .$this->session->userdata('PRODUK_GROUP') .'"','LEFT');
+		$this->db->join('cms_account_last_status AS st', 'cust.no_rekening = st.no_rekening ','LEFT');
+		$this->db->where("(wo_status != 'on' or (wo_status is null and chargeoff_status != 'C'))");
+
+		//yg lama
+		//$this->db->join('cms_kcu AS kcu_group', 'kcu_group.kcu_id = map.group_kcu_id and kcu_group.bisnis_unit="' .$this->session->userdata('PRODUK_GROUP') .'"','LEFT');
+
+		if(($this->session->userdata('LEVEL_GROUP')=="COORDINATOR")||($this->session->userdata('LEVEL_GROUP')=="AGENT")){
+			$this->db->where("assigned_area",$this->session->userdata('AREA'));
+		}
+
+				$this->db->where_in("kode_produk",$kode_product); //kode_produk		
+		
+
+		//if(($this->session->userdata('LEVEL_GROUP')=="SUPERVISOR")||($this->session->userdata('LEVEL_GROUP')=="COORDINATOR")){
+		if(($this->session->userdata('LEVEL_GROUP')!="ADMIN")){
+				if(($this->session->userdata('LEVEL_GROUP')!="ROOT")){
+				$this->db->where_in("map.group_kcu_id",$this->session->userdata('KCU'));
+			}
+			
+		}
+
+		$this->db->select('SQL_CALC_FOUND_ROWS '.str_replace(' , ', ' ', implode(', ', $select)), false);
+		if(!empty($where))
+			$this->db->where($where);
+			
+		$rResult = $this->db->get();
+		
+		// Data set length after filtering
+		$this->db->select('FOUND_ROWS() AS found_rows');
+		
+		$iFilteredTotal = $this->db->get()->row()->found_rows;
+		
+		// Total data set length	
+		$iTotal = $rResult->num_rows();
+		if( $iTotal > 0 )
+		{
+			$total_pages = ceil($iFilteredTotal/$iDisplayLength);
+		}
+		else
+		{
+			$total_pages = 0;
+		}		
+		
+		// Output
+		$output = array();
+		$list = array();
+		$row_number = 0;
+		$list_number = ($iDisplayStart-1)*10;
+		//$row_number = ($iDisplayStart-1)*10;
+		//echo ($iDisplayStart-1)*10;
+		foreach($rResult->result_array() as $aRow)
+		{
+			//$output[] = $aRow;
+			//$output['rows'][] = $aRow;
+			$list[] = array(
+				"id" => $aRow['no_rekening'], 
+				"cell" => $aRow
+			);
+			
+			$list[$row_number]["cell"]["list_number"] = ($list_number+1).".";
+			
+			$list_number++;
+			$row_number++;
+		}		
+		
+		$output = array(
+			'page'	=> $iDisplayStart,
+			'total' => $total_pages,
+			'rows'	=> $list,
+			'records' => $iFilteredTotal
+		);	
+		echo json_encode($output); 					
+	}
+	function get_account_assignment_to_area_wo_list()
+	{
+		$aColumns				= array('list_number', 'no_rekening', 'first_name', 'city','kode_cabang', 'assign_to_id', 'assign_to_name');
+		$iDisplayStart	= $this->input->get_post('page', true);
+		$iDisplayLength = $this->input->get_post('rows', true);
+		$iSortCol_0			= $this->input->get_post('sidx', true);
+		$iSortingCols		= $this->input->get_post('sord', true);
+		$sSearch				= $this->input->get_post('_search', true);
+		$sEcho					= $this->input->get_post('sEcho', true);
+		$searchOper			= $this->input->get_post('searchOper', true);
+		$searchString			= $this->input->get_post('searchString', true);
+		$searchField			= $this->input->get_post('searchField', true);
+		
+		// Paging
+		if(isset($iDisplayStart) && $iDisplayLength != '-1')
+		{
+			$this->db->limit($this->db->escape_str($iDisplayLength), ($this->db->escape_str($iDisplayStart)-1) * $this->db->escape_str($iDisplayLength));
+		}
+		
+		// Ordering
+		if(isset($iSortCol_0))
+		{
+			$this->db->_protect_identifiers=false;
+			$this->db->order_by($iSortCol_0, $iSortingCols);
+		}
+
+		
+		//Search filter function
+		if ($sSearch == 'true') {
+			$filters = $this->input->get_post('filters', true);
+			if($filters){
+				//echo "xxx".$filters."vsdv";
+				$filters = json_decode($filters);
+				$where = '';
+				$whereArray = array();
+				$rules = $filters->rules;
+				$groupOperation = $filters->groupOp;
+				foreach($rules as $rule) {
+		
+					$fieldName = $rule->field;
+					$fieldData = mysql_real_escape_string($rule->data);
+		
+						$fieldOperation = $fieldName.' LIKE "%'.$fieldData.'%"';
+		
+					if($fieldOperation != '') $whereArray[] = $fieldOperation;
+				}
+				if (count($whereArray)>0) {
+					$where .= join(' '.$groupOperation.' ', $whereArray);
+				} else {
+					$where = '';
+				}
+			}else{
+		
+				$ops = array(
+				//'eq' => '=', //equal
+				'eq' => 'LIKE', // contains
+				'ne' => '<>',//not equal
+				'lt' => '<', //less than
+				'le' => '<=',//less than or equal
+				'gt' => '>', //greater than
+				'ge' => '>=',//greater than or equal
+				'bw' => 'LIKE', //begins with
+				'bn' => 'NOT LIKE', //doesn't begin with
+				'in' => 'LIKE', //is in
+				'ni' => 'NOT LIKE', //is not in
+				'ew' => 'LIKE', //ends with
+				'en' => 'NOT LIKE', //doesn't end with
+				'cn' => 'LIKE', // contains
+				'nc' => 'NOT LIKE'	//doesn't contain
+				);
+		
+				foreach ($ops as $key=>$value){
+					if ($searchOper==$key) {
+						$ops = $value;
+					}
+				}
+				//if($searchOper == 'eq' ) $searchString = $searchString;
+				if($searchOper == 'bw' || $searchOper == 'bn') $searchString .= '%';
+				if($searchOper == 'ew' || $searchOper == 'en' ) $searchString = '%'.$searchString;
+				if($searchOper == 'eq' || $searchOper == 'cn' || $searchOper == 'nc' || $searchOper == 'in' || $searchOper == 'ni') $searchString = '%'.$searchString.'%';
+		
+				$where = "$searchField $ops '$searchString' ";
+			}
+		}
+
+
+		
+		$select = array('"" AS list_number', 'assign_type','cust.no_rekening','dpd','kolektibilitas','plafond','cust.no_cif','concat(kode_produk," - ",product_name)kode_produk',
+		 'first_name', 'city','concat(cust.kode_kcu," - ",kcu.kcu_name) kcu', 'concat(assigned_area," - ",ar.area_name)assigned_area','zip_code',
+		 'date_format(tgl_pencairan,"%d %b %Y")tgl_pencairan','date_format(ori_maturity_date,"%d %b %Y")ori_maturity_date','baki_debet','concat(cust_address_1," ",cust_address_2)cust_address_1',
+		 'concat(kode_AO," - ",officer_name)kode_AO','assigned_fc','concat(kcu_group.kcu_id," - ",kcu_group.kcu_name)group_kcu','concat(ass_by.id, " - ", ass_by.name)assigned_by','date_format(cust.next_payment_date,"%d %b %Y")next_payment_date','restruktur_status','status_rekening');
+		$kode_product = array();
+		$query = $this->db->query("select product_list,assignment_type from cms_bisnis_unit where bisnis_unit_id='".$this->session->userdata('PRODUK_GROUP')."'");
+		foreach($query->result_array() as $aRow){
+			//$kode_product[]= $aRow['product_id'];
+			$kode_product= explode(";",$aRow['product_list']);
+			$assignment_type = $aRow['assignment_type'];
+		}
+
+		// Select Data
+		$this->db->from('cms_customer_profile AS cust');	
+		$this->db->join('cms_account_last_status AS st', 'cust.no_rekening = st.no_rekening','LEFT');
+		
+		$this->db->join('cms_assignment AS ass', 'cust.no_rekening = ass.no_rekening', 'LEFT');
+		$this->db->join('cc_user AS ass_by', 'ass.assigned_area_by = ass_by.id', 'LEFT');
+		$this->db->join('cms_kcu_cabang AS kcu', 'cust.kode_kcu = kcu.kcu_id', 'LEFT');
+		$this->db->join('cms_area_kcu AS ar', 'assigned_area = area_id');
+		$this->db->join('cms_product_group AS prod', 'cust.kode_produk = prod.product_id', 'LEFT');
+		$this->db->join('tmp_group_kcu_to_kcu map','cust.kode_kcu = map.kcu_id and map.bisnis_unit="'.$this->session->userdata('PRODUK_GROUP') .'"','LEFT');
+		$this->db->join('cms_kcu AS kcu_group', 'map.group_kcu_id = kcu_group.kcu_id  and kcu_group.bisnis_unit="' .$this->session->userdata('PRODUK_GROUP') .'"','LEFT');
+		$whwo = '(wo_status = "on" or chargeoff_status = "C")';
+		
+		$this->db->where($whwo);
+
+		//$this->db->join('cms_kcu AS kcu_group', 'kcu_group.kcu_id = map.group_kcu_id and kcu_group.bisnis_unit="' .$this->session->userdata('PRODUK_GROUP') .'"','LEFT');
+
+
+/*		if(($this->session->userdata('LEVEL_GROUP')=="SUPERVISOR")){
+			$this->db->where("kode_kcu",$this->session->userdata('KCU'));			
+		} else 
+		if(($this->session->userdata('LEVEL_GROUP')=="COORDINATOR")){
+			$this->db->where("assigned_area",$this->session->userdata('AREA'));
+		}
+*/
+
+/*				$query = $this->db->query("select product_id from cms_product_group ");
+				foreach($query->result_array() as $aRow){
+					$kode_product[]= $aRow['product_id'];
+				}
+*/
+				$this->db->where_in("kode_produk",$kode_product); //kode_produk
+		
+		
+
+		//if(($this->session->userdata('LEVEL_GROUP')=="SUPERVISOR")||($this->session->userdata('LEVEL_GROUP')=="COORDINATOR")){
+		if(($this->session->userdata('LEVEL_GROUP')!="ADMIN")){
+				if(($this->session->userdata('LEVEL_GROUP')!="ROOT")){
+//			$this->db->where("kode_cabang",$this->session->userdata('KCU'));
+					$kode_kcu= array();
+						$query = $this->db->query("select kcu_list from cms_kcu where kcu_id='".$this->session->userdata('KCU')."' and bisnis_unit = '".$this->session->userdata('PRODUK_GROUP')."'");
+						foreach($query->result_array() as $aRow){
+							$kode_kcu= explode(';',$aRow['kcu_list']);
+						}
+			$this->db->where_in("kode_kcu",$kode_kcu);
+		}
+			
+		}
+		$this->db->select('SQL_CALC_FOUND_ROWS '.str_replace(' , ', ' ', implode(', ', $select)), false);
+		if(!empty($where))
+			$this->db->where($where);
+			
+		$rResult = $this->db->get();
+		
+		// Data set length after filtering
+		$this->db->select('FOUND_ROWS() AS found_rows');
+		
+		$iFilteredTotal = $this->db->get()->row()->found_rows;
+		
+		// Total data set length	
+		$iTotal = $rResult->num_rows();
+		if( $iTotal > 0 )
+		{
+			$total_pages = ceil($iFilteredTotal/$iDisplayLength);
+		}
+		else
+		{
+			$total_pages = 0;
+		}		
+		
+		// Output
+		$output = array();
+		$list = array();
+		$row_number = 0;
+		$list_number = ($iDisplayStart-1)*10;
+		//$row_number = ($iDisplayStart-1)*10;
+		//echo ($iDisplayStart-1)*10;
+		foreach($rResult->result_array() as $aRow)
+		{
+			//$output[] = $aRow;
+			//$output['rows'][] = $aRow;
+			$list[] = array(
+				"id" => $aRow['no_rekening'], 
+				"cell" => $aRow
+			);
+			
+			$list[$row_number]["cell"]["list_number"] = ($list_number+1).".";
+			
+			$list_number++;
+			$row_number++;
+		}		
+		
+		$output = array(
+			'page'	=> $iDisplayStart,
+			'total' => $total_pages,
+			'rows'	=> $list,
+			'records' => $iFilteredTotal
+		);	
+		echo json_encode($output); 					
+	}
+
+	function cek_already_assign_to_fc($cd_customers){
+			$cd_customers = explode("xsplitx", $cd_customers);
+			$this->db->select("no_rekening");
+			$this->db->from("cms_assignment");
+			$this->db->where("no_rekening",$cd_customer);
+			$this->db->where("assigned_fc !=''");
+			$rResult = $this->db->get();
+			return $rResult->num_rows();
+	
+	}
+
+	function save_account_to_area_assignment($cd_customers, $id_area) {
+		//log_message('debug',__METHOD__);
+		
+		$cd_customers = explode("xsplitx", $cd_customers);
+		/*
+		$this->db->set('assign_to', $id_user);
+		$this->db->where_in('no_registration', $no_registrations);
+		$return = $this->db->update('aav_assignment_account');
+		*/
+		
+		foreach($cd_customers as $cd_customer)
+		{
+			//cari dulu sudah 
+			$this->db->select("no_rekening");
+			$this->db->from("cms_assignment");
+			$this->db->where("no_rekening",$cd_customer);
+			$rResult = $this->db->get();
+			$iTotal = $rResult->num_rows();
+			if( $iTotal > 0 )
+			{
+				//update
+				$data = array(
+				   'assigned_area' => $id_area,
+				   'assigned_fc' => '',
+				   'assigned_fc_permanen' => '',
+				   'assigned_area_time' => date('Y-m-d H:i:s'),
+				   'assigned_area_by' => $this->session->userdata('USER_ID')
+				);
+				$this->db->where('no_rekening', $cd_customer);
+				$return = $this->db->update('cms_assignment', $data); 
+				
+			}
+			else
+			{
+				//insert
+				$data = array(
+				   'no_rekening' => $cd_customer,
+				   'assigned_area' => $id_area,
+				   'assigned_fc' => "",
+				   'assigned_area_time' => date('Y-m-d H:i:s'),
+				   'assigned_area_by' => $this->session->userdata('USER_ID')
+				);
+				
+				$return = $this->db->insert('cms_assignment', $data); 
+			}		
+
+			
+		}
+		
+		return $return;
+	}
+	
+	function clear_account_to_area_assignment($cd_customers) {
+		//log_message('debug',__METHOD__);
+				
+		$cd_customers = explode("xsplitx", $cd_customers);
+		
+		
+				$data = array(
+				   'assigned_area' => '',
+				   'assigned_fc' => '',
+				   'assigned_area_time' => date('Y-m-d H:i:s'),
+				   'assigned_area_by' => $this->session->userdata('USER_ID')
+				);
+		$this->db->set($data);
+		$this->db->where_in('no_rekening', $cd_customers);
+		$return = $this->db->update('cms_assignment');
+		
+		return $return;
+	}
+//end Assignment Area
+
+
+	
+	
+}

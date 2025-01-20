@@ -1,0 +1,112 @@
+#scroll-container {
+    border: 3px solid black;
+    border-radius: 7px;
+    overflow: hidden;
+    background: black;
+    width: 100%;
+}
+
+#scroll-text {
+    /* animation properties */
+    white-space: nowrap;
+    color: white;
+    font-family: 'courier';
+    -moz-transform: translateX(100%);
+    -webkit-transform: translateX(100%);
+    transform: translateX(100%);
+
+    -moz-animation: my-animation 25s linear infinite;
+    -webkit-animation: my-animation 25s linear infinite;
+    animation: my-animation 25s linear infinite;
+}
+
+/* for Firefox */
+@-moz-keyframes my-animation {
+    from {
+        -moz-transform: translateX(100%);
+    }
+
+    to {
+        -moz-transform: translateX(-100%);
+    }
+}
+
+/* for Chrome */
+@-webkit-keyframes my-animation {
+    from {
+        -webkit-transform: translateX(100%);
+    }
+
+    to {
+        -webkit-transform: translateX(-100%);
+    }
+}
+
+@keyframes my-animation {
+    from {
+        -moz-transform: translateX(100%);
+        -webkit-transform: translateX(100%);
+        transform: translateX(100%);
+    }
+
+    to {
+        -moz-transform: translateX(-100%);
+        -webkit-transform: translateX(-100%);
+        transform: translateX(-100%);
+    }
+}
+
+
+.notificationDynamicisland {
+    border-radius: 100px;
+    background-color: rgb(86, 238, 111);
+    animation: glow 1s infinite alternate;
+}
+
+@keyframes glow {
+    from {
+        box-shadow: 0 0 5px -5px rgb(86, 238, 111);
+    }
+
+    to {
+        box-shadow: 0 0 5px 5px rgb(86, 238, 111);
+    }
+}
+
+/* REDUCED MOTION */
+@media (prefers-reduced-motion) {
+    [data-animation="alternate"] {
+        --animdur: 4s;
+        --animn: opacity;
+    }
+
+    [data-animation="slow"] {
+        --animdur: 10s;
+    }
+
+    [data-animation="stop"] {
+        --animps: paused;
+    }
+}
+
+/* SIMULATE REDUCED MOTION W/ CHECKBOX */
+[data-reduced-motion]:checked~[data-animation="alternate"] {
+    --animdur: 4s;
+    --animn: opacity;
+}
+
+[data-reduced-motion]:checked~[data-animation="once"] {
+    --animic: 1;
+}
+
+[data-reduced-motion]:checked~[data-animation="slow"] {
+    --animdur: 10s;
+}
+
+[data-reduced-motion]:checked~[data-animation="stop"] {
+    --animps: paused;
+}
+
+[data-reduced-motion]:checked+label::before {
+    background-color: cornflowerblue;
+}

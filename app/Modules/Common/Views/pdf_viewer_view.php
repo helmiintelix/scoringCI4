@@ -1,0 +1,1 @@
+<iframe src="http://localhost:88/OCR_BNP/bi-old/10201832304150005/1.pdf" width="100%" height="480"></iframe>

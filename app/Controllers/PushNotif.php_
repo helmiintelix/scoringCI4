@@ -1,0 +1,82 @@
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class PushNotif extends Xcentrix_Controller {
+
+	function __construct()
+	{
+		parent::__construct($securePage=false);
+		// $this->load->helper('auth');
+	}
+
+	function getFirst(){
+		$USER_ID = $this->input->get_post('USER_ID');
+
+		$sql = "SELECT 
+					a.notification_id, 
+					a.notification_type, 
+					b.is_read,
+					a.title,
+					a.message, 
+					a.data, 
+					a.menu_id, 
+					b.to, 
+					c.socketID,
+					d.id fromId,
+					d.NAME fromName,
+					e.menu_desc,
+					e.url,
+					a.created_time ,
+					(select count(*) from cms_notification_destination cc where cc.to=b.to and is_read = '0') total_unread
+				FROM cms_notification a
+				JOIN cms_notification_destination b ON a.notification_id=b.notification_id
+				JOIN cms_notification_registered c ON b.to=c.user_id
+				JOIN cc_user d ON d.id=a.created_by
+				JOIN cc_menu e ON e.menu_id = a.menu_id
+				WHERE b.`to` = ? AND e.menu_type='url'
+				ORDER BY a.created_time asc";
+		$list_notif = $this->db->query($sql,array($USER_ID))->result_array();
+
+		$sql = "SELECT 
+					count(a.id) jumlah
+				FROM cms_notification a
+				JOIN cms_notification_destination b ON a.notification_id=b.notification_id
+				JOIN cms_notification_registered c ON b.to=c.user_id
+				JOIN cc_user d ON d.id=a.created_by
+				JOIN cc_menu e ON e.menu_id = a.menu_id
+				WHERE b.`to` = ? AND e.menu_type='url' AND b.is_read='0'
+				ORDER BY a.created_by desc";
+		$count = $this->db->query($sql,array($USER_ID))->result_array()[0]['jumlah'];
+
+		$return = array('success'=>true , 'data'=>$list_notif , 'total_unread'=>$count);
+
+		echo json_encode($return);
+
+	}
+
+	function readNotif(){
+		$USER_ID = $this->input->get_post('USER_ID');
+		$NOTIFICATION_ID = $this->input->get_post('notification_id');
+
+		$sql ="UPDATE cms_notification_destination 
+				SET is_read = '1' 
+				WHERE `to` = ? AND notification_id = ? ";
+		$res = $this->db->query($sql,array($USER_ID,$NOTIFICATION_ID));
+		if($res){
+			echo json_encode(array('success'=>true ,'message'=>'notification read updated'));
+		}else{
+			echo json_encode(array('success'=>false ,'message'=>'failed'));
+		}
+	}
+	
+	function index(){
+		
+		$this->load->view('push_notif_view');
+	}
+	function penerima(){
+		
+		$this->load->view('receive_notif_view');
+	}
+}
+
+/* End of file welcome.php */
+/* Location: ./application/controllers/welcome.php */
