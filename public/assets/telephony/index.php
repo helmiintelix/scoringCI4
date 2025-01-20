@@ -1,0 +1,3 @@
+<?
+@include("telephony.php");
+?>

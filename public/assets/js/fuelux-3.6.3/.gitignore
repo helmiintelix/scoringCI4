@@ -1,0 +1,31 @@
+# filesystem
+.DS_Store
+
+# dependencies
+node_modules
+bower_components
+
+# gh-pages
+_site/*
+
+# logs
+*.log
+validation-status.json
+
+# Sauce Labs. because it's classified...
+SAUCE_API_KEY.yml
+
+# Editors / IDEs
+.idea
+
+# node_module cache for TravisCI, etc.
+node_modules.tar.gz
+
+# Temp file created in the LESS build
+less/fuelux-no-namespace.less
+
+# sandbox
+dev/dev.html
+
+# screenshots
+page-at-timeout-*

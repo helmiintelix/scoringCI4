@@ -1,0 +1,1 @@
+<iframe src="http://127.0.0.1:88/bnp_loanos/assets/js/pdfjs/web/viewer.html" width="100%" height="480"></iframe>
