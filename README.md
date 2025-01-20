@@ -2,6 +2,9 @@
 
 menggunakan CI versi 4.5.7 - source per januari 2025 , bisa menggunakan php spark
 
+-untuk menjalankan dev bisa menggunakan perintah
+php spark serve
+
 ## Getting started
 
 To make it easy for you to get started with GitLab, here's a list of recommended next steps.
