@@ -1,9 +1,11 @@
 # CMS_CI4_v1.2
 
-menggunakan CI versi 4.5.7 - source per januari 2025 , bisa menggunakan php spark
+menggunakan CI versi 4.6.0 - source per 20 januari 2025 , bisa menggunakan php spark
 
 -untuk menjalankan dev bisa menggunakan perintah
-php spark serve
+-php spark serve
+-support untuk php 8.3(tested) dan 8.4
+
 
 ## Getting started
 
