@@ -199,4 +199,40 @@ Class Common_model Extends Model
 		// Mengembalikan jumlah hari selisih
 		return $interval->days;
 	}
+
+	function setEcxGroupByClass($class_id){
+		helper('cms_ecentrix8_helper');
+
+		$sql = "SELECT a.user_id , c.ecentrix_group
+				from acs_agent_assignment a
+				JOIN acs_class_work_assignment b on b.outbound_team = a.team
+				JOIN acs_dialing_mode_call_status c on c.class_id = b.class_mst_id
+				WHERE b.class_mst_id = ? ";
+		$arr_agent = $this->db->query($sql,array($class_id))->getResultArray();
+		
+		$i = 0;
+		foreach ($arr_agent as $key=>$value) {
+				update_agent_groupid($value['user_id'], $value['ecentrix_group']);
+			$i++;
+		}
+
+	}
+
+	function setEcxGroupByTeam($team){
+		helper('cms_ecentrix8_helper');
+
+		$sql = "SELECT a.user_id , c.ecentrix_group
+				from acs_agent_assignment a
+				JOIN acs_class_work_assignment b on b.outbound_team = a.team
+				JOIN acs_dialing_mode_call_status c on c.class_id = b.class_mst_id
+				WHERE a.team = ? ";
+		$arr_agent = $this->db->query($sql,array($team))->getResultArray();
+		
+		$i = 0;
+		foreach ($arr_agent as $key=>$value) {
+			update_agent_groupid($value['user_id'], $value['ecentrix_group']);
+			$i++;
+		}
+
+	}
 }	

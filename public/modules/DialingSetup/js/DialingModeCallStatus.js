@@ -167,7 +167,7 @@ var gridOptions = {
             }
         }
 
-        showCommonDialog(600, 400, 'Dialing Mode Call Status', GLOBAL_MAIN_VARS["SITE_URL"] + 'dialingSetup/dialingModeCallStatus/updateDialingModeCallStatus?id=' + selr, buttons);
+        showCommonDialog(1000, 400, 'Dialing Mode Call Status', GLOBAL_MAIN_VARS["SITE_URL"] + 'dialingSetup/dialingModeCallStatus/updateDialingModeCallStatus?id=' + selr, buttons);
     }
 };
 
