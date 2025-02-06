@@ -253,7 +253,7 @@ class Login_model extends Model
 		$builder->set('last_logout', '13:45:30');
 		$builder->where('agent_id', $user_id);
 		$builder->update();
-		echo $this->db->getLastQuery();
+		// echo $this->db->getLastQuery();
 
 		$data = array(
 			'login_status' => '0'
