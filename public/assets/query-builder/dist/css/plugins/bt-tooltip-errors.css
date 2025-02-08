@@ -1,0 +1,3 @@
+.query-builder .error-container + .tooltip .tooltip-inner {
+    color: #f99 !important;
+}
