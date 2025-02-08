@@ -12,7 +12,7 @@ date_default_timezone_set('Asia/Jakarta');
 $log = new KLogger ($logfile , KLogger::DEBUG);
 $dateGenerate = date('Y-m-d');
 
-$log->LogInfo(" [START] BOD Process...");
+$log->LogInfo("[START] BOD Process");
 
 $db = Database::getInstance();
 try {
@@ -29,10 +29,10 @@ function set_classification_by_account(){
     try {
         //code...
         $sql = "INSERT INTO `bod_log`(`status_time`,`description`,`status_type`,sequence) values(now(),'Execute Classification','BOD_CMS','5')";
-        echo $sql."\n";
+        // echo $sql."\n";
         $result	= $conn->query($sql);
    
-        echo "Execute Classification & Business Rule<br><br>";
+        // echo "Execute Classification & Business Rule<br><br>";
         $sql = "INSERT IGNORE INTO trn_bod (bod_date, description, status, start_time, end_time) values (now(), 'Execute Classification & Business Rule', '1', now(), null)";
         $result	= $conn->query($sql);
         
@@ -40,6 +40,7 @@ function set_classification_by_account(){
         $sql = "INSERT IGNORE INTO cms_account_last_status (account_no, cif_number, fin_acc, flag_fwo, CF_ACCOUNT_STATUS,CF_AGENCY_STATUS_ID, assignment_end_date ) 
                 SELECT CM_CARD_NMBR, CM_CUSTOMER_NMBR, fin_account, '1', CM_STATUS,'101',curdate() - interval 1 day  FROM cpcrd_new;";
         $result	= $conn->query($sql);
+        $log->LogInfo("[INSERT CMS_ACCOUNT_LAST_STATUS] ". $sql);
 
 
         $tgl_now = date('Ymd');
@@ -356,7 +357,7 @@ function set_classification_by_account(){
         $sql = "UPDATE tmp_customer 
                     SET last_agent3 = last_agent2, last_agent2 = last_agent1, last_agent1 = assigned_agent, LAST_CLASS = CLASS,last_class_duration = class_duration where last_agent1 != assigned_agent or last_agent1 is null";
         $result	= $conn->query($sql);
-        echo $sql . "<br/>";
+        // echo $sql . "<br/>";
 
         //reset yg sudah habis masa assignment
         $sql = "update tmp_customer set CLASS = NULL,AGENT_ID = '' where  assignment_end_date < curdate() or assignment_end_date is null";
@@ -390,7 +391,7 @@ function set_classification_by_account(){
             while ($aRow = $rResult->fetch_assoc()) {
                 // foreach ($rResult->result_array() as $aRow) {
     
-                echo $seq_br . 'Do Business Rule : ' . $aRow['classification_name'] . "<br/>\n";
+                // echo $seq_br . 'Do Business Rule : ' . $aRow['classification_name'] . "<br/>\n";
                 //backup per_table dulu
                 $sql = " drop table if exists tmp_customer_" . $aRow['classification_id'] . "_pre";
                 $result	= $conn->query($sql);
@@ -499,7 +500,7 @@ function set_classification_by_account(){
                         break;
                 }
     
-                echo "<hr>";
+                // echo "<hr>";
                 //sementara dulu 
                 //backup per_table dulu
                 $sql = " drop table if exists tmp_customer_" . $aRow['classification_id'] . "_post";
@@ -509,17 +510,20 @@ function set_classification_by_account(){
             }
         }
 
+        //TODO : jika assignment type temporer simpan assigned awalnya dan tempelkan agent temporernya
+        $set = 'cpcrd_new.AGENT_ID = tmp_customer.AGENT_ID, cpcrd_new.CLASS = tmp_customer.CLASS, cpcrd_new.LAST_CLASS = tmp_customer.LAST_CLASS, cpcrd_new.CM_OLC_REASON_DESC = tmp_customer.CM_OLC_REASON_DESC, 
+        cms_account_last_status.class = tmp_customer.CLASS, cms_account_last_status.class_time = tmp_customer.class_time, cms_account_last_status.priority_br = tmp_customer.priority_br, 
+        cms_account_last_status.last_agent1 = tmp_customer.last_agent1, cms_account_last_status.last_agent2 = tmp_customer.last_agent2, cms_account_last_status.last_agent3 = tmp_customer.last_agent3  ,
+        cms_account_last_status.temp_assigned_agent = tmp_customer.temp_assigned_agent,cms_account_last_status.temp_assignment_date_end = tmp_customer.temp_assignment_date_end,
+        cms_account_last_status.assignment_start_date = tmp_customer.assignment_start_date,cms_account_last_status.assignment_end_date = tmp_customer.assignment_end_date
+        ,cms_account_last_status.CLASS_TMP = tmp_customer.CLASS_TMP
+        ,cms_account_last_status.CLASS_RECALL = tmp_customer.CLASS_RECALL
+        ,cms_account_last_status.assigned_agent = tmp_customer.AGENT_ID,cms_account_last_status.class_duration = tmp_customer.class_duration, 
+        cms_account_last_status.CF_AGENCY_STATUS_ID = tmp_customer.CF_AGENCY_STATUS_ID, cms_account_last_status.CF_CAMPAIGN_ID = tmp_customer.CF_CAMPAIGN_ID';
 
         $sql_customField = "select field_name as value, field_name AS item from cc_custom_fields where field_name is not null  group by field_name order by field_name ";
         $custom_field = $conn->query($sql_customField);
         if($custom_field->num_rows > 0){
-            //TODO : jika assignment type temporer simpan assigned awalnya dan tempelkan agent temporernya
-            $set = 'cpcrd_new.AGENT_ID = tmp_customer.AGENT_ID, cpcrd_new.CLASS = tmp_customer.CLASS, cpcrd_new.LAST_CLASS = tmp_customer.LAST_CLASS, cpcrd_new.CM_OLC_REASON_DESC = tmp_customer.CM_OLC_REASON_DESC, cms_account_last_status.class = tmp_customer.CLASS, cms_account_last_status.class_time = tmp_customer.class_time, cms_account_last_status.priority_br = tmp_customer.priority_br, cms_account_last_status.last_agent1 = tmp_customer.last_agent1, cms_account_last_status.last_agent2 = tmp_customer.last_agent2, cms_account_last_status.last_agent3 = tmp_customer.last_agent3  ,cms_account_last_status.temp_assigned_agent = tmp_customer.temp_assigned_agent,cms_account_last_status.temp_assignment_date_end = tmp_customer.temp_assignment_date_end,
-            cms_account_last_status.assignment_start_date = tmp_customer.assignment_start_date,cms_account_last_status.assignment_end_date = tmp_customer.assignment_end_date
-            ,cms_account_last_status.CLASS_TMP = tmp_customer.CLASS_TMP
-            ,cms_account_last_status.CLASS_RECALL = tmp_customer.CLASS_RECALL
-            ,cms_account_last_status.assigned_agent = tmp_customer.AGENT_ID,cms_account_last_status.class_duration = tmp_customer.class_duration, cms_account_last_status.CF_AGENCY_STATUS_ID = tmp_customer.CF_AGENCY_STATUS_ID, cms_account_last_status.CF_CAMPAIGN_ID = tmp_customer.CF_CAMPAIGN_ID';
-
             $l = 0;
             while ($v = $custom_field->fetch_assoc()) {
                 if (empty($set)) {
@@ -529,17 +533,20 @@ function set_classification_by_account(){
                 }
             }
 
-            $sql = "update tmp_customer, cms_account_last_status, cpcrd_new set " . $set . " where tmp_customer.account_no = cms_account_last_status.account_no and tmp_customer.cm_card_nmbr = cpcrd_new.cm_card_nmbr";
-            echo "$sql <br/>";
-            $result	= $conn->query($sql);
         }
+       
+        $sql = "update tmp_customer, cms_account_last_status, cpcrd_new set " . $set . " where tmp_customer.cm_card_nmbr = cms_account_last_status.account_no and tmp_customer.cm_card_nmbr = cpcrd_new.cm_card_nmbr";
+        $result	= $conn->query($sql);
+        $log->LogInfo("[UPDATE LAST] ".$sql);
         
         //update temporary
-        //		$sql = "update cpcrd_new,tmp_customer set cpcrd_new.AGENT_ID = tmp_customer.temp_assigned_agent where tmp_customer.CM_CARD_NMBR = cpcrd_new.CM_CARD_NMBR and tmp_customer.temp_assigned_agent is not null and tmp_customer.temp_assignment_date_end >= curdate()";
-        //		$conn->query($sql);
+        $sql = "update cpcrd_new,tmp_customer set cpcrd_new.AGENT_ID = tmp_customer.temp_assigned_agent where tmp_customer.CM_CARD_NMBR = cpcrd_new.CM_CARD_NMBR and tmp_customer.temp_assigned_agent is not null and tmp_customer.temp_assignment_date_end >= curdate()";
+        $conn->query($sql);
+
         $sql = "insert into `bod_log`(`status_time`,`description`,`status_type`,sequence) values(now(),'Done Process Classification','BOD_CMS','5')";
         $result	= $conn->query($sql);
-
+        $log->LogInfo("[DONE PROCESS CLASSIFICATION] ".$sql);
+    die;
         $tgl_now = $tgl_now . "_" . date("Hi");
 
         @unlink('/data/data_unsecured_collection/class_result/CMS_postclass_' . $tgl_now . '.csv');
@@ -633,7 +640,7 @@ function doBR_by_account($aRow, $seq_br){
     global $conn, $log;
     try{
 
-		echo "runn doBR_by_account";
+		// echo "runn doBR_by_account";
 		$class_id = $aRow['classification_id'];
 		$assigned_agent = $aRow['assigned_agent'];
 		if (empty($assigned_agent)) {
@@ -649,17 +656,17 @@ function doBR_by_account($aRow, $seq_br){
 			- TEMPORER : assign ke  temporer agent - actual agent tetap sampai masa assignment berakhir, setelah habis kembalikan ke agent semula
 			- RECALL : Hapus agent yg diassign / CLASS ID tetap di class id semula / tidak dioveride	
 		*/
-
-		echo "<hr>";
-		print("<pre>" . print_r($aRow, true) . "</pre>");
-		echo "<hr>";
+        print_r($aRow, true);
+		// echo "<hr>";
+		// print("<pre>" . print_r($aRow, true) . "</pre>");
+		// echo "<hr>";
 		//end todo
 		if ($aRow['is_reset_allocation'] == '1') {
 			#Do History Assignment
 			$sql_history = "UPDATE tmp_customer 
 		        SET last_agent3 = last_agent2, last_agent2 = last_agent1, last_agent1 = AGENT_ID, LAST_CLASS = CLASS, AGENT_ID = '', CLASS = null where CLASS='" . $aRow['classification_id'] . "'";
 			$res_history	= $conn->query($sql_history);
-			echo "$sql_history <br/>";
+			// echo "$sql_history <br/>";
 			$sql = "insert into `bod_log`(`status_time`,`description`,`status_type`) values(now(),'Reset Agent ID and Class With CLASS $class_id' ,'BOD_CMS')";
 			$conn->query($sql);
 		} else {
@@ -747,9 +754,10 @@ function doBR_by_account($aRow, $seq_br){
 				}
 				break;
 		}
-		echo $sql . "<br/>\n";
+		// echo $sql . "<br/>\n";
 
 		$res	= $conn->query($sql);
+        $log->LogInfo("[UPDATE TMP_CUSTOMER 1] ".$sql);
 		$affct_rows = $conn->affected_rows;
 
         $sql = "INSERT INTO tmp_history_br (`action`, `br_name`, `sql`, `count`, `created_by`, `created_time`) VALUES ('Set Class', '$class_id', '', '$affct_rows', 'system', now())";
@@ -757,12 +765,13 @@ function doBR_by_account($aRow, $seq_br){
         
 
 		if (!empty($assigned_agent)) {
-			echo 'Do Assignment Agent<br/>';
+			// echo 'Do Assignment Agent<br/>';
 			#Keep Assign To Last Agent
 			
 			$is_skip_assignment = 0;
 			$arr_agent_req = explode('|', $assigned_agent);
 			$arr_weight = explode('|', $aRow['assignment_weight']);
+          
 			$order_by = $aRow['order_by_detail'];
 			if ((trim($order_by??'') == "")) {
 				$order_by = " CM_AMOUNT_DUE DESC";
@@ -789,8 +798,8 @@ function doBR_by_account($aRow, $seq_br){
 				shuffle($arr_agent_shuffle);
 			}
 
-			echo "Assigned Class";
-			var_dump($arr_agent_shuffle);
+			// echo "Assigned Class";
+			// var_dump($arr_agent_shuffle);
 			if (!$is_skip_assignment) {
 				for ($loop = 0; $loop < 1; $loop++) {
 					$sql = " truncate tmp_agent_account_assignment";
@@ -816,7 +825,7 @@ function doBR_by_account($aRow, $seq_br){
 							}
 						}
 
-						echo "$sql <br/>";
+						// echo "$sql <br/>";
 						$conn->query($sql);
 					} else {
 						if ($aRow['allocation_type'] == "TEMPORER") {
@@ -829,7 +838,7 @@ function doBR_by_account($aRow, $seq_br){
 								$sql = "insert into `tmp_agent_account_assignment`(`account_no`,`class_id`,`last_agent1`,`last_agent2`,`last_agent3`,`sequence`) select CM_CARD_NMBR,CLASS,IFNULL(last_agent1,''),IFNULL(last_agent2,''),IFNULL(last_agent3,''), '1' as sequence from tmp_customer where CLASS = '" . $class_id . "' and assignment_end_date < curdate()  order by  LAST_CLASS," . $order_by;
 							}
 						}
-						echo "$sql <br/>";
+						// echo "$sql <br/>";
 						$conn->query($sql);
 					}
 
@@ -839,7 +848,9 @@ function doBR_by_account($aRow, $seq_br){
 					$i = 0;
 					$arr_quota = array();
 					foreach ($arr_agent_more as $k => $v) {
-                        $sql = "INSERT INTO tmp_agent (user_id, seq, quota) VALUES ('$v', '1', '" . @$arr_weight[$k] . "')";
+                        $weight = $arr_weight[$k] ?? 0;
+                        $log->LogInfo("Agent ID : $v, Weight : $weight");
+                        $sql = "INSERT INTO tmp_agent (user_id, seq, quota) VALUES ('$v', 1, $weight)";
                         $res = $conn->query($sql);
 					}
 					$arr_agent_more = array_reverse($arr_agent_more);
@@ -859,7 +870,8 @@ function doBR_by_account($aRow, $seq_br){
 					$res3 = 	$conn->query($sql3);
 					$count_agent_double = $res3->num_rows;
 					$c = 0;
-					foreach ($res3->result_array() as $aRow2) {
+                    while ($aRow2 = $res3->fetch_assoc()) {
+
 						
 						$limit = $aRow2['quota'];
 						
@@ -868,7 +880,7 @@ function doBR_by_account($aRow, $seq_br){
 							case "ROUND_ROBIN":
 							case "REVERSE_ROUND_ROBIN":
 								$sql = "update tmp_agent_account_assignment set user_id='" . $aRow2['user_id'] . "' where (id-1) % " . $count_agent_double . " = " . $c;
-								echo "$sql <br>";
+								// echo "$sql <br>";
 								$res_07 = $conn->query($sql);
 
 								break;
@@ -879,7 +891,7 @@ function doBR_by_account($aRow, $seq_br){
 								var_dump($weight);
 								var_dump($aRow2['user_id']);
 								$sql = "update tmp_agent_account_assignment set user_id='" . $aRow2['user_id'] . "' where user_id is null limit $weight";
-								echo "$sql <br>";
+								// echo "$sql <br>";
 								//die;
 								$res_07 = $conn->query($sql);
 
@@ -887,7 +899,7 @@ function doBR_by_account($aRow, $seq_br){
 							case "TOTAL_OS":
 								break;
 						}
-						$assignment = $res_07->num_rows;
+						$assignment = $conn->affected_rows;
 
 						$sql23 = "update tmp_history_assignment set assignment='" . $assignment . "',limit_quota='" . $aRow2['quota'] . "' where class = '" . $class_id . "' AND user_id = '" . $aRow2['user_id'] . "' and seq = '" . $loop . "'";
 						$conn->query($sql23);
@@ -910,25 +922,30 @@ function doBR_by_account($aRow, $seq_br){
 					}
 
 					if ($aRow['allocation_type'] == "TEMPORER") {
-						$sql = "update tmp_agent_account_assignment a,tmp_customer b set temp_assigned_agent = user_id,b.temp_assignment_date_end = curdate() + interval $expire $time_type   where a.account_no = b.CM_CARD_NMBR ";
+						$sql = "update tmp_agent_account_assignment a,tmp_customer b set temp_assigned_agent = user_id,b.temp_assignment_date_end = curdate() + interval $expire $time_type   
+                        where a.account_no = b.CM_CARD_NMBR and b.assignment_end_date < curdate() ";
 					} else {
 						$sql = "update tmp_agent_account_assignment a,tmp_customer b set AGENT_ID = user_id,assignment_start_date = curdate(),
-						assignment_end_date  = curdate() + interval $expire $time_type where a.account_no = b.CM_CARD_NMBR ";
+						assignment_end_date  = curdate() + interval $expire $time_type where a.account_no = b.CM_CARD_NMBR and b.assignment_end_date < curdate() ";
 					}
-					echo "$sql <br/>";
+                    $log->LogInfo("[UPDATE TMP_CUSTOMER 2] ".$sql);
+					// echo "$sql <br/>";
 					$conn->query($sql);
 
 					// 20200316 kembalikan account INDEFINITE
-					$sql = "update tmp_customer a,cms_classification b set AGENT_ID = LAST_AGENT_ID where b.assigned_agent  like concat('%',LAST_AGENT_ID,'%') and  a.CLASS = b.classification_id and CLASS = LAST_CLASS and class_duration = 'INDEFINITE'  and CLASS = '" . $class_id . "' and LAST_AGENT_ID is not null and last_assignment_end_date < curdate() and assignment_start_date = curdate() ";
+					$sql = "update tmp_customer a,cms_classification b set AGENT_ID = LAST_AGENT_ID where 
+                    b.assigned_agent  like concat('%',LAST_AGENT_ID,'%') and  a.CLASS = b.classification_id 
+                    and CLASS = LAST_CLASS and class_duration = 'INDEFINITE'  and CLASS = '" . $class_id . "' 
+                    and LAST_AGENT_ID is not null and last_assignment_end_date < curdate() and assignment_start_date = curdate() ";
 
 
-					echo $sql . "<br/>";
+					// echo $sql . "<br/>";
 					$conn->query($sql);
 
 					//kembalikan ke agent sebelumnya jika last_assignment_end_date 	>= curdate()
 					$sql = "update tmp_customer a,cms_classification b set AGENT_ID = LAST_AGENT_ID where   a.CLASS = b.classification_id and CLASS = LAST_CLASS and class_duration = 'INDEFINITE' and LAST_AGENT_ID is not null and 	assignment_end_date  > curdate()  and CLASS = '" . $class_id . "' and last_assignment_end_date >= curdate() and assignment_start_date = curdate()";
 
-					echo "$sql <br/>";
+					// echo "$sql <br/>";
 					$conn->query($sql);
 					//2020-03-10 tutup sementara
 
@@ -954,10 +971,10 @@ function doBR_by_account($aRow, $seq_br){
 				}
 				$res	= $conn->query($sql);
 			}
-			echo "$sql <br/>";
+			// echo "$sql <br/>";
 			$affct_rows = $res->num_rows;
 
-			echo "accefted rows $affct_rows <br>";
+			// echo "accefted rows $affct_rows <br>";
 
             $sql = "INSERT INTO tmp_history_br (action, br_name, sql, count, created_by, created_time) VALUES ('Do Set Class', '$class_id', '$sql', '$affct_rows', 'system', now())";
             $res = $conn->query($sql);
@@ -1016,7 +1033,7 @@ function doBR_by_account($aRow, $seq_br){
 		left join cc_user c on(a.AGENT_ID=c.id)";
 		//$conn->query($sql);
 
-		echo '<hr>';
+		// echo '<hr>';
     } catch (\Throwable $th) {
         //throw $th;
         $message  = 'Invalid query: ' . mysqli_error($conn) . "\n";
@@ -1032,3 +1049,5 @@ function doBR_by_account($aRow, $seq_br){
 
 
 set_classification_by_account();
+
+$log->LogInfo("[FINISH] BOD Process");
