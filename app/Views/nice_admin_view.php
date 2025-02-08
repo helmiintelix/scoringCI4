@@ -120,14 +120,18 @@
 
     <nav class="header-nav ms-auto">
       <ul class="d-flex align-items-center">
+          <span class="text-secondary" style="margin-right: 10px;font-size: 20px;cursor: context-menu;" >|</span>
+          <a style="margin-right: 20px;" class="nav-link nav-icon text-white" href="#" data-bs-toggle="offcanvas" data-bs-target="#staticBackdropAccountHandling" aria-controls="staticBackdrop">
+            <i class="bi bi-card-checklist text-white" style="font-size: 15px" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Account Handling"></i>
+          </a>
+        
+          <a style="margin-right: 20px;" class="nav-link nav-icon text-white" href="#" data-bs-toggle="offcanvas" data-bs-target="#staticBackdropWa2way" aria-controls="staticBackdrop" >
+            <i class="bi bi-whatsapp text-white" style="font-size: 15px" data-bs-toggle="tooltip" data-bs-placement="bottom" title="whatsapp"></i>
+          </a>
 
-      
-        <!-- End Search Icon-->
-
-        <li class="nav-item dropdown ">
-
-          <a class="nav-link nav-icon text-white" href="#" data-bs-toggle="dropdown">
-            <i class="bi bi-bell text-white" style="font-size: 20px"></i>
+        <li class="nav-item dropdown">
+          <a class="nav-link nav-icon text-white" href="#" data-bs-toggle="dropdown" >
+            <i class="bi bi-bell text-white" style="font-size: 15px"></i>
             <span class="badge bg-danger badge-number" id="notif_new_total_1" style="display:none">0</span>
           </a><!-- End Notification Icon -->
 
@@ -150,6 +154,7 @@
 
         </li><!-- End Notification Nav -->
 
+    
 
         <li class="nav-item dropdown pe-3 badge rounded-pill bg-secondary">
 
@@ -337,6 +342,18 @@
     </div>
   </div>
 
+  <div class="offcanvas offcanvas-end" tabindex="-1" data-bs-backdrop="static" id="staticBackdropWa2way" aria-labelledby="staticBackdropLabel">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="staticBackdropLabel">Whatsapp</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body" id="">
+       <?php
+        $data['wa2way'] = $wa2way;
+        echo view('wa2wayListView', $data);
+       ?>
+      </div>
+  </div>
 
 
   <!-- ======= Footer ======= -->

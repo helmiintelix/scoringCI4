@@ -19,10 +19,27 @@ class Main extends BaseController
         $data['broadcastMsg']	= $this->Common_model->get_record_value("value", "aav_configuration", "parameter = 'BROADCAST' and id='BROADCAST' ");
         $data['csrf_hash'] = csrf_hash();
         $data['csrf_token'] = csrf_token();
-
+        $data['wa2way'] = $this->setDataWa2Way();
         
         // return view('nice_admin_view',$data,['cache' => 60]); 
         return view('nice_admin_view',$data); 
+    }
+
+    function setDataWa2Way(){
+        $table = $this->db->table('cpcrd_new');
+
+        $rs = $table->select('CM_CARD_NMBR, CR_NAME_1, CM_OS_BALANCE, DPD , CR_HANDPHONE, CM_TYPE, lastAttempt, lastMessage, lastMessageFrom')
+                ->join('wa_list_conversation','CM_CARD_NMBR=contractNumber','left')
+                ->where('AGENT_ID is not null')
+                ->orderBy('lastAttempt','DESC')
+                ->get()
+                ;
+        foreach ($rs as $key => $value) {
+            // $sql = $this->Common_model->get_record_value('');
+            // $rs[$key]['last_contact'] = $this->Common_model->get_record_value('');
+        }
+
+        return $data = $rs->getResultArray();
     }
 
     function setMenu(){
