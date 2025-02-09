@@ -1,7 +1,7 @@
 var USER_IDX = USER_ID;
 var total_unread = 0;
 
-var HOST = 'https://democoll.ecentrix.net:8301';
+var HOST = 'https://democoll.ecentrix.net:8201';
 var WEBHOOK = 'https://democoll74.ecentrix.net/webhook_cms_ci4/';
 
 const socketPushNotif = io(HOST, { transports: ["websocket"] });
@@ -75,7 +75,7 @@ socketPushNotif.on("connect", () => {
 
             let date = new Date(dateString);
 
-            getUserAccountNo(decryptedData.results[0].from,decryptedData.results[0].messageId).then(function(ret_data) {
+            getUserAccountNo(decryptedData.results[0].from, decryptedData.results[0].messageId).then(function (ret_data) {
                 console.log('iki yaa gesss');
                 console.log(ret_data);  // Akan mendapatkan account_no yang benar, bukan undefined
 
@@ -89,20 +89,20 @@ socketPushNotif.on("connect", () => {
                 let formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 
                 if (decryptedData.results[0].message.type == 'CHATBOT') {
-                    $("#coba_tooltips"+ret_data.account_no).append('<div class="message sent"><span id="random">' + decryptedData.results[0].message.text + '</span><br><span class="metadata"><span class="time">' + decryptedData.results[0].receivedAt + '</span></span><span class="metadata" style="float: left;"><span class="time"><i class="bi bi-check2-all tooltip_all" id="tooltip_all' + $('#coba_tooltips'+ret_data.account_no+' .message.sent').length + '"></i></span></span></div>');
+                    $("#coba_tooltips" + ret_data.account_no).append('<div class="message sent"><span id="random">' + decryptedData.results[0].message.text + '</span><br><span class="metadata"><span class="time">' + decryptedData.results[0].receivedAt + '</span></span><span class="metadata" style="float: left;"><span class="time"><i class="bi bi-check2-all tooltip_all" id="tooltip_all' + $('#coba_tooltips' + ret_data.account_no + ' .message.sent').length + '"></i></span></span></div>');
                 } else {
 
-                    if (decryptedData.results[0].message.type=='IMAGE') {
-                        $("#coba_tooltips"+ret_data.account_no).append('<div class="message received"><img src="'+WEBHOOK+'api/file_upload/'+ret_data.file_name+'" ondblclick="download_file(this)" id="'+ret_data.file_name+'" alt="" width="185" height="200"><br><span id="random">' + decryptedData.results[0].message.caption + '</span><br><span class="metadata"><span class="time">' + formattedDate + '</span></span></div>');
-                    }else if (decryptedData.results[0].message.type=='VIDEO'){
-                        $("#coba_tooltips" + ret_data.account_no).append('<div class="message received">' +'<video width="185" height="200" controls>' +'<source src="'+WEBHOOK+'api/file_upload/' + ret_data.file_name + '" type="'+ret_data.file_type+'">' +'Your browser does not support the video tag.' +'</video><br>' +'<span id="random">' + decryptedData.results[0].message.caption + '</span><br>' +'<span class="metadata"><span class="time">' + formattedDate + '</span></span>' +'</div>');
-                    }else if (decryptedData.results[0].message.type=='AUDIO'){
-                        $("#coba_tooltips" + ret_data.account_no).append('<div class="message received">' +'<video width="185" height="200" controls>' +'<source src="'+WEBHOOK+'api/file_upload/' + ret_data.file_name + '" type="'+ret_data.file_type+'">' +'Your browser does not support the audio element.' +'</video><br>' +'<span id="random">' + decryptedData.results[0].message.caption + '</span><br>' +'<span class="metadata"><span class="time">' + formattedDate + '</span></span>' +'</div>');
-                    }else if (decryptedData.results[0].message.type=='DOCUMENT'){
-                        $("#coba_tooltips" + ret_data.account_no).append('<div class="message received">' +'<a href="'+WEBHOOK+'api/file_upload/' + ret_data.file_name + '" target="_blank"><br>' +'<i class="bi bi-file-earmark-pdf"></i> ' + ret_data.file_name + '</a><br>' +'<span id="random">' + decryptedData.results[0].message.caption + '</span><br>'+'<span class="metadata"><span class="time">' + formattedDate + '</span></span>' +'</div>');
-                    }else{
+                    if (decryptedData.results[0].message.type == 'IMAGE') {
+                        $("#coba_tooltips" + ret_data.account_no).append('<div class="message received"><img src="' + WEBHOOK + 'api/file_upload/' + ret_data.file_name + '" ondblclick="download_file(this)" id="' + ret_data.file_name + '" alt="" width="185" height="200"><br><span id="random">' + decryptedData.results[0].message.caption + '</span><br><span class="metadata"><span class="time">' + formattedDate + '</span></span></div>');
+                    } else if (decryptedData.results[0].message.type == 'VIDEO') {
+                        $("#coba_tooltips" + ret_data.account_no).append('<div class="message received">' + '<video width="185" height="200" controls>' + '<source src="' + WEBHOOK + 'api/file_upload/' + ret_data.file_name + '" type="' + ret_data.file_type + '">' + 'Your browser does not support the video tag.' + '</video><br>' + '<span id="random">' + decryptedData.results[0].message.caption + '</span><br>' + '<span class="metadata"><span class="time">' + formattedDate + '</span></span>' + '</div>');
+                    } else if (decryptedData.results[0].message.type == 'AUDIO') {
+                        $("#coba_tooltips" + ret_data.account_no).append('<div class="message received">' + '<video width="185" height="200" controls>' + '<source src="' + WEBHOOK + 'api/file_upload/' + ret_data.file_name + '" type="' + ret_data.file_type + '">' + 'Your browser does not support the audio element.' + '</video><br>' + '<span id="random">' + decryptedData.results[0].message.caption + '</span><br>' + '<span class="metadata"><span class="time">' + formattedDate + '</span></span>' + '</div>');
+                    } else if (decryptedData.results[0].message.type == 'DOCUMENT') {
+                        $("#coba_tooltips" + ret_data.account_no).append('<div class="message received">' + '<a href="' + WEBHOOK + 'api/file_upload/' + ret_data.file_name + '" target="_blank"><br>' + '<i class="bi bi-file-earmark-pdf"></i> ' + ret_data.file_name + '</a><br>' + '<span id="random">' + decryptedData.results[0].message.caption + '</span><br>' + '<span class="metadata"><span class="time">' + formattedDate + '</span></span>' + '</div>');
+                    } else {
 
-                        $("#coba_tooltips"+ret_data.account_no).append('<div class="message received"><span id="random">' + decryptedData.results[0].message.text + '</span><br><span class="metadata"><span class="time">' + formattedDate + '</span></span></div>');
+                        $("#coba_tooltips" + ret_data.account_no).append('<div class="message received"><span id="random">' + decryptedData.results[0].message.text + '</span><br><span class="metadata"><span class="time">' + formattedDate + '</span></span></div>');
                     }
 
                     if (decryptedData.results[0].message.text == '0') {
@@ -114,7 +114,7 @@ socketPushNotif.on("connect", () => {
                             type: "GET",
                             url: GLOBAL_MAIN_VARS["SITE_URL"] + "PushNotif/getInboundId",
                             dataType: "json",
-                            data: { USER_ID: USER_IDX, no_hp: decryptedData.results[0].from,account_no: ret_data.account_no },
+                            data: { USER_ID: USER_IDX, no_hp: decryptedData.results[0].from, account_no: ret_data.account_no },
                             success: function (msg) {
                                 if (msg) {
                                     $("#inbound_message_id").val(msg.inbound_message_id);
@@ -124,11 +124,11 @@ socketPushNotif.on("connect", () => {
                                 reject(error);  // Menangani error jika ada masalah dalam request
                             }
                         });
-                        
+
                     }
                 }
                 $('#scrollspyHeading3 .container').scrollTop($('#scrollspyHeading3 .container')[0].scrollHeight);
-            }).catch(function(error) {
+            }).catch(function (error) {
                 console.log('Error:', error);
             });
 
@@ -360,7 +360,7 @@ var getUserAccountNo = (no_hp, messageId) => {
             type: "GET",
             url: GLOBAL_MAIN_VARS["SITE_URL"] + "PushNotif/getUserAccountNo",
             dataType: "json",
-            data: { USER_ID: USER_IDX, no_hp: no_hp,messageId: messageId },
+            data: { USER_ID: USER_IDX, no_hp: no_hp, messageId: messageId },
             success: function (msg) {
                 /*if (msg && msg.length > 0) {
                     console.log('iki');
@@ -384,7 +384,7 @@ var getUserAccountNo = (no_hp, messageId) => {
                         file_name: msg.pairedMessageId,  // Asumsi paired_id adalah bagian dari response
                         file_type: msg.callbackData
                     });
-                }else{
+                } else {
                     resolve({
                         account_no: 0,  // Jika tidak ada data, kembalikan nilai default
                         file_name: 0,    // Kembalikan paired_id sebagai 0
