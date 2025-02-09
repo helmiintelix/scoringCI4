@@ -209,3 +209,153 @@ Stack trace:
 #1 C:\xampp\htdocs\kantor\cms_ci4_v1_2\job\bod_process.php(1379): set_classification_by_account()
 #2 {main} 
 2025-02-07 15:50:06 - INFO  -->  [START] BOD Process... 
+2025-02-07 16:11:21 - INFO  -->  [START] BOD Process... 
+2025-02-07 16:19:29 - INFO  -->  [START] BOD Process... 
+2025-02-07 16:20:42 - INFO  -->  [START] BOD Process... 
+2025-02-07 16:38:03 - INFO  -->  [START] BOD Process... 
+2025-02-07 16:38:03 - ERROR --> Invalid query: Incorrect integer value: '' for column `cms_collection_v1_3`.`tmp_agent`.`quota` at row 1
+Whole query: INSERT INTO tmp_agent (user_id, seq, quota) VALUES ('AGENTDC3', '1', '') 
+2025-02-07 16:38:03 - ERROR --> mysqli_sql_exception: Incorrect integer value: '' for column `cms_collection_v1_3`.`tmp_agent`.`quota` at row 1 in C:\xampp\htdocs\kantor\cms_ci4_v1_2\job\bod_process.php:843
+Stack trace:
+#0 C:\xampp\htdocs\kantor\cms_ci4_v1_2\job\bod_process.php(843): mysqli->query('INSERT INTO tmp...')
+#1 C:\xampp\htdocs\kantor\cms_ci4_v1_2\job\bod_process.php(496): doBR_by_account(Array, 0)
+#2 C:\xampp\htdocs\kantor\cms_ci4_v1_2\job\bod_process.php(1034): set_classification_by_account()
+#3 {main} 
+2025-02-07 16:39:30 - INFO  -->  [START] BOD Process... 
+2025-02-07 16:39:30 - ERROR --> Invalid query: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ')' at line 1
+Whole query: INSERT INTO tmp_agent (user_id, seq, quota) VALUES ('AGENTDC3', 1, ) 
+2025-02-07 16:39:30 - ERROR --> mysqli_sql_exception: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ')' at line 1 in C:\xampp\htdocs\kantor\cms_ci4_v1_2\job\bod_process.php:843
+Stack trace:
+#0 C:\xampp\htdocs\kantor\cms_ci4_v1_2\job\bod_process.php(843): mysqli->query('INSERT INTO tmp...')
+#1 C:\xampp\htdocs\kantor\cms_ci4_v1_2\job\bod_process.php(496): doBR_by_account(Array, 0)
+#2 C:\xampp\htdocs\kantor\cms_ci4_v1_2\job\bod_process.php(1034): set_classification_by_account()
+#3 {main} 
+2025-02-07 16:39:42 - INFO  -->  [START] BOD Process... 
+2025-02-07 16:39:42 - ERROR --> Invalid query: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '' at line 1
+Whole query: INSERT INTO tmp_agent (user_id, seq, quota) VALUES ('AGENTDC3', 1,  
+2025-02-07 16:39:42 - ERROR --> mysqli_sql_exception: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '' at line 1 in C:\xampp\htdocs\kantor\cms_ci4_v1_2\job\bod_process.php:843
+Stack trace:
+#0 C:\xampp\htdocs\kantor\cms_ci4_v1_2\job\bod_process.php(843): mysqli->query('INSERT INTO tmp...')
+#1 C:\xampp\htdocs\kantor\cms_ci4_v1_2\job\bod_process.php(496): doBR_by_account(Array, 0)
+#2 C:\xampp\htdocs\kantor\cms_ci4_v1_2\job\bod_process.php(1034): set_classification_by_account()
+#3 {main} 
+2025-02-07 16:40:06 - INFO  -->  [START] BOD Process... 
+2025-02-07 16:40:06 - ERROR --> Invalid query: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '' at line 1
+Whole query: INSERT INTO tmp_agent (user_id, seq, quota) VALUES ('AGENTDC3', 1,  
+2025-02-07 16:40:06 - ERROR --> mysqli_sql_exception: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '' at line 1 in C:\xampp\htdocs\kantor\cms_ci4_v1_2\job\bod_process.php:843
+Stack trace:
+#0 C:\xampp\htdocs\kantor\cms_ci4_v1_2\job\bod_process.php(843): mysqli->query('INSERT INTO tmp...')
+#1 C:\xampp\htdocs\kantor\cms_ci4_v1_2\job\bod_process.php(496): doBR_by_account(Array, 0)
+#2 C:\xampp\htdocs\kantor\cms_ci4_v1_2\job\bod_process.php(1034): set_classification_by_account()
+#3 {main} 
+2025-02-07 16:40:25 - INFO  -->  [START] BOD Process... 
+2025-02-07 16:40:25 - ERROR --> Invalid query: Incorrect integer value: '' for column `cms_collection_v1_3`.`tmp_agent`.`quota` at row 1
+Whole query: INSERT INTO tmp_agent (user_id, seq, quota) VALUES ('AGENTDC3', 1, '') 
+2025-02-07 16:40:25 - ERROR --> mysqli_sql_exception: Incorrect integer value: '' for column `cms_collection_v1_3`.`tmp_agent`.`quota` at row 1 in C:\xampp\htdocs\kantor\cms_ci4_v1_2\job\bod_process.php:843
+Stack trace:
+#0 C:\xampp\htdocs\kantor\cms_ci4_v1_2\job\bod_process.php(843): mysqli->query('INSERT INTO tmp...')
+#1 C:\xampp\htdocs\kantor\cms_ci4_v1_2\job\bod_process.php(496): doBR_by_account(Array, 0)
+#2 C:\xampp\htdocs\kantor\cms_ci4_v1_2\job\bod_process.php(1034): set_classification_by_account()
+#3 {main} 
+2025-02-07 16:41:04 - INFO  -->  [START] BOD Process... 
+2025-02-07 16:41:05 - ERROR --> Invalid query: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ')' at line 1
+Whole query: INSERT INTO tmp_agent (user_id, seq, quota) VALUES ('AGENTDC3', 1, ) 
+2025-02-07 16:41:05 - ERROR --> mysqli_sql_exception: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ')' at line 1 in C:\xampp\htdocs\kantor\cms_ci4_v1_2\job\bod_process.php:844
+Stack trace:
+#0 C:\xampp\htdocs\kantor\cms_ci4_v1_2\job\bod_process.php(844): mysqli->query('INSERT INTO tmp...')
+#1 C:\xampp\htdocs\kantor\cms_ci4_v1_2\job\bod_process.php(496): doBR_by_account(Array, 0)
+#2 C:\xampp\htdocs\kantor\cms_ci4_v1_2\job\bod_process.php(1035): set_classification_by_account()
+#3 {main} 
+2025-02-07 16:41:58 - INFO  -->  [START] BOD Process... 
+2025-02-07 16:41:59 - INFO  --> Agent ID : AGENTDC3, Weight :  
+2025-02-07 16:41:59 - ERROR --> Invalid query: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ')' at line 1
+Whole query: INSERT INTO tmp_agent (user_id, seq, quota) VALUES ('AGENTDC3', 1, ) 
+2025-02-07 16:41:59 - ERROR --> mysqli_sql_exception: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ')' at line 1 in C:\xampp\htdocs\kantor\cms_ci4_v1_2\job\bod_process.php:845
+Stack trace:
+#0 C:\xampp\htdocs\kantor\cms_ci4_v1_2\job\bod_process.php(845): mysqli->query('INSERT INTO tmp...')
+#1 C:\xampp\htdocs\kantor\cms_ci4_v1_2\job\bod_process.php(496): doBR_by_account(Array, 0)
+#2 C:\xampp\htdocs\kantor\cms_ci4_v1_2\job\bod_process.php(1036): set_classification_by_account()
+#3 {main} 
+2025-02-07 16:45:12 - INFO  -->  [START] BOD Process... 
+2025-02-07 16:45:13 - INFO  --> Array 
+2025-02-07 16:45:13 - INFO  --> Agent ID : AGENTDC3, Weight :  
+2025-02-07 16:45:13 - ERROR --> Invalid query: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ')' at line 1
+Whole query: INSERT INTO tmp_agent (user_id, seq, quota) VALUES ('AGENTDC3', 1, ) 
+2025-02-07 16:45:13 - ERROR --> mysqli_sql_exception: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ')' at line 1 in C:\xampp\htdocs\kantor\cms_ci4_v1_2\job\bod_process.php:846
+Stack trace:
+#0 C:\xampp\htdocs\kantor\cms_ci4_v1_2\job\bod_process.php(846): mysqli->query('INSERT INTO tmp...')
+#1 C:\xampp\htdocs\kantor\cms_ci4_v1_2\job\bod_process.php(496): doBR_by_account(Array, 0)
+#2 C:\xampp\htdocs\kantor\cms_ci4_v1_2\job\bod_process.php(1037): set_classification_by_account()
+#3 {main} 
+2025-02-07 16:45:49 - INFO  -->  [START] BOD Process... 
+2025-02-07 16:45:49 - INFO  --> Agent ID : AGENTDC3, Weight :  
+2025-02-07 16:45:49 - ERROR --> Invalid query: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ')' at line 1
+Whole query: INSERT INTO tmp_agent (user_id, seq, quota) VALUES ('AGENTDC3', 1, ) 
+2025-02-07 16:45:49 - ERROR --> mysqli_sql_exception: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ')' at line 1 in C:\xampp\htdocs\kantor\cms_ci4_v1_2\job\bod_process.php:846
+Stack trace:
+#0 C:\xampp\htdocs\kantor\cms_ci4_v1_2\job\bod_process.php(846): mysqli->query('INSERT INTO tmp...')
+#1 C:\xampp\htdocs\kantor\cms_ci4_v1_2\job\bod_process.php(496): doBR_by_account(Array, 0)
+#2 C:\xampp\htdocs\kantor\cms_ci4_v1_2\job\bod_process.php(1037): set_classification_by_account()
+#3 {main} 
+2025-02-07 16:46:06 - INFO  -->  [START] BOD Process... 
+2025-02-07 16:46:06 - INFO  --> Agent ID : AGENTDC3, Weight :  
+2025-02-07 16:46:06 - ERROR --> Invalid query: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ')' at line 1
+Whole query: INSERT INTO tmp_agent (user_id, seq, quota) VALUES ('AGENTDC3', 1, ) 
+2025-02-07 16:46:06 - ERROR --> mysqli_sql_exception: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ')' at line 1 in C:\xampp\htdocs\kantor\cms_ci4_v1_2\job\bod_process.php:847
+Stack trace:
+#0 C:\xampp\htdocs\kantor\cms_ci4_v1_2\job\bod_process.php(847): mysqli->query('INSERT INTO tmp...')
+#1 C:\xampp\htdocs\kantor\cms_ci4_v1_2\job\bod_process.php(496): doBR_by_account(Array, 0)
+#2 C:\xampp\htdocs\kantor\cms_ci4_v1_2\job\bod_process.php(1038): set_classification_by_account()
+#3 {main} 
+2025-02-07 16:47:19 - INFO  -->  [START] BOD Process... 
+2025-02-07 16:47:19 - INFO  --> Agent ID : AGENTDC3, Weight :  
+2025-02-07 16:47:19 - ERROR --> Invalid query: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ')' at line 1
+Whole query: INSERT INTO tmp_agent (user_id, seq, quota) VALUES ('AGENTDC3', 1, ) 
+2025-02-07 16:47:19 - ERROR --> mysqli_sql_exception: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ')' at line 1 in C:\xampp\htdocs\kantor\cms_ci4_v1_2\job\bod_process.php:846
+Stack trace:
+#0 C:\xampp\htdocs\kantor\cms_ci4_v1_2\job\bod_process.php(846): mysqli->query('INSERT INTO tmp...')
+#1 C:\xampp\htdocs\kantor\cms_ci4_v1_2\job\bod_process.php(496): doBR_by_account(Array, 0)
+#2 C:\xampp\htdocs\kantor\cms_ci4_v1_2\job\bod_process.php(1037): set_classification_by_account()
+#3 {main} 
+2025-02-07 16:47:34 - INFO  -->  [START] BOD Process... 
+2025-02-07 16:47:34 - INFO  --> Agent ID : AGENTDC3, Weight :  
+2025-02-07 16:47:34 - ERROR --> Invalid query: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ')' at line 1
+Whole query: INSERT INTO tmp_agent (user_id, seq, quota) VALUES ('AGENTDC3', 1, ) 
+2025-02-07 16:47:34 - ERROR --> mysqli_sql_exception: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ')' at line 1 in C:\xampp\htdocs\kantor\cms_ci4_v1_2\job\bod_process.php:847
+Stack trace:
+#0 C:\xampp\htdocs\kantor\cms_ci4_v1_2\job\bod_process.php(847): mysqli->query('INSERT INTO tmp...')
+#1 C:\xampp\htdocs\kantor\cms_ci4_v1_2\job\bod_process.php(496): doBR_by_account(Array, 0)
+#2 C:\xampp\htdocs\kantor\cms_ci4_v1_2\job\bod_process.php(1038): set_classification_by_account()
+#3 {main} 
+2025-02-07 16:48:18 - INFO  -->  [START] BOD Process... 
+2025-02-07 16:48:18 - INFO  --> Agent ID : AGENTDC3, Weight : 100 
+2025-02-07 16:48:18 - ERROR --> Invalid query: 
+Whole query: INSERT INTO tmp_agent (user_id, seq) VALUES ('AGENTDC3', '2') 
+2025-02-07 16:48:18 - ERROR --> Error: Call to undefined method mysqli_result::result_array() in C:\xampp\htdocs\kantor\cms_ci4_v1_2\job\bod_process.php:865
+Stack trace:
+#0 C:\xampp\htdocs\kantor\cms_ci4_v1_2\job\bod_process.php(496): doBR_by_account(Array, 0)
+#1 C:\xampp\htdocs\kantor\cms_ci4_v1_2\job\bod_process.php(1037): set_classification_by_account()
+#2 {main} 
+2025-02-07 16:49:22 - INFO  -->  [START] BOD Process... 
+2025-02-07 16:49:22 - INFO  --> Agent ID : AGENTDC3, Weight : 100 
+2025-02-07 16:49:23 - ERROR --> Invalid query: Field 'in_radius' doesn't have a default value
+Whole query: insert into `cms_contact_history`(`id`,`account_no`,`customer_no`,`user_id`,`class_id`,`input_source`,`notes`,`created_by`,`created_time`,fin_acc) select uuid(),a.CM_CARD_NMBR,a.CM_CUSTOMER_NMBR,'system','485','BISNIS_RULE', concat('Has entered into Business Rule class limpahan agency A',if(AGENT_ID is null,'',concat('
+ --assigned to: ',b.name))  ),'system', now(),fin_account from tmp_customer a  left join cc_user b on(a.AGENT_ID = b.id) where a.CLASS = '485'  and assignment_start_date = curdate() 
+2025-02-07 16:49:23 - ERROR --> mysqli_sql_exception: Field 'in_radius' doesn't have a default value in C:\xampp\htdocs\kantor\cms_ci4_v1_2\job\bod_process.php:1009
+Stack trace:
+#0 C:\xampp\htdocs\kantor\cms_ci4_v1_2\job\bod_process.php(1009): mysqli->query('insert into `cm...')
+#1 C:\xampp\htdocs\kantor\cms_ci4_v1_2\job\bod_process.php(496): doBR_by_account(Array, 0)
+#2 C:\xampp\htdocs\kantor\cms_ci4_v1_2\job\bod_process.php(1038): set_classification_by_account()
+#3 {main} 
+2025-02-07 16:50:31 - INFO  -->  [START] BOD Process... 
+2025-02-07 16:50:31 - INFO  --> Agent ID : AGENTDC3, Weight : 100 
+2025-02-07 16:52:47 - INFO  -->  [START] BOD Process... 
+2025-02-07 16:52:48 - INFO  --> Agent ID : AGENTDC3, Weight : 100 
+2025-02-07 16:54:27 - INFO  -->  [START] BOD Process... 
+2025-02-07 16:54:28 - INFO  --> Agent ID : AGENTDC3, Weight : 100 
+2025-02-07 16:57:10 - INFO  -->  [START] BOD Process... 
+2025-02-07 16:57:10 - INFO  --> Agent ID : AGENTDC3, Weight : 100 
+2025-02-07 16:59:16 - INFO  -->  [START] BOD Process... 
+2025-02-07 16:59:16 - INFO  --> Agent ID : AGENTDC3, Weight : 100 
+2025-02-07 17:05:57 - INFO  -->  [START] BOD Process... 
+2025-02-07 17:05:58 - INFO  --> Agent ID : AGENTDC3, Weight : 100 
