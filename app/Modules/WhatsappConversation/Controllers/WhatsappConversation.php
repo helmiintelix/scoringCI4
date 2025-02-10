@@ -365,7 +365,7 @@ class WhatsappConversation extends \App\Controllers\BaseController
 		if ($return) {
 			$updateData = $this->WhatsappConversationModel->updateLastMessage($account_number,$data,'AGENT');
 			
-			$rs = array('success' => true, 'message' => 'Success', 'data' => $data ,'updateData'=>$updateData);
+			$rs = array('success' => true, 'message' => 'success! please check on approval menu', 'data' => $data ,'updateData'=>$updateData);
 			return $this->response->setStatusCode(200)->setJSON($rs);
 		}else{
 			$rs = array('success' => false, 'message' => 'failed', 'data' => null,'updateData'=>null);

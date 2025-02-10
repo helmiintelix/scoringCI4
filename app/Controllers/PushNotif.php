@@ -78,30 +78,39 @@ class PushNotif extends BaseController
         
         $res = $query->getResult();
         foreach ($res as $key=>$row) {
+			$contract_number_handling = $row->CM_CARD_NMBR;
+			//---------------------------------------------
+			$result = json_encode([
+				'contract_number_handling' => $contract_number_handling,
+				'pairedMessageId' => $pairedMessageId,
+				'callbackData' => $callbackData
+			]);
+			return $result;
+			//----------------------------------------
            
-	        $this->builder = $this->db->table('cc_user a');
-	        $this->builder->select(
-	            'a.id, 
-	            a.contract_number_handling'
-	        );
-			$this->builder->where('a.contract_number_handling', $row->CM_CARD_NMBR);
-			$this->builder->where('a.id', $this->input->getGet('USER_ID'));
-	        $query2 =  $this->builder->get();   
-	        $res2 = $query2->getResult();
-	        if (!empty($res2)) {
-	            // Mengambil contract_number_handling
-	            $contract_number_handling = $res2[0]->contract_number_handling;
+	        // $this->builder = $this->db->table('cc_user a');
+	        // $this->builder->select(
+	        //     'a.id, 
+	        //     a.contract_number_handling'
+	        // );
+			// $this->builder->where('a.contract_number_handling', $row->CM_CARD_NMBR);
+			// $this->builder->where('a.id', $this->input->getGet('USER_ID'));
+	        // $query2 =  $this->builder->get();   
+	        // $res2 = $query2->getResult();
+	        // if (!empty($res2)) {
+	        //     // Mengambil contract_number_handling
+	        //     $contract_number_handling = $res2[0]->contract_number_handling;
 
-	            // Menyusun hasil yang berisi contract_number_handling dan pairedMessageId
-	            $result = json_encode([
-	                'contract_number_handling' => $contract_number_handling,
-	                'pairedMessageId' => $pairedMessageId,
-	                'callbackData' => $callbackData
-	            ]);
-	            return $result;
-	        } else {
-	            return false;
-	        }
+	        //     // Menyusun hasil yang berisi contract_number_handling dan pairedMessageId
+	        //     $result = json_encode([
+	        //         'contract_number_handling' => $contract_number_handling,
+	        //         'pairedMessageId' => $pairedMessageId,
+	        //         'callbackData' => $callbackData
+	        //     ]);
+	        //     return $result;
+	        // } else {
+	        //     return false;
+	        // }
             
         }
     }

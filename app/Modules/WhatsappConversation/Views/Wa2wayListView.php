@@ -160,14 +160,10 @@ function wa_eskalasi(card_number,templateId,hp1){
               success: function (data) {
 
       
-                showInfo("Berhasil");
+                showInfo(data.message);
                 let contractNumber = data.updateData.contractNumber;
                 let lastAttempt = data.updateData.lastAttempt;
                 let lastMsg = data.updateData.lastMessage;
-
-                console.log("#id_show_time_",contractNumber);
-                console.log("lastAttempt",lastAttempt);
-                console.log("lastMsg",lastMsg);
                 
                 $("#id_show_time_"+contractNumber).val(lastAttempt);
                 $("#show_msg_"+contractNumber).html(lastMsg);
