@@ -127,7 +127,7 @@ socketPushNotif.on("connect", () => {
 
                     }
                 }
-                $('#scrollspyHeading3 .container').scrollTop($('#scrollspyHeading3 .container')[0].scrollHeight);
+                $('#waConversationActivity .container').scrollTop($('#waConversationActivity .container')[0].scrollHeight);
             }).catch(function (error) {
                 console.log('Error:', error);
             });
@@ -280,9 +280,13 @@ var timeDif = (time) => {
                 let menit = '';
                 if (date1.getHours().toString().length < 2) {
                     jam = '0' + date1.getHours().toString();
+                } else {
+                    jam = date1.getHours().toString();
                 }
                 if (date1.getMinutes().toString().length < 2) {
                     menit = '0' + date1.getMinutes().toString();
+                } else {
+                    menit = date1.getMinutes().toString();
                 }
                 return jam + ':' + menit; //lebih dari sama dengan 6 jam
             }
