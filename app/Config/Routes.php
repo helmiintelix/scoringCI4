@@ -302,6 +302,10 @@ $routes->add('report_collection/reporting/report_visit_field', '\App\Modules\Lap
 $routes->add('settings/lov/', '\App\Modules\SetupLov\Controllers\SetupLov::index',['filter' => 'authfilter']);
 
 
+#WA modules
+$routes->add('whatsappConversation/conversationWaView', '\App\Modules\WhatsappConversation\Controllers\WhatsappConversation::conversationWaView',['filter' => 'authfilter']);
+$routes->add('whatsappConversation/wa2wayListView', '\App\Modules\WhatsappConversation\Controllers\WhatsappConversation::wa2wayListView',['filter' => 'authfilter']);
+
 #untuk module
 if($uri->getTotalSegments() > 2){
     $function = $uri->getSegment(3);
@@ -642,8 +646,13 @@ if($uri->getTotalSegments() > 2){
     #setup aux
     $routes->add('settings/setupAux/'.$function, '\App\Modules\SetupAux\Controllers\SetupAux::'.$function,['filter' => 'authfilter']);
 
+
+    #wa module
+    $routes->add('whatsappConversation/whatsappConversation/'.$function, '\App\Modules\WhatsappConversation\Controllers\WhatsappConversation::'.$function,['filter' => 'authfilter']);
+
     #Setup Lov
     $routes->add('settings/lov/'.$function, '\App\Modules\SetupLov\Controllers\SetupLov::'.$function,['filter' => 'authfilter']);
+
 
 }
 

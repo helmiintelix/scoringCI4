@@ -245,7 +245,7 @@ var renderNotif = (data) => {
         '<span style="font-weight: bold;font-size: 15px;">' + data.title + '</span>' +
         '<p class="float-sm-end" id="show_time_' + data.notification_id + '">' + time + '</p>' +
         '<p style="font-size:12px;max-width: 300px;" class="" >' + data.message + '</p>' +
-        '<input type="hidden" class="time_notification" show_time = "show_time_' + data.notification_id + '" value="' + data.created_time + '" >' +
+        '<input type="hidden" class="time_notification" id="id_show_time_' + data.notification_id + '" show_time = "show_time_' + data.notification_id + '" value="' + data.created_time + '" >' +
         '</div>' +
         '</li>' +
         '<li id="divider_' + data.notification_id + '">' +
@@ -276,7 +276,15 @@ var timeDif = (time) => {
 
             // console.log(hh + ":" + mm + ":" + ss);
             if (hh >= 6) {
-                return "a few hours ago"; //lebih dari sama dengan 6 jam
+                let jam = '';
+                let menit = '';
+                if (date1.getHours().toString().length < 2) {
+                    jam = '0' + date1.getHours().toString();
+                }
+                if (date1.getMinutes().toString().length < 2) {
+                    menit = '0' + date1.getMinutes().toString();
+                }
+                return jam + ':' + menit; //lebih dari sama dengan 6 jam
             }
             else if (hh <= 5 && hh >= 2) {  //selisih sama dengan 2-5 jam
                 return hh + " hours ago";
@@ -343,9 +351,14 @@ var readNotif = (id) => {
 var updateShowTime = () => {
     let time = $(".time_notification");
     $.each(time, (i, val) => {
-        let time = timeDif(val.value);
         let idTime = $(val).attr('show_time');
-        $("#" + idTime).html(time);
+
+        if (val.value != 'null' && val.value != '') {
+            let time = timeDif(val.value);
+            $("#" + idTime).html(time);
+        } else {
+            $("#" + idTime).html('-');
+        }
 
     })
 }
