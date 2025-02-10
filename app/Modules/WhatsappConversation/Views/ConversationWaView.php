@@ -219,6 +219,12 @@ $("#btn_send_wa").click(function () {
 
             $("#txt_wa").val(''); // Kosongkan textarea setelah mengirim
             $("#file_attachment").val(''); // Kosongkan textarea setelah mengirim
+            
+            updateShowTime();
+            $("#waConversationActivity .container").animate({
+                scrollTop: 99*99
+            }, 1000); 
+
           } else {
             alert(data.message);
           }
@@ -236,10 +242,26 @@ $("#btn_send_wa").click(function () {
   });
 });
 
+
+
+$("#txt_wa").keydown(function(event) {
+  if (event.altKey && event.key === "Enter") {
+    event.preventDefault(); // Mencegah efek bawaan (misalnya submit form)
+    $(this).val($(this).val() + "\n"); // Tambah newline ke textarea
+  }
+  else if (event.key === "Enter") {
+    event.preventDefault(); // Mencegah newline
+    $("#btn_send_wa").click();
+  }
+});
+
+
 $(document).ready(()=>{
     $("#canvasLinkBackWa").show();
     $("#canvasIconWa").hide();
     updateShowTime();
+    $("#wa2wayCanvas").scrollTop(1000);
+    $("#waConversationActivity .container").scrollTop(99*99);
 })
 
 </script>

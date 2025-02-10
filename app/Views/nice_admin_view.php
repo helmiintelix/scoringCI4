@@ -124,13 +124,18 @@
       <ul class="d-flex align-items-center">
       
           <span class="text-secondary" style="margin-right: 10px;font-size: 20px;cursor: context-menu;" >|</span>
-          <a style="margin-right: 20px;" class="nav-link nav-icon text-white" href="#" data-bs-toggle="offcanvas" data-bs-target="#staticBackdropAccountHandling" aria-controls="staticBackdrop">
+          <!-- <a style="margin-right: 20px;" class="nav-link nav-icon text-white" href="#" data-bs-toggle="offcanvas" data-bs-target="#" aria-controls="">
+            <i class="bi bi-robot text-white" style="font-size: 15px" data-bs-toggle="tooltip" data-bs-placement="bottom" title="AI"></i>
+          </a> -->
+          <!-- <a style="margin-right: 20px;" class="nav-link nav-icon text-white" href="#" data-bs-toggle="offcanvas" data-bs-target="#staticBackdropAccountHandling" aria-controls="staticBackdrop">
             <i class="bi bi-card-checklist text-white" style="font-size: 15px" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Account Handling"></i>
-          </a>
+          </a> -->
         
-          <a style="margin-right: 20px;" class="nav-link nav-icon text-white" href="#" data-bs-toggle="offcanvas" data-bs-target="#staticBackdropWa2way" aria-controls="staticBackdrop" >
+          <a style="margin-right: 20px;" class="nav-link nav-icon text-white position-relative" href="#" data-bs-toggle="offcanvas" data-bs-target="#staticBackdropWa2way" aria-controls="staticBackdrop" >
             <i class="bi bi-whatsapp text-white" style="font-size: 15px" data-bs-toggle="tooltip" data-bs-placement="bottom" title="whatsapp"></i>
-            
+            <span id="iconNotifNewWa" style="width: 11px;height: 11px;top: 11px;" class="position-absolute start-100 translate-middle bg-danger border border-light rounded-circle">
+              <span class="visually-hidden" style="width: 5px;">New alerts</span>
+            </span>
           </a>
 
         <li class="nav-item dropdown">
@@ -340,7 +345,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-warning" onClick='$(location).attr("href", "index.php/login/logout");'>Sign out</button>
+          <button type="button" class="btn btn-warning" onClick='$(location).attr("href", "login/logout");'>Sign out</button>
         </div>
       </div>
     </div>
