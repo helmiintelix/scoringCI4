@@ -80,6 +80,7 @@ var submitHandler = function (val) {
 
 jQuery(function ($) {
   $(".btn-close").hide();
+  $("#divWa").hide();
 
   if (group_id == "ROOT" || group_id == "ADMIN_INTELIX") {
     $("#account_status").removeAttr("disabled");
@@ -574,7 +575,7 @@ jQuery(function ($) {
     if (template != "" && phone != undefined) {
 
       //validasi harus ke handphone 1 (soalnya di mapping ke situ)
-      if ($('option[phonetype="hp1"]').val()!=phone) {
+      if ($('option[phonetype="hp1"]').val() != phone) {
         showInfo("Silahkan Pilih Phone tujuan Handphone 1");
         return false;
       }
@@ -593,7 +594,7 @@ jQuery(function ($) {
             var options = {
               url:
                 GLOBAL_MAIN_VARS["SITE_URL"] +
-                "detail_account/detail_account/blast_template_by_agent",
+                "WhatsappConversation/WhatsappConversation/blast_template_by_agent",
               data: {
                 account_no: card_number,
                 type: "wa",
@@ -602,17 +603,17 @@ jQuery(function ($) {
               type: "post",
               success: function (data) {
 
-      
+
                 showInfo("Berhasil");
-                if(data.success === true){
-                  
+                if (data.success === true) {
+
                   $(".maskName").html(data.data['to_number']);
                   $(".status").html(data.data['template_name']);
                   $(".conversation-container").html('');
-                  $(".conversation-container").append('<div class="message sent"><span id="template">'+data.data['message']+'</span><br><span class="metadata"><span class="time">'+data.data['created_time']+'</span></span><span class="metadata" style="float: left;"><span class="time"><i  class="bi bi-clock-history tooltip_all" id="tooltip_all0"></i></span></span></div>');
+                  $(".conversation-container").append('<div class="message sent"><span id="template">' + data.data['message'] + '</span><br><span class="metadata"><span class="time">' + data.data['created_time'] + '</span></span><span class="metadata" style="float: left;"><span class="time"><i  class="bi bi-clock-history tooltip_all" id="tooltip_all0"></i></span></span></div>');
                   $("#txt_wa").val('')
-                }2
-                
+                } 2
+
                 return true;
               },
               dataType: "json",
@@ -1302,91 +1303,5 @@ function appointment_checking() {
   
 });*/
 
-$("#btn_send_wa").click(function () {
-    // Membuat FormData
 
-    // Mendapatkan token menggunakan request AJAX
-    $.ajax({
-        type: "GET",
-        url: GLOBAL_MAIN_VARS["SITE_URL"] + "detail_account/detail_account/get_token",
-        dataType: "json",
-        success: function (msg) {
-            // Mengubah nama dan value untuk token
-            var inputElement = document.getElementById("token");
-            inputElement.name = msg.data['name']; // Ubah nama
-            inputElement.value = msg.data['value']; // Ubah value
-
-            var formData = new FormData($("#form_add")[0]); // Ambil semua data dari form, termasuk file
-
-            var inputElementFile = document.getElementById("file_attachment");
-            // Menambahkan file upload baru ke FormData
-
-            if (inputElementFile.files[0]) {
-              formData.append(inputElementFile.name, inputElementFile.files[0]);
-            }else{
-              formData.append(inputElementFile.name, null);
-            }
-
-            // Mengirimkan form data menggunakan AJAX
-            $.ajax({
-                url: GLOBAL_MAIN_VARS["SITE_URL"] + "detail_account/detail_account/reply_wa",
-                type: 'POST',
-                data: formData,
-                dataType: 'json',
-                processData: false, // Jangan proses data menjadi string
-                contentType: false, // Jangan set Content-Type, FormData akan melakukannya
-                success: function (data) {
-                    if (data.success === true) {
-                      if (data.data['messageType']=='IMAGE') {
-                        $("#coba_tooltips" + $('#cm_card_nmbr').val()).append('<div class="message sent">'+'<img src="'+GLOBAL_MAIN_VARS["SITE_URL"]+'file_upload/wa_blast_conversation/'+data.data['pairedMessageId']+'" ondblclick="download_file(this)" id="'+data.data['pairedMessageId']+'" alt="" width="185" height="200"><br>' +'<span id="random">' + data.data['message'] + '<br></span><span class="metadata"><span class="time">' + data.data['created_time'] + '</span></span><span class="metadata" style="float: left;"><span class="time"><i class="bi bi-check2-all tooltip_all" id="tooltip_all' + $('#coba_tooltips' + $('#cm_card_nmbr').val() + ' .message.sent').length + '"></i></span></span></div>');
-                      }else if(data.data['messageType']=='VIDEO'){
-                        $("#coba_tooltips" + $('#cm_card_nmbr').val()).append('<div class="message sent">'+'<video width="185" height="200" controls>' +'<source src="'+GLOBAL_MAIN_VARS["SITE_URL"]+'file_upload/wa_blast_conversation/' + data.data['pairedMessageId'] + '" type="'+data.data['callbackData']+'">' +'Your browser does not support the audio element.' +'</video><br>' +'<span id="random">' + data.data['message'] + '<br></span><span class="metadata"><span class="time">' + data.data['created_time'] + '</span></span><span class="metadata" style="float: left;"><span class="time"><i class="bi bi-check2-all tooltip_all" id="tooltip_all' + $('#coba_tooltips' + $('#cm_card_nmbr').val() + ' .message.sent').length + '"></i></span></span></div>');
-                      }else if(data.data['messageType']=='AUDIO'){
-                        $("#coba_tooltips" + $('#cm_card_nmbr').val()).append('<div class="message sent">'+'<video width="185" height="200" controls>' +'<source src="'+GLOBAL_MAIN_VARS["SITE_URL"]+'file_upload/wa_blast_conversation/' + data.data['pairedMessageId'] + '" type="'+data.data['callbackData']+'">' +'Your browser does not support the audio element.' +'</video><br>' +'<span id="random">' + data.data['message'] + '<br></span><span class="metadata"><span class="time">' + data.data['created_time'] + '</span></span><span class="metadata" style="float: left;"><span class="time"><i class="bi bi-check2-all tooltip_all" id="tooltip_all' + $('#coba_tooltips' + $('#cm_card_nmbr').val() + ' .message.sent').length + '"></i></span></span></div>');
-                      }else if(data.data['messageType']=='DOCUMENT'){
-                        $("#coba_tooltips" + $('#cm_card_nmbr').val()).append('<div class="message sent">'+'<a href="'+GLOBAL_MAIN_VARS["SITE_URL"]+'file_upload/wa_blast_conversation/' + data.data['pairedMessageId'] + '" target="_blank"><br>' +'<i class="bi bi-file-earmark-pdf"></i> ' + data.data['pairedMessageId'] + '</a><br>' +'<span id="random">' + data.data['message'] + '<br></span><span class="metadata"><span class="time">' + data.data['created_time'] + '</span></span><span class="metadata" style="float: left;"><span class="time"><i class="bi bi-check2-all tooltip_all" id="tooltip_all' + $('#coba_tooltips' + $('#cm_card_nmbr').val() + ' .message.sent').length + '"></i></span></span></div>');
-                      }else{
-                        $("#coba_tooltips" + $('#cm_card_nmbr').val()).append('<div class="message sent"><span id="random">' + data.data['message'] + '<br></span><span class="metadata"><span class="time">' + data.data['created_time'] + '</span></span><span class="metadata" style="float: left;"><span class="time"><i class="bi bi-check2-all tooltip_all" id="tooltip_all' + $('#coba_tooltips' + $('#cm_card_nmbr').val() + ' .message.sent').length + '"></i></span></span></div>');
-                      }
-
-                      $("#txt_wa").val(''); // Kosongkan textarea setelah mengirim
-                      $("#file_attachment").val(''); // Kosongkan textarea setelah mengirim
-                    } else {
-                      alert(data.message);
-                    }
-                },
-                error: function (a) {
-                    // Menangani error
-                    alert('Terjadi kesalahan saat mengirim data.');
-                }
-            });
-        },
-        error: function (error) {
-            // Menangani error jika ada masalah dalam request untuk mendapatkan token
-            alert('Terjadi kesalahan saat mendapatkan token.');
-        }
-    });
-});
-
-
-$("#btnAddQuick").click(function () {
-  
-  var options = {
-    url:GLOBAL_MAIN_VARS["SITE_URL"] +"detail_account/detail_account/get_quick_reply?template_id="+$("#select_template_quick").val(),
-    type: 'get',
-    dataType: 'json',     
-    success: function (data) {
-      if(data.success === true){ 
-        var msg=$("#txt_wa").val()+data.data;
-        $("#txt_wa").val('');
-        $("#txt_wa").val(msg);
-      }
-      return false;
-    },
-    error: function (a) {
-      //backend.notify('error', a.responseText, 'bar', 'jelly');
-    }
-  };
-  $('#form_add').ajaxSubmit(options);
-});
 

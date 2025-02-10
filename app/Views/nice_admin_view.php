@@ -20,9 +20,10 @@
   <link href="<?= base_url(); ?>assets/nice_admin/vendor/quill/quill.bubble.css" rel="stylesheet">
   <link href="<?= base_url(); ?>assets/nice_admin/vendor/remixicon/remixicon.css" rel="stylesheet">
   <link href="<?= base_url(); ?>assets/nice_admin/vendor/simple-datatables/style.css" rel="stylesheet">
-
+  
   <link href="<?= base_url(); ?>assets/datetimepicker/daterangepicker.css" rel="stylesheet" type="text/css" media="all">
-
+  
+  
 
   <!-- css query builder terbaru -->
   <link rel="stylesheet" href="<?= base_url(); ?>assets/query-builder/dist/css/query-builder.default.css" />
@@ -43,11 +44,12 @@
 
 
   <link rel="stylesheet" href="<?= base_url(); ?>assets/js/lou-multi-select/css/multi-select.css">
-  <link href="<?= base_url(); ?>/assets/nice_admin/css/style.css" rel="stylesheet">
+  <link href="<?= base_url(); ?>assets/nice_admin/css/style.css" rel="stylesheet">
 
-  <link href="<?= base_url(); ?>/assets/chosen_v1.8.7/chosen.min.css" rel="stylesheet">
-  <link href="<?= base_url(); ?>/assets/select2-4.0.13/dist/css/select2.min.css" rel="stylesheet">
-
+  <link href="<?= base_url(); ?>assets/chosen_v1.8.7/chosen.min.css" rel="stylesheet">
+  <link href="<?= base_url(); ?>assets/select2-4.0.13/dist/css/select2.min.css" rel="stylesheet">
+  
+  <link href="<?= base_url(); ?>assets/waModule/waModule.css" rel="stylesheet">
   <style>
     .row {
       margin-bottom: 5px;
@@ -120,6 +122,7 @@
 
     <nav class="header-nav ms-auto">
       <ul class="d-flex align-items-center">
+      
           <span class="text-secondary" style="margin-right: 10px;font-size: 20px;cursor: context-menu;" >|</span>
           <a style="margin-right: 20px;" class="nav-link nav-icon text-white" href="#" data-bs-toggle="offcanvas" data-bs-target="#staticBackdropAccountHandling" aria-controls="staticBackdrop">
             <i class="bi bi-card-checklist text-white" style="font-size: 15px" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Account Handling"></i>
@@ -127,6 +130,7 @@
         
           <a style="margin-right: 20px;" class="nav-link nav-icon text-white" href="#" data-bs-toggle="offcanvas" data-bs-target="#staticBackdropWa2way" aria-controls="staticBackdrop" >
             <i class="bi bi-whatsapp text-white" style="font-size: 15px" data-bs-toggle="tooltip" data-bs-placement="bottom" title="whatsapp"></i>
+            
           </a>
 
         <li class="nav-item dropdown">
@@ -342,16 +346,15 @@
     </div>
   </div>
 
-  <div class="offcanvas offcanvas-end" tabindex="-1" data-bs-backdrop="static" id="staticBackdropWa2way" aria-labelledby="staticBackdropLabel">
-      <div class="offcanvas-header">
+  <div class="offcanvas offcanvas-end" tabindex="-1" data-bs-scroll="true" id="staticBackdropWa2way" aria-labelledby="staticBackdropLabel">
+      <div class="offcanvas-header bg-success text-white">
+        <a href="#" class="link-light" id="canvasLinkBackWa"><i class="bi bi-arrow-left"></i></a>
+        <i class="bi bi-whatsapp" id="canvasIconWa"></i>
         <h5 class="offcanvas-title" id="staticBackdropLabel">Whatsapp</h5>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
       </div>
-      <div class="offcanvas-body" id="">
-       <?php
-        $data['wa2way'] = $wa2way;
-        echo view('wa2wayListView', $data);
-       ?>
+      <div class="offcanvas-body" id="wa2wayCanvas">
+    
       </div>
   </div>
 
@@ -416,7 +419,8 @@
     var GLOBAL_THEME_MODE = 'LIGHT'; // LIGHT or DARK
   </script>
   
-  <script src="<?= base_url(); ?>assets/bootstrap-5.3.2-dist/js/bootstrap.bundle.min.js"></script>
+  <script src="<?= base_url(); ?>assets/bootstrap-5.3.2-dist/js/popper.min.js"></script> 
+  <script src="<?= base_url(); ?>assets/bootstrap-5.3.2-dist/js/bootstrap.bundle.min.js"></script> 
   <!-- <script src="<?= base_url(); ?>assets/bootstrap-5.0.2/assets/dist/js/bootstrap.bundle.min.js"></script> -->
   <script src="<?= base_url(); ?>assets/nice_admin/vendor/apexcharts/apexcharts.min.js"></script>
   <script src="<?= base_url(); ?>assets/nice_admin/vendor/chart.js/chart.umd.js"></script>
@@ -1361,6 +1365,7 @@
 
   <script language='JavaScript'>
     $(document).ready(function() {
+    
       if (LEVEL_GROUP == 'TELECOLL') {
           getCallCenterConfiguration('AGENT');
 

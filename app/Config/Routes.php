@@ -297,6 +297,10 @@ $routes->add('dialingSetup/dialingModeCallStatus', '\App\Modules\DialingSetup\Co
 #setup aux
 $routes->add('settings/setupAux', '\App\Modules\SetupAux\Controllers\SetupAux::index',['filter' => 'authfilter']);
 
+#WA modules
+$routes->add('whatsappConversation/conversationWaView', '\App\Modules\WhatsappConversation\Controllers\WhatsappConversation::conversationWaView',['filter' => 'authfilter']);
+$routes->add('whatsappConversation/wa2wayListView', '\App\Modules\WhatsappConversation\Controllers\WhatsappConversation::wa2wayListView',['filter' => 'authfilter']);
+
 #untuk module
 if($uri->getTotalSegments() > 2){
     $function = $uri->getSegment(3);
@@ -634,6 +638,8 @@ if($uri->getTotalSegments() > 2){
     #setup aux
     $routes->add('settings/setupAux/'.$function, '\App\Modules\SetupAux\Controllers\SetupAux::'.$function,['filter' => 'authfilter']);
 
+    #wa module
+    $routes->add('whatsappConversation/whatsappConversation/'.$function, '\App\Modules\WhatsappConversation\Controllers\WhatsappConversation::'.$function,['filter' => 'authfilter']);
 }
 
 
