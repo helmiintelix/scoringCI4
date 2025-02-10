@@ -16,7 +16,7 @@ function getData() {
   $.ajax({
     url:
       GLOBAL_MAIN_VARS["SITE_URL"] +
-      "recording/recording_list/get_recording_list" +
+      "recordingfc/recording_list/get_recording_list" +
       classification,
     type: "get",
     success: function (msg) {

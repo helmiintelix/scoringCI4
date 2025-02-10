@@ -81,8 +81,8 @@ Class Fc_recording_voice_model Extends Model
 			'created_time'
         );
         $this->builder->select( str_replace(' , ', ' ', implode(', ', $select)), false);
-		$this->builder->join('ctbc_deskcoll.acs_contract_aging b','b.contract_number = a.contract_number','left');
-		$this->builder->join('ctbc_deskcoll.acs_customer_profile c','b.customer_id = c.customer_id','left');
+		$this->builder->join('acs_contract_aging b','b.contract_number = a.contract_number','left');
+		$this->builder->join('acs_customer_profile c','b.customer_id = c.customer_id','left');
         // $this->builder->orderBy('a.create_time', 'DESC');
         $rResult = $this->builder->get();
         $return = $rResult->getResultArray();

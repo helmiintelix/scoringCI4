@@ -299,7 +299,7 @@ $routes->add('settings/setupAux', '\App\Modules\SetupAux\Controllers\SetupAux::i
 #Laporan Input Visit FC
 $routes->add('report_collection/reporting/report_visit_field', '\App\Modules\LaporanVisitFc\Controllers\LaporanVisitFc::index',['filter' => 'authfilter']);
 #Setup Lov
-$routes->add('settings/lov/', '\App\Modules\SetupLov\Controllers\SetupLov::index',['filter' => 'authfilter']);
+$routes->add('settings/lov/', '\App\Modules\SetupListOfValue\Controllers\Setup_list_of_value::lov',['filter' => 'authfilter']);
 
 
 #untuk module
@@ -643,7 +643,7 @@ if($uri->getTotalSegments() > 2){
     $routes->add('settings/setupAux/'.$function, '\App\Modules\SetupAux\Controllers\SetupAux::'.$function,['filter' => 'authfilter']);
 
     #Setup Lov
-    $routes->add('settings/lov/'.$function, '\App\Modules\SetupLov\Controllers\SetupLov::'.$function,['filter' => 'authfilter']);
+    $routes->add('settings/lov/'.$function, '\App\Modules\SetupListOfValue\Controllers\Setup_list_of_value::'.$function,['filter' => 'authfilter']);
 
 }
 
