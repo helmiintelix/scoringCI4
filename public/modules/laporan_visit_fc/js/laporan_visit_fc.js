@@ -2,12 +2,6 @@ var selr;
 var selected_data;
 var TOKEN_VALID = false;
 
-function mapsRenderer(params) {
-  console.log(params, "params");
-  const link = params.data.maps;
-  return link;
-}
-
 function deselect() {
   gridOptions.api.deselectAll();
   gridApprovalOptions.api.deselectAll();
@@ -17,20 +11,12 @@ function getData() {
   $.ajax({
     url:
       GLOBAL_MAIN_VARS["SITE_URL"] +
-      "visit_radius/monitor_field_coll_view/monitor_field_coll_list" +
+      "report_collection/report_visit_fc/get_report_visit_fc" +
       classification,
     type: "get",
     success: function (msg) {
-      var columnDefs = msg.data.header;
-
-      columnDefs.forEach(function (column) {
-        if (column.field === "maps") {
-          column.cellRenderer = mapsRenderer;
-          column.cellStyle = { textAlign: "center" };
-        }
-      });
-      // console.log("test branch");
-      // console.log(msg);
+      console.log("test branch");
+      console.log(msg);
       gridOptions.api.setGridOption("columnDefs", msg.data.header);
       gridOptions.api.setGridOption("rowData", msg.data.data);
     },
@@ -55,6 +41,8 @@ var gridOptions = {
     { field: "" },
   ],
 
+  // default col def properties get applied to all columns
+  // defaultColDef: { sortable: true, filter: 'agSetColumnFilter', floatingFilter: true, resizable: true },
   defaultColDef: {
     sortable: true,
     filter: "agSetColumnFilter",
@@ -62,24 +50,26 @@ var gridOptions = {
     resizable: true,
   },
 
-  rowSelection: "multiple",
-  animateRows: true,
+  rowSelection: "multiple", // allow rows to be selected
+  animateRows: true, // have rows animate to new positions when sorted
   paginationAutoPageSize: true,
   pagination: true,
 
+  // example event handler
   onCellClicked: (params) => {
     console.log("cell was clicked", params);
     selr = params.data.restructure_parameter_id;
     selected_data = params.data;
   },
 };
-var eGridDiv = document.getElementById("myGridMsf");
+var eGridDiv = document.getElementById("myGridLp");
 new agGrid.Grid(eGridDiv, gridOptions);
 
+//Button Actions
 var showFormResponse = function (responseText, statusText) {
   if (responseText.success) {
     showInfo(responseText.message);
-    getData();
+    // getData();
     if (responseText.notification_id) {
       sendNotification(responseText.notification_id);
     }
@@ -88,28 +78,42 @@ var showFormResponse = function (responseText, statusText) {
     return false;
   }
 };
-$("#btn-export-excel").click(function () {
-  gridOptions.api.exportDataAsExcel();
-});
 
 jQuery(function ($) {
-  getData();
+  getData(); // untuk menampilkan data di table nya
 });
 
-var TrackingAgent = function (long, lat, user_id) {
-  var buttons = {
-    button: {
-      label: "Close",
-      className: "btn-sm",
-    },
-  };
-  showCommonDialog(
-    1000,
-    1000,
-    "TRACKING",
+$("#btn-reset").click(function (e) {
+  e.preventDefault();
+  $("#loan_number").val("");
+  $("#btn-search").trigger("click");
+});
+$("#btn-search").click(function () {
+  var loan_number = $("#loan_number").val();
+  console.log(loan_number);
+
+  var url =
     GLOBAL_MAIN_VARS["SITE_URL"] +
-      "visit_radius/monitor_field_coll_view/tracking_history?user_id=" +
-      user_id,
-    buttons
-  );
-};
+    "report_collection/report_visit_fc/get_report_visit_fc";
+  var data = {
+    loan_number: loan_number,
+  };
+
+  $.ajax({
+    url: url,
+    type: "GET",
+    data: data,
+    dataType: "json",
+    success: function (response) {
+      showFormResponse(response);
+      console.log(response);
+      gridOptions.api.setGridOption("columnDefs", response.data.header);
+      gridOptions.api.setGridOption("rowData", response.data.data);
+    },
+    error: function (xhr, status, error) {
+      console.error("AJAX request error:", error);
+    },
+  });
+
+  return false;
+});

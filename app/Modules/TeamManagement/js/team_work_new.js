@@ -1,4 +1,3 @@
-
 var selr;
 var selected_data;
 var AllData = new Array();
@@ -6,35 +5,37 @@ var AllDataUser = new Array();
 
 function getData() {
   $.ajax({
-    url: GLOBAL_MAIN_VARS["SITE_URL"] + "team_management/team_work/get_team_work_list_ava",
+    url:
+      GLOBAL_MAIN_VARS["SITE_URL"] +
+      "team_management/team_work/get_team_work_list_ava",
     dataType: "json",
     type: "get",
     success: function (msg) {
-
       AllData = msg.data.data;
       if (AllData.length == 0) {
-        $("#list_approval").attr('class', 'row').html('<i class="text-center text-muted">[EMPTY]</i>');
+        $("#list_approval")
+          .attr("class", "row")
+          .html('<i class="text-center text-muted">[EMPTY]</i>');
       } else {
         renderApprovalList(AllData);
-
       }
     },
-    dataType: 'json',
+    dataType: "json",
   });
 }
 
 var renderApprovalList = (data) => {
-  console.log('data', data);
-  var html = '';
+  console.log("data", data);
+  var html = "";
   $.each(data, function (i, val) {
-    if (typeof val.item !== 'undefined') {
+    if (typeof val.item !== "undefined") {
       // the variable is defined
       val = val.item;
     }
     // console.log("test",val)
     html += '<div class="col">';
     html += ' <div class="card">';
-    if (val.is_active == '0') {
+    if (val.is_active == "0") {
       html += ' <div  class="p-2 bg-secondary">'; //#acf3a7
     } else {
       html += ' <div  class="p-2 bg-success">'; //#acf3a7
@@ -54,28 +55,31 @@ var renderApprovalList = (data) => {
     //   html += '<span class="badge badge-smfloat-end me-1"></span><br></br>';
     // }
 
-    html += '<center>';
-    html += '<b class="card-title text-center">' + val.team_name.toUpperCase() + '</b>';
+    html += "<center>";
+    html +=
+      '<b class="card-title text-center">' +
+      val.team_name.toUpperCase() +
+      "</b>";
     // html += '<img src="" id="pic_profile" onClick="selectImage()" class="rounded-circle img-thumbnail" style="width:100px;height:100px;display:block;cursor:pointer"> ';
-    html += '</center>';
-    html += '</div>';
+    html += "</center>";
+    html += "</div>";
 
     html += '<div class="card-body text-center">';
-    html += '<center>';
+    html += "<center>";
     html += '<div class="user-group" style="width:100px;display:flex;">';
     var color = new Array();
     color = {
-      "1": "primary",
-      "2": "success",
-      "3": "danger",
-      "4": "warning",
-      "5": "info",
-      "6": "dark"
+      1: "primary",
+      2: "success",
+      3: "danger",
+      4: "warning",
+      5: "info",
+      6: "dark",
     };
 
     var jumlah = 0;
     var jumlahshow = 0;
-    let arrUser = val.agent_list.split('|');
+    let arrUser = val.agent_list.split("|");
     $.each(arrUser, function (i, val) {
       if (i > 3) {
         jumlah = i + 1;
@@ -86,11 +90,22 @@ var renderApprovalList = (data) => {
         // html += '</div></center>';
         // html += '</div>';
       } else {
-        html += '<div class="border border-white bg-' + color[Math.floor(Math.random() * 6) + 1] + ' rounded-circle" style="font-size:10px;width:27px;height:27px;position:relative;margin-left:-5px;">';
-        html += '<center><div style="display:flex;color:#ffffffe6;align-items:center;justify-content:center;">';
-        html += '<span onmouseenter="onmouse(\'' + val + '\')" title="' + user[val]['name'] + '" style="margin-top:6px;">' + user[val]['avatar'] + '</span>';
-        html += '</div></center>';
-        html += '</div>';
+        html +=
+          '<div class="border border-white bg-' +
+          color[Math.floor(Math.random() * 6) + 1] +
+          ' rounded-circle" style="font-size:10px;width:27px;height:27px;position:relative;margin-left:-5px;">';
+        html +=
+          '<center><div style="display:flex;color:#ffffffe6;align-items:center;justify-content:center;">';
+        html +=
+          "<span onmouseenter=\"onmouse('" +
+          val +
+          '\')" title="' +
+          user[val]["name"] +
+          '" style="margin-top:6px;">' +
+          user[val]["avatar"] +
+          "</span>";
+        html += "</div></center>";
+        html += "</div>";
       }
 
       jumlahshow++;
@@ -100,64 +115,94 @@ var renderApprovalList = (data) => {
     });
 
     if (jumlah > 3) {
-      html += '<div class="border border-white bg-secondary rounded-circle" style="font-size:10px;width:27px;height:27px;position:relative;margin-left:-5px;">';
-      html += '<div style="display:flex;color:#ffffffe6;align-items:center;justify-content:center;">';
-      html += '<span onmouseenter="onmousealluser(\'' + val.agent_list + '\')" title="' + jumlah + '" style="margin-top:6px;">+' + jumlah + '</span>';
-      html += '</div>';
-      html += '</div>';
+      html +=
+        '<div class="border border-white bg-secondary rounded-circle" style="font-size:10px;width:27px;height:27px;position:relative;margin-left:-5px;">';
+      html +=
+        '<div style="display:flex;color:#ffffffe6;align-items:center;justify-content:center;">';
+      html +=
+        "<span onmouseenter=\"onmousealluser('" +
+        val.agent_list +
+        '\')" title="' +
+        jumlah +
+        '" style="margin-top:6px;">+' +
+        jumlah +
+        "</span>";
+      html += "</div>";
+      html += "</div>";
     } else {
       if (jumlahshow == 1) {
-
       } else {
-        html += '<div class="border border-white bg-secondary rounded-circle" style="font-size:10px;width:27px;height:27px;position:relative;margin-left:-5px;">';
-        html += '<div style="display:flex;color:#ffffffe6;align-items:center;justify-content:center;">';
-        html += '<span onmouseenter="onmousealluser(\'' + val.agent_list + '\')" title="VIEW ALL" style="margin-top:6px;">...</span>';
-        html += '</div>';
-        html += '</div>';
+        html +=
+          '<div class="border border-white bg-secondary rounded-circle" style="font-size:10px;width:27px;height:27px;position:relative;margin-left:-5px;">';
+        html +=
+          '<div style="display:flex;color:#ffffffe6;align-items:center;justify-content:center;">';
+        html +=
+          "<span onmouseenter=\"onmousealluser('" +
+          val.agent_list +
+          '\')" title="VIEW ALL" style="margin-top:6px;">...</span>';
+        html += "</div>";
+        html += "</div>";
       }
-
     }
     console.log("jumlah" + jumlah);
-    html += '</div>';
-    html += '</center>';
-    html += '<br>';
-    html += '<i class="card-subtitle mb-2 text-muted "> <small class="text-muted ">TEAM LEADER</small></i>';
+    html += "</div>";
+    html += "</center>";
+    html += "<br>";
+    html +=
+      '<i class="card-subtitle mb-2 text-muted "> <small class="text-muted ">TEAM LEADER</small></i>';
     html += '<span class="text-muted "> | </span>';
-    html += '<i class="text-muted ">' + val.team_leader + '</i>';
+    html += '<i class="text-muted ">' + val.team_leader + "</i>";
 
-    html += '<br>';
-    html += '<i class="card-subtitle mb-2 text-muted "> <small class="text-muted ">SUPERVISOR</small></i>';
+    html += "<br>";
+    html +=
+      '<i class="card-subtitle mb-2 text-muted "> <small class="text-muted ">SUPERVISOR</small></i>';
     html += '<span class="text-muted "> | </span>';
-    html += '<i class="text-muted ">' + val.supervisor + '</i>';
-    html += '<br>';
-
+    html += '<i class="text-muted ">' + val.supervisor + "</i>";
+    html += "<br>";
 
     html += '<div class="btn-group" role="group" aria-label="Basic example">';
     // html += '<button type="button" class="btn btn-sm btn-outline-primary" onClick="viewDetail(\'' + val.team_id + '\',\'' + val.team_name.toUpperCase() + '\')" id="btn-approve"><i class="bi bi-eye"></i>View</button>';
-    html += '<button type="button" class="btn btn-sm btn-outline-success" onClick="doEditTeam(\'' + val.team_id + '\')" id="btn-approve"><i class="bi bi-check2"></i>Edit</button>';
-    html += '<button type="button" class="btn btn-sm btn-outline-danger" onClick="doDeleteTeam(\'' + val.team_id + '\',\'' + val.team_name.toUpperCase() + '\')" id="btn-reject"><i class="bi bi-x-lg"></i>Disable</button>';
-    html += '</div>';
-    html += '</div>';
+    html +=
+      '<button type="button" class="btn btn-sm btn-outline-success" onClick="doEditTeam(\'' +
+      val.team_id +
+      '\')" id="btn-approve"><i class="bi bi-check2"></i>Edit</button>';
+    html +=
+      '<button type="button" class="btn btn-sm btn-outline-danger" onClick="doDeleteTeam(\'' +
+      val.team_id +
+      "','" +
+      val.team_name.toUpperCase() +
+      '\')" id="btn-reject"><i class="bi bi-x-lg"></i>Disable</button>';
+    html += "</div>";
+    html += "</div>";
     html += '<div class="card-footer text-center">';
     // if (val.notes.toUpperCase() == 'ADD') {
-    html += '<i><small class="text-muted ">' + val.created_by + '</small></i>';
+    html += '<i><small class="text-muted ">' + val.created_by + "</small></i>";
     html += '<span class="text-muted "> | </span>';
-    html += '<small class="text-muted" id="show_time_' + val.team_id + '">' + timeDif(val.created_time) + '</small>';
-    html += '<input type="hidden"  class="time_notification" show_time = "show_time_' + val.team_id + '"  value="' + val.created_time + '"/>';
+    html +=
+      '<small class="text-muted" id="show_time_' +
+      val.team_id +
+      '">' +
+      timeDif(val.created_time) +
+      "</small>";
+    html +=
+      '<input type="hidden"  class="time_notification" show_time = "show_time_' +
+      val.team_id +
+      '"  value="' +
+      val.created_time +
+      '"/>';
     // } else {
     //   html += '<i><small class="text-muted ">from: ' + val.updated_by_name + '</small></i>';
     //   html += '<span class="text-muted "> | </span>';
     //   html += '<small class="text-muted" id="show_time_' + val.id + '">' + timeDif(val.updated_time) + '</small>';
     //   html += '<input type="hidden"  class="time_notification" show_time = "show_time_' + val.id + '"  value="' + val.updated_time + '"/>';
     // }
-    html += '</div>';
-    html += '</div>';
-    html += '</div>';
+    html += "</div>";
+    html += "</div>";
+    html += "</div>";
   });
 
   $("#list_approval").html(html);
-}
-
+};
 
 //Button Actions
 var showFormResponse = function (responseText, statusText) {
@@ -169,12 +214,9 @@ var showFormResponse = function (responseText, statusText) {
     showInfo(responseText.message);
     return false;
   }
-}
-
-
+};
 
 function cari(val) {
-
   var fuseOptions = {
     // isCaseSensitive: false,
     // includeScore: false,
@@ -193,10 +235,10 @@ function cari(val) {
       // "id",
       "team_name",
       "team_leader",
-      "supervisor"
-    ]
+      "supervisor",
+    ],
   };
-  if (val == '') {
+  if (val == "") {
     renderApprovalList(AllData);
   } else {
     const fusex = new Fuse(AllData, fuseOptions);
@@ -207,14 +249,14 @@ function cari(val) {
 
 $("#search_approval").keyup(function () {
   let item = $(this).val();
-  console.log('item', item);
+  console.log("item", item);
   cari(item);
-})
+});
 
 var viewDetail = (id, flag) => {
-  let html_flag = '';
+  let html_flag = "";
   let width = 800;
-  if (flag == 'ADD') {
+  if (flag == "ADD") {
     html_flag = '<span class="badge badge-sm text-bg-danger">NEW</span>';
     width = 800;
   } else {
@@ -222,44 +264,52 @@ var viewDetail = (id, flag) => {
     width = 1000;
   }
 
-
   var buttons = {
-    "approve": {
-      "label": "APPROVE",
-      "className": "btn-sm btn-success",
-      "callback": function () {
-        submitApproval(id, 'APPROVE');
-      }
+    approve: {
+      label: "APPROVE",
+      className: "btn-sm btn-success",
+      callback: function () {
+        submitApproval(id, "APPROVE");
+      },
     },
-    "reject": {
-      "label": "REJECT",
-      "className": "btn-sm btn-danger",
-      "callback": function () {
-        submitApproval(id, 'REJECT');
-      }
+    reject: {
+      label: "REJECT",
+      className: "btn-sm btn-danger",
+      callback: function () {
+        submitApproval(id, "REJECT");
+      },
     },
-    "button":
-    {
-      "label": "Close",
-      "className": "btn-sm "
-    }
-  }
+    button: {
+      label: "Close",
+      className: "btn-sm ",
+    },
+  };
 
-  showCommonDialog(width, width, html_flag + ' | Detail Team', GLOBAL_MAIN_VARS["SITE_URL"] + 'user_and_group/user_view_detail_form_approval/' + id + '/' + flag, buttons);
-
-}
+  showCommonDialog(
+    width,
+    width,
+    html_flag + " | Detail Team",
+    GLOBAL_MAIN_VARS["SITE_URL"] +
+      "user_and_group/user_view_detail_form_approval/" +
+      id +
+      "/" +
+      flag,
+    buttons
+  );
+};
 
 var submitApproval = (id, status) => {
-  if (status == 'APPROVE') {
-    $.post(GLOBAL_MAIN_VARS["SITE_URL"] + "index.php/user_and_group/save_user_edit_temp/",
+  if (status == "APPROVE") {
+    $.post(
+      GLOBAL_MAIN_VARS["SITE_URL"] +
+        "index.php/user_and_group/save_user_edit_temp/",
       { id: id, status: status },
       function (data) {
-
         showFormResponse(data);
-
-      }, "json");
-
-  } else if (status == 'REJECT') {
+      },
+      "json"
+    );
+  } else if (status == "REJECT") {
     $.post(
       GLOBAL_MAIN_VARS["SITE_URL"] + "user_and_group/delete_user/",
       { id_user: id, note: $("#notes").val(), status: status },
@@ -268,54 +318,70 @@ var submitApproval = (id, status) => {
       },
       "json"
     );
-
   }
-
-}
+};
 
 var doEditTeam = (id) => {
   var buttons = {
-    "approve": {
-      "label": "APPROVE",
-      "className": "btn-sm btn-success",
-      "callback": function () {
+    approve: {
+      label: "APPROVE",
+      className: "btn-sm btn-success",
+      callback: function () {
         var options = {
-          url: GLOBAL_MAIN_VARS["SITE_URL"] + "team_management/team_work/edit_team",
+          url:
+            GLOBAL_MAIN_VARS["SITE_URL"] +
+            "team_management/team_work/edit_team",
           type: "post",
           beforeSubmit: jqformValidate,
           success: showFormResponse,
-          dataType: 'json',
+          dataType: "json",
         };
-        $('#tom_agent option').prop('selected', true);
-        if (jqformValidate() == false) { return false; }
-        $('form').ajaxSubmit(options).delay(3000);
-      }
-    },
-    "button":
-    {
-      "label": "Close",
-      "className": "btn-sm "
-    }
-  }
-
-  showCommonDialog(800, 500, 'Edit Team', GLOBAL_MAIN_VARS["SITE_URL"] + 'team_management/team_work/edit_team_form/?team_id=' + id, buttons);
-
-}
-
-function doDeleteTeam(id, name) {
-  bootbox.confirm("Are you sure you want to deactive " + name + " this team?", function (result) {
-    if (result) {
-      $.post(GLOBAL_MAIN_VARS["SITE_URL"] + "team_management/team_work/del_team", { team_id: id }, function (data) {
-        if (data.success == true) {
-          showInfo(data.message);
-          $(grid_selector).trigger('reloadGrid');
-        } else {
-          showInfo(data.message);
+        $("#tom_agent option").prop("selected", true);
+        if (jqformValidate() == false) {
           return false;
         }
-      }, "json");
+        $("form").ajaxSubmit(options).delay(3000);
+      },
+    },
+    button: {
+      label: "Close",
+      className: "btn-sm ",
+    },
+  };
+
+  showCommonDialog(
+    800,
+    500,
+    "Edit Team",
+    GLOBAL_MAIN_VARS["SITE_URL"] +
+      "team_management/team_work/edit_team_form/?team_id=" +
+      id,
+    buttons
+  );
+};
+
+function doDeleteTeam(id, name) {
+  bootbox.confirm(
+    "Are you sure you want to deactive " + name + " this team?",
+    function (result) {
+      if (result) {
+        $.post(
+          GLOBAL_MAIN_VARS["SITE_URL"] + "team_management/team_work/del_team",
+          { team_id: id },
+          function (data) {
+            if (data.success == true) {
+              showInfo(data.message);
+              $(grid_selector).trigger("reloadGrid");
+            } else {
+              showInfo(data.message);
+              return false;
+            }
+          },
+          "json"
+        );
+      }
     }
-  });
+  );
   // bootbox.confirm({
   //   title: '<span class="badge bg-danger">Disable</span>',
   //   message: "Are you sure you want to disable " + id + "?",
@@ -339,8 +405,7 @@ function doDeleteTeam(id, name) {
 
 $(document).ready(function () {
   // gridOptions.api.hideOverlay();
-  console.log('ready');
-  getData(); // untuk menampilkan data di table nya	
+  console.log("ready");
+  getData(); // untuk menampilkan data di table nya
   //   getDataUser();
-
 });
