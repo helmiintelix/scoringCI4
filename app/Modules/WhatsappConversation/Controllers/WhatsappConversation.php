@@ -13,7 +13,7 @@ class WhatsappConversation extends \App\Controllers\BaseController
 	}
 
 	function index(){
-		echo "WhatsappConversation";
+		echo "WhatsappConversation"; 
 	}
 
 	function wa2wayListView()
@@ -21,7 +21,7 @@ class WhatsappConversation extends \App\Controllers\BaseController
 		$data['wa2way'] = $this->WhatsappConversationModel->setDataWa2Way();
         $data["template_wa"] = $this->Common_model->get_record_list("template_id value, template_name AS item", "cms_wa_template", "is_active=1", "template_name");
 
-        return view('App\Modules\WhatsappConversation\Views\wa2wayListView', $data);
+        return view('App\Modules\WhatsappConversation\Views\Wa2wayListView', $data);
 	}
 
 	function conversationWaView()
