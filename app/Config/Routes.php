@@ -296,6 +296,11 @@ $routes->add('dashboard/get_team_monitoring_as_of_today', '\App\Modules\Monitori
 $routes->add('dialingSetup/dialingModeCallStatus', '\App\Modules\DialingSetup\Controllers\DialingSetup::index',['filter' => 'authfilter']);
 #setup aux
 $routes->add('settings/setupAux', '\App\Modules\SetupAux\Controllers\SetupAux::index',['filter' => 'authfilter']);
+#Laporan Input Visit FC
+$routes->add('report_collection/reporting/report_visit_field', '\App\Modules\LaporanVisitFc\Controllers\LaporanVisitFc::index',['filter' => 'authfilter']);
+#Setup Lov
+$routes->add('settings/lov/', '\App\Modules\SetupLov\Controllers\SetupLov::index',['filter' => 'authfilter']);
+
 
 #untuk module
 if($uri->getTotalSegments() > 2){
@@ -621,6 +626,9 @@ if($uri->getTotalSegments() > 2){
 
     #LaporanAuditPerdebitur
     $routes->add('report_collection/reporting/'.$function, '\App\Modules\LaporanAuditPerdebitur\Controllers\Laporan_audit_perdebitur::'.$function,['filter' => 'authfilter']);
+    
+    #Laporan Visit FC
+    $routes->add('report_collection/report_visit_fc/'.$function, '\App\Modules\LaporanVisitFc\Controllers\LaporanVisitFc::'.$function,['filter' => 'authfilter']);
 
     #InventoryCollection
     $routes->add('reportCols/load_inventory_collection/'.$function, '\App\Modules\InventoryCollection\Controllers\Inventory_collection::'.$function,['filter' => 'authfilter']);
@@ -633,6 +641,9 @@ if($uri->getTotalSegments() > 2){
 
     #setup aux
     $routes->add('settings/setupAux/'.$function, '\App\Modules\SetupAux\Controllers\SetupAux::'.$function,['filter' => 'authfilter']);
+
+    #Setup Lov
+    $routes->add('settings/lov/'.$function, '\App\Modules\SetupLov\Controllers\SetupLov::'.$function,['filter' => 'authfilter']);
 
 }
 

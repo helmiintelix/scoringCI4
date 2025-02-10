@@ -6,27 +6,20 @@ function mapsRenderer(params) {
   const link = params.data.location;
   return link;
 }
-function picture1Renderer(params) {
-  console.log(params, "params");
-  const link = params.data.picture1;
+function totalAssignmentRenderer(params) {
+  const link = params.data.totalAssignment;
   return link;
 }
-function picture2Renderer(params) {
-  console.log(params, "params2");
-
-  const link = params.data.picture2;
+function totalVisitRenderer(params) {
+  const link = params.data.totalVisit;
   return link;
 }
-function picture3Renderer(params) {
-  console.log(params, "params3");
-
-  const link = params.data.picture3;
+function totalPtpRenderer(params) {
+  const link = params.data.totalVisit;
   return link;
 }
-function picture4Renderer(params) {
-  console.log(params, "params4");
-
-  const link = params.data.picture4;
+function totalPaymentRenderer(params) {
+  const link = params.data.totalVisit;
   return link;
 }
 
@@ -38,9 +31,7 @@ function deselect() {
 function getData() {
   $.ajax({
     url:
-      GLOBAL_MAIN_VARS["SITE_URL"] +
-      "monitoring_old/monitoring/customer_list" +
-      classification,
+      GLOBAL_MAIN_VARS["SITE_URL"] + "monitoring_old/monitoring/petugas_list",
     type: "get",
     success: function (msg) {
       var columnDefs = msg.data.header;
@@ -49,17 +40,17 @@ function getData() {
         if (column.field === "location") {
           column.cellRenderer = mapsRenderer;
         }
-        if (column.field === "picture1") {
-          column.cellRenderer = picture1Renderer;
+        if (column.field === "totalAssignment") {
+          column.cellRenderer = totalAssignmentRenderer;
         }
-        if (column.field === "picture2") {
-          column.cellRenderer = picture2Renderer;
+        if (column.field === "totalVisit") {
+          column.cellRenderer = totalVisitRenderer;
         }
-        if (column.field === "picture3") {
-          column.cellRenderer = picture3Renderer;
+        if (column.field === "totalPtp") {
+          column.cellRenderer = totalPtpRenderer;
         }
-        if (column.field === "picture4") {
-          column.cellRenderer = picture4Renderer;
+        if (column.field === "totalPayment") {
+          column.cellRenderer = totalPaymentRenderer;
         }
       });
       console.log("test branch");
@@ -130,9 +121,6 @@ jQuery(function ($) {
 });
 
 var TrackingAgent = function (lat, long, user_id) {
-  // alert(
-  //   `Latitude: ${lat}, Longitude: ${long}, User ID: ${user_id}, ID: ${id}, Account No: ${card}, Address Type: ${addr_type}`
-  // );
   var buttons = {
     button: {
       label: "Close",
@@ -150,6 +138,43 @@ var TrackingAgent = function (lat, long, user_id) {
       long +
       "&user_id=" +
       user_id,
+    buttons
+  );
+};
+
+var popupdatadetail = function (kategori, userid) {
+  var header = "UNDEFINED";
+  switch (kategori) {
+    case "jumlahAssignment":
+      header = "List Assignment";
+      break;
+    case "totalVisit":
+      header = "List Total Visit";
+      break;
+    case "totalPtp":
+      header = "List Total PTP";
+      break;
+    case "totalPayment":
+      header = "List Total Payment";
+      break;
+  }
+
+  var buttons = {
+    button: {
+      label: "Close",
+      className: "btn-sm",
+    },
+  };
+  console.log(userid);
+  showCommonDialog(
+    1200,
+    300,
+    header,
+    GLOBAL_MAIN_VARS["SITE_URL"] +
+      "monitoring_old/monitoring/popup?kategori=" +
+      kategori +
+      "&userid=" +
+      userid,
     buttons
   );
 };
