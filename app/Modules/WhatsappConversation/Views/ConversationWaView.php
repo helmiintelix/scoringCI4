@@ -4,7 +4,7 @@
                 <div class="text-center fw-bold ">
                         <span style="color: red;<?=  (empty($data_inb['pickup_time']) && !empty($data_inb['messageId']) ) ? "display: show;" : "display: none;" ; ?>">*</span>
                 </div>
-                <div class="card-body p-0">
+                <div id="waConversationActivity" class="card-body p-0">
                     <div class="container" style="background-color: ; color: black; max-height: 600px; overflow-y: auto;">
                         <div class="mb-12">
                             <div class="col-lg-12 col-md-12 col-sm-12">
@@ -36,7 +36,9 @@
                                                                     <!-- <span class="metadata" style="float: left;"><span class="time"><i  class="bi bi-clock-history tooltip_all" id="tooltip_all"></i></span></span> -->
                                                                 </div>
                                                                 
-                                                                <? if (!empty($data_convertation)) {
+                                                                <?php 
+                                                                $lastKeyMsg = 0;
+                                                                if (!empty($data_convertation)) {
                                                                     foreach ($data_convertation as $key => $value) {
                                                                         if ($value['direction']=='OUTB') {
                                                                             $class_type_message='sent';
@@ -58,7 +60,8 @@
                                                                                 <span class="metadata"><span class="time" id="show_time_<?=$key?>"><?= $value['created_time'] ?></span></span>
                                                                                 <input type="hidden" class="time_notification" id = "id_show_time_<?=$key?>" show_time = "show_time_<?=$key?>" value="<?= $value['created_time'] ?>" >
                                                                             <?= $value['approval_status']; ?>
-                                                                        </div><?
+                                                                        </div><?php
+                                                                        $lastKeyMsg = $key;
                                                                     }
                                                                 }
                                                                 if (empty($data_inb['ticket_id'])) {
@@ -136,7 +139,7 @@
 
 
 <script>
-
+var lastKeyMsg = <?=$lastKeyMsg?>;
 $("#btnAddQuick").click(function () {
   
   var options = {
@@ -194,6 +197,8 @@ $("#btn_send_wa").click(function () {
         contentType: false, // Jangan set Content-Type, FormData akan melakukannya
         success: function (data) {
           if (data.success === true) {
+            lastKeyMsg ++;
+            let htmlAppend = '';
             if (data.data['messageType'] == 'IMAGE') {
               $("#coba_tooltips" + $('#cm_card_nmbr').val()).append('<div class="message sent">' + '<img src="' + GLOBAL_MAIN_VARS["SITE_URL"] + 'file_upload/wa_blast_conversation/' + data.data['pairedMessageId'] + '" ondblclick="download_file(this)" id="' + data.data['pairedMessageId'] + '" alt="" width="185" height="200"><br>' + '<span id="random">' + data.data['message'] + '<br></span><span class="metadata"><span class="time">' + data.data['created_time'] + '</span></span><span class="metadata" style="float: left;"><span class="time"><i class="bi bi-check2-all tooltip_all" id="tooltip_all' + $('#coba_tooltips' + $('#cm_card_nmbr').val() + ' .message.sent').length + '"></i></span></span></div>');
             } else if (data.data['messageType'] == 'VIDEO') {
@@ -203,8 +208,14 @@ $("#btn_send_wa").click(function () {
             } else if (data.data['messageType'] == 'DOCUMENT') {
               $("#coba_tooltips" + $('#cm_card_nmbr').val()).append('<div class="message sent">' + '<a href="' + GLOBAL_MAIN_VARS["SITE_URL"] + 'file_upload/wa_blast_conversation/' + data.data['pairedMessageId'] + '" target="_blank"><br>' + '<i class="bi bi-file-earmark-pdf"></i> ' + data.data['pairedMessageId'] + '</a><br>' + '<span id="random">' + data.data['message'] + '<br></span><span class="metadata"><span class="time">' + data.data['created_time'] + '</span></span><span class="metadata" style="float: left;"><span class="time"><i class="bi bi-check2-all tooltip_all" id="tooltip_all' + $('#coba_tooltips' + $('#cm_card_nmbr').val() + ' .message.sent').length + '"></i></span></span></div>');
             } else {
-              $("#coba_tooltips" + $('#cm_card_nmbr').val()).append('<div class="message sent"><span id="random">' + data.data['message'] + '<br></span><span class="metadata"><span class="time">' + data.data['created_time'] + '</span></span><span class="metadata" style="float: left;"><span class="time"><i class="bi bi-check2-all tooltip_all" id="tooltip_all' + $('#coba_tooltips' + $('#cm_card_nmbr').val() + ' .message.sent').length + '"></i></span></span></div>');
+              htmlAppend = '<div class="message sent"><span id="random">' + data.data['message'] + '<br></span>'+
+                            '<span class="metadata">'+
+                              '<span class="time" id="show_time_'+lastKeyMsg+'">' + data.data['created_time'] + '</span></span>'+
+                              '<input type="hidden" class="time_notification" id = "id_show_time_'+lastKeyMsg+'" show_time = "show_time_'+lastKeyMsg+'" value="'+data.data['created_time']+'" >'+
+                              '<span class="metadata" style="float: left;"><span class="time"><i class="bi bi-check2-all tooltip_all" id="tooltip_all' + $('#coba_tooltips' + $('#cm_card_nmbr').val() + ' .message.sent').length + '"></i></span></span></div>';
+              $("#coba_tooltips" + $('#cm_card_nmbr').val()).append(htmlAppend);
             }
+
 
             $("#txt_wa").val(''); // Kosongkan textarea setelah mengirim
             $("#file_attachment").val(''); // Kosongkan textarea setelah mengirim
