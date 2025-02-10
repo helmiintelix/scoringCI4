@@ -300,6 +300,8 @@ $routes->add('settings/setupAux', '\App\Modules\SetupAux\Controllers\SetupAux::i
 $routes->add('report_collection/reporting/report_visit_field', '\App\Modules\LaporanVisitFc\Controllers\LaporanVisitFc::index',['filter' => 'authfilter']);
 #Setup Lov
 $routes->add('settings/lov/', '\App\Modules\SetupListOfValue\Controllers\Setup_list_of_value::lov',['filter' => 'authfilter']);
+#Upload Account Data
+$routes->add('settings/upload_account_data', '\App\Modules\UploadAccountData\Controllers\UploadAccountData::index',['filter' => 'authfilter']);
 
 
 #WA modules
@@ -652,6 +654,8 @@ if($uri->getTotalSegments() > 2){
 
     #Setup Lov
     $routes->add('settings/lov/'.$function, '\App\Modules\SetupListOfValue\Controllers\Setup_list_of_value::'.$function,['filter' => 'authfilter']);
+    #Upload Account Data
+    $routes->add('settings/upload_account_data/'.$function, '\App\Modules\UploadAccountData\Controllers\UploadAccountData::'.$function,['filter' => 'authfilter']);
 
 
 }
