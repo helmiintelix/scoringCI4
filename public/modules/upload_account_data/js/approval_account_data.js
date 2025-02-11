@@ -7,11 +7,12 @@ function deselect() {
   gridApprovalOptions.api.deselectAll();
 }
 
-function getData() {
+function getDataApprove() {
+  console.log("WAAW");
   $.ajax({
     url:
       GLOBAL_MAIN_VARS["SITE_URL"] +
-      "settings/upload_account_data/get_upload_data",
+      "settings/upload_account_data/get_upload_data_approval",
     type: "get",
     success: function (msg) {
       console.log(msg);
@@ -65,9 +66,10 @@ new agGrid.Grid(eGridDiv, gridOptions);
 
 //Button Actions
 var showFormResponse = function (responseText, statusText) {
+  selr = "";
   if (responseText.success) {
     showInfo(responseText.message);
-    // getData();
+    getDataApprove();
     if (responseText.notification_id) {
       sendNotification(responseText.notification_id);
     }
@@ -78,51 +80,50 @@ var showFormResponse = function (responseText, statusText) {
 };
 
 jQuery(function ($) {
-  getData(); // untuk menampilkan data di table nya
+  getDataApprove(); // untuk menampilkan data di table nya
 });
 
-$("#btn-upload").click(function () {
-  var buttons = {
-    success: {
-      label: "<i class='icon-ok'></i> Save",
-      className: "btn-sm btn-success",
-      callback: function () {
-        var options = {
-          url:
-            GLOBAL_MAIN_VARS["SITE_URL"] +
-            "settings/upload_account_data/save_file",
-          type: "post",
-          dataType: "json",
-          success: function (msg) {
-            if (msg.success == true) {
-              showInfo("Success upload, waiting approval!");
-            } else {
-              showWarning(msg.message);
-            }
-          },
-        };
-
-        $("form").ajaxSubmit(options);
-      },
-    },
-    button: {
-      label: "Close",
-      className: "btn-sm",
-    },
-  };
-
-  showCommonDialog(
-    800,
-    800,
-    "UPLOAD ACCOUNT DATA",
-    GLOBAL_MAIN_VARS["SITE_URL"] +
-      "settings/upload_account_data/upload_file_form",
-    buttons
-  );
-});
 $("#btn-view").click(function () {
   if (selr) {
     var buttons = {
+      success: {
+        label: "<i class='icon-ok'></i> Approve",
+        className: "btn-sm btn-success",
+        callback: function () {
+          $.ajax({
+            url:
+              GLOBAL_MAIN_VARS["SITE_URL"] +
+              "settings/upload_account_data/approve_file",
+            type: "post",
+            data: {
+              id: selr,
+            },
+            success: function (response) {
+              showFormResponse(response);
+            },
+            dataType: "json",
+          });
+        },
+      },
+      reject: {
+        label: "<i class='icon-ok'></i> Reject",
+        className: "btn-sm btn-danger",
+        callback: function () {
+          $.ajax({
+            url:
+              GLOBAL_MAIN_VARS["SITE_URL"] +
+              "settings/upload_account_data/reject_file",
+            type: "post",
+            data: {
+              id: selr,
+            },
+            success: function (response) {
+              showFormResponse(response);
+            },
+            dataType: "json",
+          });
+        },
+      },
       button: {
         label: "Close",
         className: "btn-sm",

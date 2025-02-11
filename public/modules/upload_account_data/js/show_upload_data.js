@@ -1,7 +1,7 @@
-var selr = "";
+var selr;
 var selected_data = "";
 var TOKEN_VALID = false;
-
+var uploadID = $("#uploadId").val();
 function deselect() {
   gridOptions.api.deselectAll();
   gridApprovalOptions.api.deselectAll();
@@ -11,7 +11,8 @@ function getData() {
   $.ajax({
     url:
       GLOBAL_MAIN_VARS["SITE_URL"] +
-      "settings/upload_account_data/get_upload_data",
+      "settings/upload_account_data/get_view_data?uploadId=" +
+      uploadID,
     type: "get",
     success: function (msg) {
       console.log(msg);
@@ -50,7 +51,7 @@ var gridOptions = {
 
   rowSelection: "multiple", // allow rows to be selected
   animateRows: true, // have rows animate to new positions when sorted
-  paginationAutoPageSize: true,
+  // paginationAutoPageSize: true,
   pagination: true,
 
   // example event handler
@@ -60,7 +61,7 @@ var gridOptions = {
     selected_data = params.data;
   },
 };
-var eGridDiv = document.getElementById("myGridLp");
+var eGridDiv = document.getElementById("myGridLpShow");
 new agGrid.Grid(eGridDiv, gridOptions);
 
 //Button Actions
@@ -79,72 +80,4 @@ var showFormResponse = function (responseText, statusText) {
 
 jQuery(function ($) {
   getData(); // untuk menampilkan data di table nya
-});
-
-$("#btn-upload").click(function () {
-  var buttons = {
-    success: {
-      label: "<i class='icon-ok'></i> Save",
-      className: "btn-sm btn-success",
-      callback: function () {
-        var options = {
-          url:
-            GLOBAL_MAIN_VARS["SITE_URL"] +
-            "settings/upload_account_data/save_file",
-          type: "post",
-          dataType: "json",
-          success: function (msg) {
-            if (msg.success == true) {
-              showInfo("Success upload, waiting approval!");
-            } else {
-              showWarning(msg.message);
-            }
-          },
-        };
-
-        $("form").ajaxSubmit(options);
-      },
-    },
-    button: {
-      label: "Close",
-      className: "btn-sm",
-    },
-  };
-
-  showCommonDialog(
-    800,
-    800,
-    "UPLOAD ACCOUNT DATA",
-    GLOBAL_MAIN_VARS["SITE_URL"] +
-      "settings/upload_account_data/upload_file_form",
-    buttons
-  );
-});
-$("#btn-view").click(function () {
-  if (selr) {
-    var buttons = {
-      button: {
-        label: "Close",
-        className: "btn-sm",
-      },
-    };
-
-    showCommonDialog(
-      800,
-      800,
-      "View Data " + selected_data.fileName ?? "",
-      GLOBAL_MAIN_VARS["SITE_URL"] +
-        "settings/upload_account_data/show_uploaded_file_form?id=" +
-        selr,
-      buttons
-    );
-  } else {
-    showWarning("Silakan pilih data");
-  }
-});
-
-$("#btn-download").click(function (e) {
-  window.location.href =
-    GLOBAL_MAIN_VARS["SITE_URL"] +
-    "/template/uploadAccountData/templateAccountData.xlsx";
 });
