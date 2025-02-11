@@ -77,6 +77,7 @@ class Setup_wa_filter_word extends \App\Controllers\BaseController
                 $data['is_active']=$this->input->getPost('opt-active-flag');
                 $data['created_time']=date('Y-m-d H:i:s');
                 $data['created_by']=session()->get('USER_ID');
+                $data['is_approved']='APPROVED';
 
                 $return	= $this->Setup_wa_filter_word_model->save_wa_filter_word_edit($data);
             }else{
@@ -86,6 +87,7 @@ class Setup_wa_filter_word extends \App\Controllers\BaseController
                 $data['is_active']=$this->input->getPost('opt-active-flag');
                 $data['created_time']=date('Y-m-d H:i:s');
                 $data['created_by']=session()->get('USER_ID');
+                $data['is_approved']='APPROVED';
             
                 $return = $this->Setup_wa_filter_word_model->save_wa_filter_word_add($data);
             }
