@@ -146,7 +146,7 @@ class WhatsappConversation extends \App\Controllers\BaseController
 
 		        	$originalName = $file->getClientName();
 		        	$contentType =$file->getMimeType();
-					$uploadPath = ROOTPATH . 'file_upload/wa_blast_conversation/';  // pastikan direktori ini ada dan memiliki izin tulis
+					$uploadPath = FCPATH . '/file_upload/wa_blast_conversation/'.$cm_card_nmbr;  // pastikan direktori ini ada dan memiliki izin tulis
 
 					// Cek apakah direktori sudah ada, jika tidak, buat direktori
 					if (!is_dir($uploadPath)) {
