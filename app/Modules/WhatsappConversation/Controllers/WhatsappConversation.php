@@ -65,7 +65,7 @@ class WhatsappConversation extends \App\Controllers\BaseController
 			callbackData,
 			pairedMessageId,
 			if(
-				direction = 'OUTB',concat('".base_url()."file_upload/wa_blast_conversation/',pairedMessageId),concat('https://democoll74.ecentrix.net/webhook_cms_ci4/api/file_upload/',pairedMessageId)
+				direction = 'OUTB',concat('".base_url()."file_upload/wa_blast_conversation/','".$account_id."/',pairedMessageId),concat('https://democoll74.ecentrix.net/webhook_cms_ci4/api/file_upload/',pairedMessageId)
 			)  link_attachment,
 		    messageType,
 		    messageText,
