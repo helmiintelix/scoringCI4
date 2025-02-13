@@ -3,23 +3,30 @@ var selected_data;
 var TOKEN_VALID = false;
 
 function mapsRenderer(params) {
-  const link = params.data.track;
+  const link = params.data.location;
   return link;
 }
 function picture1Renderer(params) {
-  const link = params.data.track;
+  console.log(params, "params");
+  const link = params.data.picture1;
   return link;
 }
 function picture2Renderer(params) {
-  const link = params.data.track;
+  console.log(params, "params2");
+
+  const link = params.data.picture2;
   return link;
 }
 function picture3Renderer(params) {
-  const link = params.data.track;
+  console.log(params, "params3");
+
+  const link = params.data.picture3;
   return link;
 }
 function picture4Renderer(params) {
-  const link = params.data.track;
+  console.log(params, "params4");
+
+  const link = params.data.picture4;
   return link;
 }
 

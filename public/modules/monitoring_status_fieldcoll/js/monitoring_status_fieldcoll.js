@@ -3,6 +3,7 @@ var selected_data;
 var TOKEN_VALID = false;
 
 function mapsRenderer(params) {
+  console.log(params, "params");
   const link = params.data.maps;
   return link;
 }

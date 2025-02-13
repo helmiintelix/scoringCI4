@@ -59,7 +59,7 @@ class Setup_list_of_value extends \App\Controllers\BaseController
     function lov_add_form()
 	{
 
-        $data['get_category'] = $this->Common_model->get_record_list("value value, description AS item", "cms_reference b", "b.status = '1' AND b.reference='CONTACT_STATUS'", "order_num");
+        $data['get_category'] = array("CTC"=>"Contact", "NTC"=>"Not Contact");
         $num = array();
 		for ($i=1; $i <=20 ; $i++) { 
 			$num[$i] = $i;
@@ -93,7 +93,8 @@ class Setup_list_of_value extends \App\Controllers\BaseController
 	{
 		$id	= $this->input->getGet('id');
 		$data["lov_data"] = $this->Common_model->get_record_values("*", "cms_lov_registration", "id = '" . $id . "'");
-        $data['get_category'] = $this->Common_model->get_record_list("value value, description AS item", "cms_reference b", "b.status = '1' AND b.reference='CONTACT_STATUS'", "order_num");
+        $data['get_category'] = array("CTC"=>"Contact", "NTC"=>"Not Contact");
+		
 		$num = array();
 		for ($i=1; $i <=20 ; $i++) { 
 			$num[$i] = $i;

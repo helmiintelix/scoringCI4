@@ -745,16 +745,5 @@ Class Detail_account_model Extends Model
 		return $result;
 	}
 
-	function send_reply_wa($data)
-	{
-        $this->builder = $this->db->table('wa_conversation_details');
-		$return = $this->builder->insert($data);
-		return $return;
-	}
-	function blast_template_by_agent($data)
-	{
-        $this->builder = $this->db->table('wa_outbound');
-		$return = $this->builder->insert($data);
-		return $return;
-	}
+
 }

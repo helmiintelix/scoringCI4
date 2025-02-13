@@ -17,16 +17,18 @@ class Fc_recording_voice extends \App\Controllers\BaseController
 		return view('\App\Modules\FcRecordingVoice\Views\Recordingfc_list_view', $data);
 	}
 	function get_recording_list(){
-		$cache = session()->get('USER_ID').'_recordingfc_list';
-		if($this->cache->get($cache)){
-			$data = json_decode($this->cache->get($cache));
-			$rs = array('success' => true, 'message' => '', 'data' => $data);
-		}else{
-			$data = $this->Fc_recording_voice_model->get_recording_list();
-			$this->cache->save($cache, json_encode($data), env('TIMECACHE_1')); 
+		// $cache = session()->get('USER_ID').'_recordingfc_list';
+		// if($this->cache->get($cache)){
+		// 	$data = json_decode($this->cache->get($cache));
+		// 	$rs = array('success' => true, 'message' => '', 'data' => $data);
+		// }else{
+		// 	$data = $this->Fc_recording_voice_model->get_recording_list();
+		// 	$this->cache->save($cache, json_encode($data), env('TIMECACHE_1')); 
 			
-			$rs = array('success' => true, 'message' => '', 'data' => $data);
-		}
+		// 	$rs = array('success' => true, 'message' => '', 'data' => $data);
+		// }
+		$data = $this->Fc_recording_voice_model->get_recording_list();
+		$rs = array('success' => true, 'message' => '', 'data' => $data);
 		return $this->response->setStatusCode(200)->setJSON($rs);
 	}
 	function get_path(){

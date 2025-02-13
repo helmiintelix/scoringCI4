@@ -8,7 +8,7 @@ function createFolderStructure(basePath, moduleName) {
         return;
     }
 
-    const modulePath = path.join(basePath, 'app', 'modules', moduleName);
+    const modulePath = path.join(basePath, 'app', 'Modules', moduleName);
     const subFolders = ['Controllers', 'Models', 'Views'];
 
     try {
@@ -32,7 +32,7 @@ function createFolderStructure(basePath, moduleName) {
         });
 
         // Create folder in /modules
-        const JSmodulesPath = path.join(basePath, 'modules', moduleName);
+        const JSmodulesPath = path.join(basePath, 'public', 'modules', moduleName);
         if (!fs.existsSync(JSmodulesPath)) {
             fs.mkdirSync(JSmodulesPath, { recursive: true });
             console.log(`Folder '${JSmodulesPath}' berhasil dibuat.`);

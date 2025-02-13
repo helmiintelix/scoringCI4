@@ -235,6 +235,7 @@ jQuery(function ($) {
 	} else if (GLOBAL_SESSION_VARS["LEVEL_GROUP"] == "USER") {
 		//loadMenu('OCR Verification','ocr_verification/raw_data_list');
 	}
+	loadWAModule();
 });
 
 try {
@@ -298,6 +299,23 @@ function generatePlaceholders(count) {
 	return output;
 }
 
+function loadWAModule() {
+	$("#wa2wayCanvas").html('').load(GLOBAL_MAIN_VARS["BASE_URL"] + 'whatsappConversation/wa2wayListView', function (responseTxt, statusTxt, xhr) {
+
+		if (statusTxt == "success") {
+			changeTheme(GLOBAL_THEME_MODE);
+			$("#wa2wayCanvas").show();
+		}
+		else if (statusTxt == "error") {
+			$("#wa2wayCanvas").html('<i>something wrong</i>');
+		}
+
+	})
+}
+
+$("#canvasLinkBackWa").click(() => {
+	loadWAModule();
+})
 
 
 $("body").click(function () {
@@ -306,3 +324,5 @@ $("body").click(function () {
 		check_session();
 	}
 });
+
+
