@@ -515,8 +515,8 @@
     $('#form-template-sms').hide();
     $('#form-template-email').hide();
     $('#form-template-wa').hide();
-    var daftar_filter = < ? = $daftar_filter ? > ;
+    var daftar_filter = <?=$daftar_filter?> ;
     var rules_new;
-    var jsonAG = < ? = $jsonAG ? > ;
+    var jsonAG = {} ;
 </script>
 <script src="<?= base_url(); ?>modules/class_management/js/class_management_add.js?v=<?= rand() ?>"></script>
