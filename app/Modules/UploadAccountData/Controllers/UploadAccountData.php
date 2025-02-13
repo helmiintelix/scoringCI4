@@ -82,244 +82,85 @@ class UploadAccountData extends \App\Controllers\BaseController
 				
 				//jenis_letter belum tau ambil field dari apa
 				$data_batch[] = [	
-					"loan_code" => $allDataInSheet[$i]["A"], 
-					"branch" => $allDataInSheet[$i]["B"], 
-					"user_code" => $allDataInSheet[$i]["C"], 
-					"product_code" => $allDataInSheet[$i]["D"], 
-					"user_limit" => $allDataInSheet[$i]["E"], 
-					"tenure" => $allDataInSheet[$i]["F"], 
-					"mob" => $allDataInSheet[$i]["G"], 
-					"borrower_interest_rate" => $allDataInSheet[$i]["H"], 
-					"monthly_installment_amount" => $allDataInSheet[$i]["I"], 
-					"due_date" => $allDataInSheet[$i]["J"], 
-					"credit_agreement_number" => $allDataInSheet[$i]["K"], 
-					"credit_agreement_date" => $allDataInSheet[$i]["L"], 
-					"disbursement_date" => $allDataInSheet[$i]["M"], 
-					"principal_overdue" => $allDataInSheet[$i]["N"], 
-					"interest_overdue" => $allDataInSheet[$i]["O"], 
-					"late_overdue" => $allDataInSheet[$i]["P"], 
-					"total_outstanding" => $allDataInSheet[$i]["Q"], 
-					"principal_outstanding" => $allDataInSheet[$i]["R"], 
-					"interest_outstanding" => $allDataInSheet[$i]["S"], 
-					"outstanding_ar" => $allDataInSheet[$i]["T"], 
-					"outstanding_installment" => $allDataInSheet[$i]["U"], 
-					"late_outstanding" => $allDataInSheet[$i]["V"], 
-					"dpd" => $allDataInSheet[$i]["W"], 
-					"collectibility" => $allDataInSheet[$i]["X"], 
-					"last_repayment_date" => $allDataInSheet[$i]["Y"], 
-					"npl_date" => $allDataInSheet[$i]["Z"], 
-					"bank_account_number" => $allDataInSheet[$i]["AA"], 
-					"available_cash_balance" => $allDataInSheet[$i]["AB"], 
-					"principal_paid" => $allDataInSheet[$i]["AC"], 
-					"interest_paid" => $allDataInSheet[$i]["AD"], 
-					"late_paid" => $allDataInSheet[$i]["AE"], 
-					"account_status" => $allDataInSheet[$i]["AF"], 
-					"maturity_date" => $allDataInSheet[$i]["AG"], 
-					"is_charged_off" => $allDataInSheet[$i]["AH"], 
-					"charged_off_date" => $allDataInSheet[$i]["AI"], 
-					"hold_amount" => $allDataInSheet[$i]["AJ"], 
-					"ao_code" => $allDataInSheet[$i]["AK"], 
-					"account_officer_name" => $allDataInSheet[$i]["AL"], 
-					"sector_code" => $allDataInSheet[$i]["AM"], 
-					"description_sector" => $allDataInSheet[$i]["AN"], 
-					"credit_line_number" => $allDataInSheet[$i]["AO"], 
-					"oldest_emi" => $allDataInSheet[$i]["AP"], 
-					"total_overdue" => $allDataInSheet[$i]["AQ"], 
-					"minimum_payment" => $allDataInSheet[$i]["AR"], 
-					"current_counter_eom" => $allDataInSheet[$i]["AS"], 
-					"xdays_counter_eom" => $allDataInSheet[$i]["AT"], 
-					"dpd30_counter_eom" => $allDataInSheet[$i]["AU"], 
-					"dpd60_counter_eom" => $allDataInSheet[$i]["AV"], 
-					"dpd90_counter_eom" => $allDataInSheet[$i]["AW"], 
-					"dpd120_counter_eom" => $allDataInSheet[$i]["AX"], 
-					"dpd150_counter_eom" => $allDataInSheet[$i]["AY"], 
-					"dpd180_counter_eom" => $allDataInSheet[$i]["AZ"], 
-					"dpd210_counter_eom" => $allDataInSheet[$i]["BA"], 
-					"current_total" => $allDataInSheet[$i]["BB"], 
-					"xdays_total" => $allDataInSheet[$i]["BC"], 
-					"dpd30_total" => $allDataInSheet[$i]["BD"], 
-					"dpd60_total" => $allDataInSheet[$i]["BE"], 
-					"dpd90_total" => $allDataInSheet[$i]["BF"], 
-					"dpd120_total" => $allDataInSheet[$i]["BG"], 
-					"dpd150_total" => $allDataInSheet[$i]["BH"], 
-					"dpd180_total" => $allDataInSheet[$i]["BI"], 
-					"dpd210_total" => $allDataInSheet[$i]["BJ"], 
-					"open_date" => $allDataInSheet[$i]["BK"], 
-					"print_billing_date" => $allDataInSheet[$i]["BL"], 
-					"is_restructured" => $allDataInSheet[$i]["BM"], 
-					"last_restructuring_date" => $allDataInSheet[$i]["BN"], 
-					"block_code" => $allDataInSheet[$i]["BO"], 
-					"block_code_date" => $allDataInSheet[$i]["BP"], 
-					"is_fpd" => $allDataInSheet[$i]["BQ"], 
-					"credit_segment" => $allDataInSheet[$i]["BR"], 
-					"cycle" => $allDataInSheet[$i]["BS"], 
-					"os_at_wo" => $allDataInSheet[$i]["BT"], 
-					"next_installment_principal" => $allDataInSheet[$i]["BU"], 
-					"application_origin" => $allDataInSheet[$i]["BV"], 
-					"application_type" => $allDataInSheet[$i]["BW"], 
-					"transaction_type" => $allDataInSheet[$i]["BX"], 
-					"sales_manager_code" => $allDataInSheet[$i]["BY"], 
-					"sales_manager_name" => $allDataInSheet[$i]["BZ"], 
-					"insurance_flag" => $allDataInSheet[$i]["CA"], 
-					"funding_amount" => $allDataInSheet[$i]["CB"], 
-					"age" => $allDataInSheet[$i]["CC"], 
-					"alternative_name" => $allDataInSheet[$i]["CD"], 
-					"approval_type" => $allDataInSheet[$i]["CE"], 
-					"bo_input_system" => $allDataInSheet[$i]["CF"], 
-					"borrower_effective_rate" => $allDataInSheet[$i]["CG"], 
-					"borrower_grade" => $allDataInSheet[$i]["CH"], 
-					"borrower_grade_category" => $allDataInSheet[$i]["CI"], 
-					"db_first_restructuring_dpd" => $allDataInSheet[$i]["CJ"], 
-					"db_first_restructuring_dpd_bucket" => $allDataInSheet[$i]["CK"], 
-					"db_last_restructuring_dpd" => $allDataInSheet[$i]["CL"], 
-					"db_last_restructuring_dpd_bucket" => $allDataInSheet[$i]["CM"], 
-					"delinq_string_due_date" => $allDataInSheet[$i]["CN"], 
-					"delinq_string_eom" => $allDataInSheet[$i]["CO"], 
-					"disburse_system" => $allDataInSheet[$i]["CP"], 
-					"dpd_bucket" => $allDataInSheet[$i]["CQ"], 
-					"dpd120_interest" => $allDataInSheet[$i]["CR"], 
-					"dpd120_late" => $allDataInSheet[$i]["CS"], 
-					"dpd120_principal" => $allDataInSheet[$i]["CT"], 
-					"dpd150_interest" => $allDataInSheet[$i]["CU"], 
-					"dpd150_late" => $allDataInSheet[$i]["CV"], 
-					"dpd150_principal" => $allDataInSheet[$i]["CW"], 
-					"dpd180_interest" => $allDataInSheet[$i]["CX"], 
-					"dpd180_late" => $allDataInSheet[$i]["CY"], 
-					"dpd180_principal" => $allDataInSheet[$i]["CZ"], 
-					"dpd210_interest" => $allDataInSheet[$i]["DA"], 
-					"dpd210_late" => $allDataInSheet[$i]["DB"], 
-					"dpd210_principal" => $allDataInSheet[$i]["DC"], 
-					"dpd30_interest" => $allDataInSheet[$i]["DD"], 
-					"dpd30_late" => $allDataInSheet[$i]["DE"], 
-					"dpd30_principal" => $allDataInSheet[$i]["DF"], 
-					"dpd60_interest" => $allDataInSheet[$i]["DG"], 
-					"dpd60_late" => $allDataInSheet[$i]["DH"], 
-					"dpd60_principal" => $allDataInSheet[$i]["DI"], 
-					"dpd90_interest" => $allDataInSheet[$i]["DJ"], 
-					"dpd90_late" => $allDataInSheet[$i]["DK"], 
-					"dpd90_principal" => $allDataInSheet[$i]["DL"], 
-					"first_ballooning_amount" => $allDataInSheet[$i]["DM"], 
-					"first_ballooning_date" => $allDataInSheet[$i]["DN"], 
-					"first_restructuring_date" => $allDataInSheet[$i]["DO"], 
-					"first_restructuring_mob" => $allDataInSheet[$i]["DP"], 
-					"first_restructuring_remark" => $allDataInSheet[$i]["DQ"], 
-					"first_restructuring_type" => $allDataInSheet[$i]["DR"], 
-					"group_name" => $allDataInSheet[$i]["DS"], 
-					"has_siup" => $allDataInSheet[$i]["DT"], 
-					"highest_interest_overdue" => $allDataInSheet[$i]["DU"], 
-					"highest_late_overdue" => $allDataInSheet[$i]["DV"], 
-					"highest_principal_overdue" => $allDataInSheet[$i]["DW"], 
-					"highest_total_overdue" => $allDataInSheet[$i]["DX"], 
-					"institutional_prop" => $allDataInSheet[$i]["DY"], 
-					"interest_accrual" => $allDataInSheet[$i]["DZ"], 
-					"interest_billed" => $allDataInSheet[$i]["EA"], 
-					"interest_paid_ltd" => $allDataInSheet[$i]["EB"], 
-					"interest_unbilled" => $allDataInSheet[$i]["EC"], 
-					"is_balance_enough_for_m1_hor" => $allDataInSheet[$i]["ED"], 
-					"is_balance_enough_for_m1_ver" => $allDataInSheet[$i]["EE"], 
-					"is_balance_enough_for_oldest_unpaid_billing" => $allDataInSheet[$i]["EF"], 
-					"is_balance_enough_for_overdue" => $allDataInSheet[$i]["EG"], 
-					"is_bank_connect" => $allDataInSheet[$i]["EH"], 
-					"is_eligible_npl" => $allDataInSheet[$i]["EI"], 
-					"is_eom" => $allDataInSheet[$i]["EJ"], 
-					"is_fraud" => $allDataInSheet[$i]["EK"], 
-					"is_npl" => $allDataInSheet[$i]["EL"], 
-					"is_pefindo_submitted" => $allDataInSheet[$i]["EM"], 
-					"rollover_loan" => $allDataInSheet[$i]["EN"], 
-					"l3m_repayment_amount" => $allDataInSheet[$i]["EO"], 
-					"l3m_repayment_pct" => $allDataInSheet[$i]["EP"], 
-					"l3m_total_overdue" => $allDataInSheet[$i]["EQ"], 
-					"last_ballooning_amount" => $allDataInSheet[$i]["ER"], 
-					"last_ballooning_date" => $allDataInSheet[$i]["ES"], 
-					"last_deposit_amount" => $allDataInSheet[$i]["ET"], 
-					"last_deposit_date" => $allDataInSheet[$i]["EU"], 
-					"last_deposit_remark" => $allDataInSheet[$i]["EV"], 
-					"last_repayment_amount" => $allDataInSheet[$i]["EW"], 
-					"last_repayment_amount_after_wo" => $allDataInSheet[$i]["EX"], 
-					"last_repayment_date_after_wo" => $allDataInSheet[$i]["EY"], 
-					"last_repayment_type" => $allDataInSheet[$i]["EZ"], 
-					"last_restructuring_mob" => $allDataInSheet[$i]["FA"], 
-					"last_restructuring_remark" => $allDataInSheet[$i]["FB"], 
-					"last_restructuring_type" => $allDataInSheet[$i]["FC"], 
-					"late_billed" => $allDataInSheet[$i]["FD"], 
-					"late_fee_calc" => $allDataInSheet[$i]["FE"], 
-					"late_paid_ltd" => $allDataInSheet[$i]["FF"], 
-					"latest_due_date_overdue" => $allDataInSheet[$i]["FG"], 
-					"latest_installment_number_overdue" => $allDataInSheet[$i]["FH"], 
-					"lender_effective_rate" => $allDataInSheet[$i]["FI"], 
-					"lender_grade" => $allDataInSheet[$i]["FJ"], 
-					"lender_grade_category" => $allDataInSheet[$i]["FK"], 
-					"lender_interest_rate" => $allDataInSheet[$i]["FL"], 
-					"loan_amount" => $allDataInSheet[$i]["FM"], 
-					"business_pic" => $allDataInSheet[$i]["FN"], 
-					"longest_dpd" => $allDataInSheet[$i]["FO"], 
-					"m1_hor" => $allDataInSheet[$i]["FP"], 
-					"mia" => $allDataInSheet[$i]["FQ"], 
-					"net_principal_outstanding" => $allDataInSheet[$i]["FR"], 
-					"net_principal_outstanding_after_wo" => $allDataInSheet[$i]["FS"], 
-					"net_principal_outstanding_at_wo" => $allDataInSheet[$i]["FT"], 
-					"next_ballooning_amount" => $allDataInSheet[$i]["FU"], 
-					"next_ballooning_date" => $allDataInSheet[$i]["FV"], 
-					"npl_dpd" => $allDataInSheet[$i]["FW"], 
-					"npl_dpd_bucket" => $allDataInSheet[$i]["FX"], 
-					"npl_mob" => $allDataInSheet[$i]["FY"], 
-					"number_of_installment_billed" => $allDataInSheet[$i]["FZ"], 
-					"number_of_installment_overdue" => $allDataInSheet[$i]["GA"], 
-					"number_of_installment_unbilled" => $allDataInSheet[$i]["GB"], 
-					"oldest_due_date_overdue" => $allDataInSheet[$i]["GC"], 
-					"oldest_installment_number_overdue" => $allDataInSheet[$i]["GD"], 
-					"oldest_unpaid_due_date_billing" => $allDataInSheet[$i]["GE"], 
-					"oldest_unpaid_interest_billing" => $allDataInSheet[$i]["GF"], 
-					"oldest_unpaid_late_billing" => $allDataInSheet[$i]["GG"], 
-					"oldest_unpaid_principal_billing" => $allDataInSheet[$i]["GH"], 
-					"oldest_unpaid_total_billing" => $allDataInSheet[$i]["GI"], 
-					"partner_name" => $allDataInSheet[$i]["GJ"], 
-					"pefindo_submission_date" => $allDataInSheet[$i]["GK"], 
-					"pic_lead" => $allDataInSheet[$i]["GL"], 
-					"pic_sub_lead" => $allDataInSheet[$i]["GM"], 
-					"premature_clearance" => $allDataInSheet[$i]["GN"], 
-					"principal_billed" => $allDataInSheet[$i]["GO"], 
-					"principal_loss_non_retail" => $allDataInSheet[$i]["GP"], 
-					"principal_loss_retail" => $allDataInSheet[$i]["GQ"], 
-					"principal_outstanding_institutional" => $allDataInSheet[$i]["GR"], 
-					"principal_outstanding_non_retail" => $allDataInSheet[$i]["GS"], 
-					"principal_outstanding_retail" => $allDataInSheet[$i]["GT"], 
-					"principal_outstanding_robo" => $allDataInSheet[$i]["GU"], 
-					"principal_paid_ltd" => $allDataInSheet[$i]["GV"], 
-					"principal_unbilled" => $allDataInSheet[$i]["GW"], 
-					"provision_fund_institutional" => $allDataInSheet[$i]["GX"], 
-					"provision_fund_institutional_by_accounting" => $allDataInSheet[$i]["GY"], 
-					"provision_fund_non_retail" => $allDataInSheet[$i]["GZ"], 
-					"provision_fund_retail" => $allDataInSheet[$i]["HA"], 
-					"provision_fund_robo" => $allDataInSheet[$i]["HB"], 
-					"provision_fund_robo_by_accounting" => $allDataInSheet[$i]["HC"], 
-					"restructuring_counter" => $allDataInSheet[$i]["HD"], 
-					"retail_prop" => $allDataInSheet[$i]["HE"], 
-					"robo_prop" => $allDataInSheet[$i]["HF"], 
-					"snapshot_date" => $allDataInSheet[$i]["HG"], 
-					"total_billed" => $allDataInSheet[$i]["HH"], 
-					"total_paid" => $allDataInSheet[$i]["HI"], 
-					"total_paid_ltd" => $allDataInSheet[$i]["HJ"], 
-					"total_repayment_after_wo" => $allDataInSheet[$i]["HK"], 
-					"total_unbilled" => $allDataInSheet[$i]["HL"], 
-					"vendor_name" => $allDataInSheet[$i]["HM"], 
-					"website" => $allDataInSheet[$i]["HN"], 
-					"wo_dpd" => $allDataInSheet[$i]["HO"], 
-					"wo_dpd_bucket" => $allDataInSheet[$i]["HP"], 
-					"xdays_interest" => $allDataInSheet[$i]["HQ"], 
-					"xdays_late" => $allDataInSheet[$i]["HR"], 
-					"xdays_principal" => $allDataInSheet[$i]["HS"], 
-					"is_ever_fpd" => $allDataInSheet[$i]["HT"], 
-					"va_number_bca" => $allDataInSheet[$i]["HU"], 
-					"va_number_bri" => $allDataInSheet[$i]["HV"], 
-					"va_number_cimb" => $allDataInSheet[$i]["HW"], 
-					"va_number_mandiri" => $allDataInSheet[$i]["HX"], 
-					"va_number_scb" => $allDataInSheet[$i]["HY"], 
-					"service_fee" => $allDataInSheet[$i]["HZ"], 
+					"CM_CUSTOMER_NMBR" => $allDataInSheet[$i]["A"],
+					"CM_CARD_NMBR" => $allDataInSheet[$i]["B"],
+					"CM_TYPE" => $allDataInSheet[$i]["C"],
+					"CM_CRLIMIT" => $allDataInSheet[$i]["D"],
+					"CM_CREDIT_LINE" => $allDataInSheet[$i]["E"],
+					"CM_DTE_OPENED" => $allDataInSheet[$i]["F"],
+					"CM_INTEREST" => $allDataInSheet[$i]["G"],
+					"CM_TENOR" => $allDataInSheet[$i]["H"],
+					"FLD_DATE_5" => $allDataInSheet[$i]["I"],
+					"MOB" => $allDataInSheet[$i]["J"],
+					"CM_DTE_LIQUIDATE" => $allDataInSheet[$i]["K"],
+					"CM_CURRENCY_CODE" => $allDataInSheet[$i]["L"],
+					"CM_HOLD_AMOUNT" => $allDataInSheet[$i]["M"],
+					"CM_AO_CODE" => $allDataInSheet[$i]["N"],
+					"CM_OFFICER_NAME" => $allDataInSheet[$i]["O"],
+					"CM_SECTOR_CODE" => $allDataInSheet[$i]["P"],
+					"CM_SECTOR_DESC" => $allDataInSheet[$i]["Q"],
+					"CM_DTE_PK" => $allDataInSheet[$i]["R"],
+					"CM_CARD_EXPIR_DTE" => $allDataInSheet[$i]["S"],
+					"CM_INSTALLMENT_AMOUNT" => $allDataInSheet[$i]["T"],
+					"CM_INSTL_BAL" => $allDataInSheet[$i]["U"],
+					"CM_INTR_PER_DIEM" => $allDataInSheet[$i]["V"],
+					"CM_INSTL_LIMIT" => $allDataInSheet[$i]["W"],
+					"CM_AMNT_OUTST_INSTL" => $allDataInSheet[$i]["X"],
+					"CM_TOTALDUE" => $allDataInSheet[$i]["Y"],
+					"CM_CYCLE" => $allDataInSheet[$i]["Z"],
+					"CM_INSTALLMENT_NO" => $allDataInSheet[$i]["AA"],
+					"CM_DTE_PYMT_DUE" => $allDataInSheet[$i]["AB"],
+					"DPD" => $allDataInSheet[$i]["AC"],
+					"CM_BUCKET_PROGRAM" => $allDataInSheet[$i]["AD"],
+					"FLD_CHAR_2" => $allDataInSheet[$i]["AE"],
+					"CM_STATUS" => $allDataInSheet[$i]["AF"],
+					"CM_COLLECTIBILITY" => $allDataInSheet[$i]["AG"],
+					"CM_BLOCK_CODE" => $allDataInSheet[$i]["AH"],
+					"CM_DTE_BLOCK_CODE" => $allDataInSheet[$i]["AI"],
+					"CM_OS_BALANCE" => $allDataInSheet[$i]["AJ"],
+					"CM_OS_PRINCIPAL" => $allDataInSheet[$i]["AK"],
+					"CM_OS_INTEREST" => $allDataInSheet[$i]["AL"],
+					"CM_RTL_MISC_FEES" => $allDataInSheet[$i]["AM"],
+					"CM_TOTAL_OS_AR" => $allDataInSheet[$i]["AN"],
+					"CM_CHGOFF_STATUS_FLAG" => $allDataInSheet[$i]["AO"],
+					"CM_DTE_CHGOFF_STAT_CHANGE" => $allDataInSheet[$i]["AP"],
+					"SUM_WO_BALANCE" => $allDataInSheet[$i]["AQ"],
+					"CM_CHGOFF_PRICIPLE" => $allDataInSheet[$i]["AR"],
+					"CM_ZIP_REC" => $allDataInSheet[$i]["AS"],
+					"CM_DELQ_COUNTER1" => $allDataInSheet[$i]["AT"],
+					"CM_DELQ_COUNTER2" => $allDataInSheet[$i]["AU"],
+					"CM_DELQ_COUNTER3" => $allDataInSheet[$i]["AV"],
+					"CM_DELQ_COUNTER4" => $allDataInSheet[$i]["AW"],
+					"CM_DELQ_COUNTER5" => $allDataInSheet[$i]["AX"],
+					"CM_DELQ_COUNTER6" => $allDataInSheet[$i]["AY"],
+					"CM_DELQ_COUNTER7" => $allDataInSheet[$i]["AZ"],
+					"CM_DELQ_COUNTER8" => $allDataInSheet[$i]["BA"],
+					"CM_DELQ_COUNTER9" => $allDataInSheet[$i]["BB"],
+					"CM_CURR_DUE" => $allDataInSheet[$i]["BC"],
+					"CM_PAST_DUE" => $allDataInSheet[$i]["BD"],
+					"CM_30DAYS_DELQ" => $allDataInSheet[$i]["BE"],
+					"CM_60DAYS_DELQ" => $allDataInSheet[$i]["BF"],
+					"CM_90DAYS_DELQ" => $allDataInSheet[$i]["BG"],
+					"CM_120DAYS_DELQ" => $allDataInSheet[$i]["BH"],
+					"CM_150DAYS_DELQ" => $allDataInSheet[$i]["BI"],
+					"CM_180DAYS_DELQ" => $allDataInSheet[$i]["BJ"],
+					"CM_210DAYS_DELQ" => $allDataInSheet[$i]["BK"],
+					"CM_RESTRUCTURE_FLAG" => $allDataInSheet[$i]["BL"],
+					"CM_DTE_RESTRUCTURE" => $allDataInSheet[$i]["BM"],
+					"CM_DTE_LST_PYMT" => $allDataInSheet[$i]["BN"],
+					"CM_STATUS_DESC" => $allDataInSheet[$i]["BO"],
+					"CM_LST_PYMT_AMNT" => $allDataInSheet[$i]["BP"],
+					"CM_PAID_PRICIPAL" => $allDataInSheet[$i]["BQ"],
+					"CM_PAID_INTEREST" => $allDataInSheet[$i]["BR"],
+					"CM_PAID_CHARGE" => $allDataInSheet[$i]["BS"],
+					"CM_SOURCE_CODE" => $allDataInSheet[$i]["BT"],
+					"CR_ACCT_NBR" => $allDataInSheet[$i]["BU"], 
 					'file_upload_id' => $data_exclude_file['id'],
 				];
 			}
-			$return = $this->db->table('cpcrd_new_temp')->insertBatch($data_batch);
+			// var_dump($data_batch);die;
+
+			$return = $this->db->table('cpcrd_new_upload_temp')->insertBatch($data_batch);
 
 			if($return){
 				$cache = session()->get('USER_ID').'_get_upload_data';
@@ -332,5 +173,85 @@ class UploadAccountData extends \App\Controllers\BaseController
 			}
 		}
 	}
+
+	function show_uploaded_file_form(){
+		
+		$id = $this->request->getGet('id');
+
+		return view('\App\Modules\UploadAccountData\Views\ShowUploadedFileForm_view', ['id' => $id]);
+	}
+
+	function get_view_data(){
+		$uploadId = $this->request->getGet('uploadId');
+
+		$data = $this->UploadAccountData_model->get_view_data($uploadId);
+	    if ($data) {
+			$rs = ['success' => true, 'message' => 'Success to apply filter', 'data' => $data];
+		} else {
+			$rs = ['success' => false, 'message' => 'failed', 'data' => null];
+		}
+		return $this->response->setStatusCode(200)->setJSON($rs);
+
+	}
+
+	function approval(){
+		return view('\App\Modules\UploadAccountData\Views\ApprovalAccountData_view');
+	}
 	
+	function get_upload_data_approval(){
+		$data = $this->UploadAccountData_model->get_upload_data_approval();
+	    if ($data) {
+		
+			$rs = ['success' => true, 'message' => 'Success to apply filter', 'data' => $data];
+		} else {
+			$rs = ['success' => false, 'message' => 'failed', 'data' => null];
+		}
+	
+		
+		return $this->response->setStatusCode(200)->setJSON($rs);
+	}
+
+	function approve_file(){
+		$uploadId = $this->request->getPost('id');
+
+		$truncate = $this->db->table('cpcrd_new')->truncate();
+
+		if ($truncate) {
+			$query = "INSERT INTO cpcrd_new (CM_CUSTOMER_NMBR, CM_CARD_NMBR, CM_TYPE, CM_CRLIMIT, CM_CREDIT_LINE, CM_DTE_OPENED, CM_INTEREST, CM_TENOR, FLD_DATE_5, MOB, CM_DTE_LIQUIDATE, CM_CURRENCY_CODE, CM_HOLD_AMOUNT, CM_AO_CODE, CM_OFFICER_NAME, CM_SECTOR_CODE, CM_SECTOR_DESC, CM_DTE_PK, CM_CARD_EXPIR_DTE, CM_INSTALLMENT_AMOUNT, CM_INSTL_BAL, CM_INTR_PER_DIEM, CM_INSTL_LIMIT, CM_AMNT_OUTST_INSTL, CM_TOTALDUE, CM_CYCLE, CM_INSTALLMENT_NO, CM_DTE_PYMT_DUE, DPD, CM_BUCKET_PROGRAM, FLD_CHAR_2, CM_STATUS, CM_COLLECTIBILITY, CM_BLOCK_CODE, CM_DTE_BLOCK_CODE, CM_OS_BALANCE, CM_OS_PRINCIPAL, CM_OS_INTEREST, CM_RTL_MISC_FEES, CM_TOTAL_OS_AR, CM_CHGOFF_STATUS_FLAG, CM_DTE_CHGOFF_STAT_CHANGE, SUM_WO_BALANCE, CM_CHGOFF_PRICIPLE, CM_ZIP_REC, CM_DELQ_COUNTER1, CM_DELQ_COUNTER2, CM_DELQ_COUNTER3, CM_DELQ_COUNTER4, CM_DELQ_COUNTER5, CM_DELQ_COUNTER6, CM_DELQ_COUNTER7, CM_DELQ_COUNTER8, CM_DELQ_COUNTER9, CM_CURR_DUE, CM_PAST_DUE, CM_30DAYS_DELQ, CM_60DAYS_DELQ, CM_90DAYS_DELQ, CM_120DAYS_DELQ, CM_150DAYS_DELQ, CM_180DAYS_DELQ, CM_210DAYS_DELQ, CM_RESTRUCTURE_FLAG, CM_DTE_RESTRUCTURE, CM_DTE_LST_PYMT, CM_STATUS_DESC, CM_LST_PYMT_AMNT, CM_PAID_PRICIPAL, CM_PAID_INTEREST, CM_PAID_CHARGE, CM_SOURCE_CODE, CR_ACCT_NBR)
+					  SELECT CM_CUSTOMER_NMBR, CM_CARD_NMBR, CM_TYPE, CM_CRLIMIT, CM_CREDIT_LINE, CM_DTE_OPENED, CM_INTEREST, CM_TENOR, FLD_DATE_5, MOB, CM_DTE_LIQUIDATE, CM_CURRENCY_CODE, CM_HOLD_AMOUNT, CM_AO_CODE, CM_OFFICER_NAME, CM_SECTOR_CODE, CM_SECTOR_DESC, CM_DTE_PK, CM_CARD_EXPIR_DTE, CM_INSTALLMENT_AMOUNT, CM_INSTL_BAL, CM_INTR_PER_DIEM, CM_INSTL_LIMIT, CM_AMNT_OUTST_INSTL, CM_TOTALDUE, CM_CYCLE, CM_INSTALLMENT_NO, CM_DTE_PYMT_DUE, DPD, CM_BUCKET_PROGRAM, FLD_CHAR_2, CM_STATUS, CM_COLLECTIBILITY, CM_BLOCK_CODE, CM_DTE_BLOCK_CODE, CM_OS_BALANCE, CM_OS_PRINCIPAL, CM_OS_INTEREST, CM_RTL_MISC_FEES, CM_TOTAL_OS_AR, CM_CHGOFF_STATUS_FLAG, CM_DTE_CHGOFF_STAT_CHANGE, SUM_WO_BALANCE, CM_CHGOFF_PRICIPLE, CM_ZIP_REC, CM_DELQ_COUNTER1, CM_DELQ_COUNTER2, CM_DELQ_COUNTER3, CM_DELQ_COUNTER4, CM_DELQ_COUNTER5, CM_DELQ_COUNTER6, CM_DELQ_COUNTER7, CM_DELQ_COUNTER8, CM_DELQ_COUNTER9, CM_CURR_DUE, CM_PAST_DUE, CM_30DAYS_DELQ, CM_60DAYS_DELQ, CM_90DAYS_DELQ, CM_120DAYS_DELQ, CM_150DAYS_DELQ, CM_180DAYS_DELQ, CM_210DAYS_DELQ, CM_RESTRUCTURE_FLAG, CM_DTE_RESTRUCTURE, CM_DTE_LST_PYMT, CM_STATUS_DESC, CM_LST_PYMT_AMNT, CM_PAID_PRICIPAL, CM_PAID_INTEREST, CM_PAID_CHARGE, CM_SOURCE_CODE, CR_ACCT_NBR
+					  FROM cpcrd_new_upload_temp
+					  WHERE file_upload_id = ?";
+			$this->db->query($query, [$uploadId]);
+
+			$this->db->table('upload_account_data')
+				->where('id', $uploadId)
+				->update(['approvedBy' => session()->get('USER_ID'), 'approvedTime' => date('Y-m-d H:i:s')]);
+
+			$rs = ['success' => true, 'message' => 'File approved and data moved to cpcrd_new'];
+			return $this->response->setStatusCode(200)->setJSON($rs);
+		} else {
+			$rs = ['success' => false, 'message' => 'Failed to truncate cpcrd_new'];
+			return $this->response->setStatusCode(200)->setJSON($rs);
+		}
+	}
+	
+	function reject_file(){
+		$uploadId = $this->request->getPost('id');
+
+		$fileRow = $this->db->table('upload_account_data')->select('fullPath')->where('id', $uploadId)->get()->getRow();
+		$filePath = $fileRow ? $fileRow->fullPath : null;
+		$delete = $this->db->table('cpcrd_new_upload_temp')->where('file_upload_id', $uploadId)->delete();
+		$delete= $this->db->table('upload_account_data')->where('id', $uploadId)->delete();
+		if ($delete) {
+			if ($filePath && file_exists($filePath)) {
+				unlink($filePath);
+			}
+			$rs = ['success' => true, 'message' => 'File rejected and data deleted'];
+			return $this->response->setStatusCode(200)->setJSON($rs);
+		} else {
+			$rs = ['success' => false, 'message' => 'Failed to delete data'];
+			return $this->response->setStatusCode(200)->setJSON($rs);
+		}
+		
+	}
 }
