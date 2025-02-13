@@ -38,6 +38,7 @@ $routes->post('login/post_login', 'Login::post_login');
 $routes->get('login/logout', 'Login::logout');
 $routes->get('PushNotif/getUserAccountNo', 'PushNotif::getUserAccountNo');
 $routes->get('PushNotif/getInboundId', 'PushNotif::getInboundId');
+$routes->get('/Main/aiBot', 'Main::aiBot',['filter' => 'authfilter']);
 
 $routes->get('/', '\App\Modules\\' . $module . '\Controllers\\' . $module . '::index');
 
@@ -94,17 +95,17 @@ $routes->add('checklist_asset/add_field_checklist', '\App\Modules\ChecklistAsset
 #SetupDiskonApproval
 $routes->add('setup_diskon_approval/setup_diskon_approval_list', '\App\Modules\SetupDiskonApproval\Controllers\setup_diskon_approval::setup_diskon_approval_list',['filter' => 'authfilter']);
 #SetupWaNumber
-$routes->add('setup_wa_number/setup_wa_number', '\App\Modules\SetupWaNumber\Controllers\setup_wa_number::setup_wa_number',['filter' => 'authfilter']);
+$routes->add('setup_wa_number/setup_wa_number', '\App\Modules\SetupWaNumber\Controllers\Setup_wa_number::setup_wa_number',['filter' => 'authfilter']);
 #SetupWaTemplate
-$routes->add('setup_wa_template/view_template_list', '\App\Modules\SetupWaTemplate\Controllers\setup_wa_template::view_template_list',['filter' => 'authfilter']);
+$routes->add('setup_wa_template/view_template_list', '\App\Modules\SetupWaTemplate\Controllers\Setup_wa_template::view_template_list',['filter' => 'authfilter']);
 #SetupWaQuickReply
-$routes->add('setup_wa_quick_reply/view_quick_reply_list', '\App\Modules\SetupWaQuickReply\Controllers\setup_wa_quick_reply::view_quick_reply_list',['filter' => 'authfilter']);
+$routes->add('setup_wa_quick_reply/view_quick_reply_list', '\App\Modules\SetupWaQuickReply\Controllers\Setup_wa_quick_reply::view_quick_reply_list',['filter' => 'authfilter']);
 #SetupWaFlow
-$routes->add('setup_wa_flow/view_flow_list', '\App\Modules\SetupWaFlow\Controllers\setup_wa_flow::view_flow_list',['filter' => 'authfilter']);
+$routes->add('setup_wa_flow/view_flow_list', '\App\Modules\SetupWaFlow\Controllers\Setup_wa_flow::view_flow_list',['filter' => 'authfilter']);
 #SetupWaGeneral
-$routes->add('setup_wa_general/view_general_list', '\App\Modules\SetupWaGeneral\Controllers\setup_wa_general::view_general_list',['filter' => 'authfilter']);
+$routes->add('setup_wa_general/view_general_list', '\App\Modules\SetupWaGeneral\Controllers\Setup_wa_general::view_general_list',['filter' => 'authfilter']);
 #SetupWaFilterWord
-$routes->add('setup_wa_filter_word/view_filter_word_list', '\App\Modules\SetupWaFilterWord\Controllers\setup_wa_filter_word::view_filter_word_list',['filter' => 'authfilter']);
+$routes->add('setup_wa_filter_word/view_filter_word_list', '\App\Modules\SetupWaFilterWord\Controllers\Setup_wa_filter_word::view_filter_word_list',['filter' => 'authfilter']);
 #UploadWaBlast
 $routes->add('upload_wa_blast/view_upload_wa_blast_list', '\App\Modules\UploadWaBlast\Controllers\Upload_wa_blast::view_upload_wa_blast_list',['filter' => 'authfilter']);
 #ApprovalUploadWaBlast
@@ -383,21 +384,21 @@ if($uri->getTotalSegments() > 2){
     $routes->add('setup_diskon_approval/setup_diskon_approval/'.$function, '\App\Modules\SetupDiskonApproval\Controllers\setup_diskon_approval::'.$function,['filter' => 'authfilter']);
 
     #SetupWaNumber
-    $routes->add('setup_wa_number/setup_wa_number/'.$function, '\App\Modules\SetupWaNumber\Controllers\setup_wa_number::'.$function,['filter' => 'authfilter']);
+    $routes->add('setup_wa_number/setup_wa_number/'.$function, '\App\Modules\SetupWaNumber\Controllers\Setup_wa_number::'.$function,['filter' => 'authfilter']);
 
     #SetupWaTemplate
-    $routes->add('setup_wa_template/setup_wa_template/'.$function, '\App\Modules\SetupWaTemplate\Controllers\setup_wa_template::'.$function,['filter' => 'authfilter']);
+    $routes->add('setup_wa_template/setup_wa_template/'.$function, '\App\Modules\SetupWaTemplate\Controllers\Setup_wa_template::'.$function,['filter' => 'authfilter']);
 
     #SetupWaQuickReply
-    $routes->add('setup_wa_quick_reply/setup_wa_quick_reply/'.$function, '\App\Modules\SetupWaQuickReply\Controllers\setup_wa_quick_reply::'.$function,['filter' => 'authfilter']);
+    $routes->add('setup_wa_quick_reply/setup_wa_quick_reply/'.$function, '\App\Modules\SetupWaQuickReply\Controllers\Setup_wa_quick_reply::'.$function,['filter' => 'authfilter']);
 
     #SetupWaFlow
     $routes->add('setup_wa_flow/setup_wa_flow/'.$function, '\App\Modules\SetupWaFlow\Controllers\setup_wa_flow::'.$function,['filter' => 'authfilter']);
 
     #SetupWaGeneral
-    $routes->add('setup_wa_general/setup_wa_general/'.$function, '\App\Modules\SetupWaGeneral\Controllers\setup_wa_general::'.$function,['filter' => 'authfilter']);
+    $routes->add('setup_wa_general/setup_wa_general/'.$function, '\App\Modules\SetupWaGeneral\Controllers\Setup_wa_general::'.$function,['filter' => 'authfilter']);
     #SetupWaFilterWord
-    $routes->add('setup_wa_filter_word/setup_wa_filter_word/'.$function, '\App\Modules\SetupWaFilterWord\Controllers\setup_wa_filter_word::'.$function,['filter' => 'authfilter']);
+    $routes->add('setup_wa_filter_word/setup_wa_filter_word/'.$function, '\App\Modules\SetupWaFilterWord\Controllers\Setup_wa_filter_word::'.$function,['filter' => 'authfilter']);
 
     #UploadWaBlast
     $routes->add('upload_wa_blast/upload_wa_blast/'.$function, '\App\Modules\UploadWaBlast\Controllers\Upload_wa_blast::'.$function,['filter' => 'authfilter']);

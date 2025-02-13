@@ -69,6 +69,7 @@ socketPushNotif.on("connect", () => {
     });*/
 
     socketPushNotif.on('server-webhook-whatsapp', function (data) {
+        console.log('new message', data);
         try {
             const decryptedData = JSON.parse(data);
             let dateString = decryptedData.results[0].receivedAt;
@@ -78,7 +79,8 @@ socketPushNotif.on("connect", () => {
             getUserAccountNo(decryptedData.results[0].from, decryptedData.results[0].messageId).then(function (ret_data) {
                 console.log('iki yaa gesss');
                 console.log(ret_data);  // Akan mendapatkan account_no yang benar, bukan undefined
-
+                let htmlAppend = '';
+                let keymsg = uuid();
                 let year = date.getFullYear();
                 let month = padZero(date.getMonth() + 1);
                 let day = padZero(date.getDate());
@@ -101,8 +103,14 @@ socketPushNotif.on("connect", () => {
                     } else if (decryptedData.results[0].message.type == 'DOCUMENT') {
                         $("#coba_tooltips" + ret_data.account_no).append('<div class="message received">' + '<a href="' + WEBHOOK + 'api/file_upload/' + ret_data.file_name + '" target="_blank"><br>' + '<i class="bi bi-file-earmark-pdf"></i> ' + ret_data.file_name + '</a><br>' + '<span id="random">' + decryptedData.results[0].message.caption + '</span><br>' + '<span class="metadata"><span class="time">' + formattedDate + '</span></span>' + '</div>');
                     } else {
-
-                        $("#coba_tooltips" + ret_data.account_no).append('<div class="message received"><span id="random">' + decryptedData.results[0].message.text + '</span><br><span class="metadata"><span class="time">' + formattedDate + '</span></span></div>');
+                        console.log('masuk sini')
+                        htmlAppend = '<div class="message received"><span id="random">' + decryptedData.results[0].message.text + '<br></span>' +
+                            '<span class="metadata">' +
+                            '<span class="time" id="show_time_' + keymsg + '">' + formattedDate + '</span></span>' +
+                            '<input type="hidden" class="time_notification" id = "id_show_time_' + keymsg + '" show_time = "show_time_' + keymsg + '" value="' + formattedDate + '" >';
+                        $("#coba_tooltips" + ret_data.account_no).append(htmlAppend);
+                        console.log('masuk sini', htmlAppend)
+                        // $("#coba_tooltips" + ret_data.account_no).append('<div class="message received"><span id="random">' + decryptedData.results[0].message.text + '</span><br><span class="metadata"><span class="time">' + formattedDate + '</span></span></div>');
                     }
 
                     if (decryptedData.results[0].message.text == '0') {
@@ -127,7 +135,11 @@ socketPushNotif.on("connect", () => {
 
                     }
                 }
-                $('#waConversationActivity .container').scrollTop($('#waConversationActivity .container')[0].scrollHeight);
+                updateShowTime();
+                // $('#waConversationActivity .container').scrollTop($('#waConversationActivity .container')[0].scrollHeight);
+                $("#waConversationActivity .container").animate({
+                    scrollTop: 99 * 99
+                }, 1000);
             }).catch(function (error) {
                 console.log('Error:', error);
             });

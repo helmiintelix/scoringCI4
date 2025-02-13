@@ -65,7 +65,7 @@ class WhatsappConversation extends \App\Controllers\BaseController
 			callbackData,
 			pairedMessageId,
 			if(
-				direction = 'OUTB',concat('".base_url()."file_upload/wa_blast_conversation/',pairedMessageId),concat('https://democoll74.ecentrix.net/webhook_cms_ci4/api/file_upload/',pairedMessageId)
+				direction = 'OUTB',concat('".base_url()."file_upload/wa_blast_conversation/','".$account_id."/',pairedMessageId),concat('https://democoll74.ecentrix.net/webhook_cms_ci4/api/file_upload/',pairedMessageId)
 			)  link_attachment,
 		    messageType,
 		    messageText,
@@ -146,7 +146,7 @@ class WhatsappConversation extends \App\Controllers\BaseController
 
 		        	$originalName = $file->getClientName();
 		        	$contentType =$file->getMimeType();
-					$uploadPath = ROOTPATH . 'file_upload/wa_blast_conversation/';  // pastikan direktori ini ada dan memiliki izin tulis
+					$uploadPath = FCPATH . '/file_upload/wa_blast_conversation/'.$cm_card_nmbr;  // pastikan direktori ini ada dan memiliki izin tulis
 
 					// Cek apakah direktori sudah ada, jika tidak, buat direktori
 					if (!is_dir($uploadPath)) {

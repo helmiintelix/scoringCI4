@@ -173,14 +173,14 @@ $.ajax({
         arr += '<option value="' + key + '">' + value + "</option>";
       });
     });
-    console.log(arr);
+    // console.log(arr);
   },
 });
 
 var i = 0;
 
 $("#btn_add_set").click(function (e) {
-  console.log("TEST BUTTTOBNNNNNI");
+  // console.log("TEST BUTTTOBNNNNNI");
   e.preventDefault();
   i = i + 1;
   var values = [];
@@ -221,36 +221,36 @@ $("#btn_add_set").click(function (e) {
   //  console.log(arr_add);
   $("#set_detail").append(
     '	<div id="div_add_set' +
-      i +
-      '" name="div_add_set"class="row align-items-center" > ' +
-      '<div class="col-auto">' +
-      '<select name="opt-search[]" class="form-control form-control-sm mandatory" data-placeholder="-Please Select Data-" id="opt-search' +
-      i +
-      '">' +
-      arr_add +
-      "</select>" +
-      "</div>" +
-      '<div class="col-auto">' +
-      '<label for="txt-class-category" class="fs-6 text-capitalize"> = </label>' +
-      "</div>" +
-      '<div class="col-sm-3" id="opt-input"> ' +
-      '<select name="opt-self[]" class="form-control form-control-sm mandatory" data-placeholder="-Please Select Data-" id="opt-self' +
-      i +
-      '">' +
-      '<option value="" selected="selected">[select data]</option>' +
-      '<option value="this">this</option>' +
-      "</select>" +
-      "</div>" +
-      '<div class="col-auto" id="text-input">' +
-      '<input type="text" id="txt-keyword' +
-      i +
-      '" name="txt-keyword[]" class="form-control form-control-sm mandatory" />' +
-      "</div>" +
-      '<div class="col-auto">' +
-      '<button type="button" class="btn btn-danger btn-sm" id="btn_delete_set"><i class="bi bi-x-circle"></i>' +
-      "Delete</button>" +
-      "</div>" +
-      "</div></div>"
+    i +
+    '" name="div_add_set"class="row align-items-center" > ' +
+    '<div class="col-auto">' +
+    '<select name="opt-search[]" class="form-control form-control-sm mandatory" data-placeholder="-Please Select Data-" id="opt-search' +
+    i +
+    '">' +
+    arr_add +
+    "</select>" +
+    "</div>" +
+    '<div class="col-auto">' +
+    '<label for="txt-class-category" class="fs-6 text-capitalize"> = </label>' +
+    "</div>" +
+    '<div class="col-sm-3" id="opt-input"> ' +
+    '<select name="opt-self[]" class="form-control form-control-sm mandatory" data-placeholder="-Please Select Data-" id="opt-self' +
+    i +
+    '">' +
+    '<option value="" selected="selected">[select data]</option>' +
+    '<option value="this">this</option>' +
+    "</select>" +
+    "</div>" +
+    '<div class="col-auto" id="text-input">' +
+    '<input type="text" id="txt-keyword' +
+    i +
+    '" name="txt-keyword[]" class="form-control form-control-sm mandatory" />' +
+    "</div>" +
+    '<div class="col-auto">' +
+    '<button type="button" class="btn btn-danger btn-sm" id="btn_delete_set"><i class="bi bi-x-circle"></i>' +
+    "Delete</button>" +
+    "</div>" +
+    "</div></div>"
   );
 
   // $("select[name*='opt-search[]']").each(function() {
@@ -337,8 +337,8 @@ $("#btn_add_set").click(function (e) {
       $("#div_add_set" + lastChar + " #opt-input").append(addSelf);
       $("#div_add_set" + lastChar + " #text-input").append(
         '<input type="text" id="txt-keyword' +
-          lastChar +
-          '" name="txt-keyword[]" class="form-control form-control-sm mandatory" />'
+        lastChar +
+        '" name="txt-keyword[]" class="form-control form-control-sm mandatory" />'
       );
     }
   });
