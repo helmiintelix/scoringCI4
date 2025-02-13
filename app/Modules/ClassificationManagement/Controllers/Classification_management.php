@@ -279,6 +279,7 @@ class Classification_management extends \App\Controllers\BaseController
 						stagging_reference
 					WHERE 
 						reference IS NOT NULL
+						AND id !=''
 					GROUP BY 
 						id
 					ORDER BY 
@@ -303,6 +304,7 @@ class Classification_management extends \App\Controllers\BaseController
 						information_schema.COLUMNS
 					WHERE 
 						TABLE_NAME = 'cms_account_last_status' 
+						AND id !=''
 						AND column_name NOT IN ('account_no') 
 						AND table_schema = '{$DbName}'
 					UNION ALL
@@ -325,7 +327,7 @@ class Classification_management extends \App\Controllers\BaseController
             $sql = 'SELECT "AGENT_ID" id ,"AGENT_ID"  as label , "string" as type ,"cpcrd_new" table_name UNION ALL ';
 			$sql .= 'SELECT "DATEDIFF(CURDATE(),CM_DTE_LST_PYMT)" id ,"DAYS SINCE LAST PAYMENT"  as label , "int" as type ,"cms_account_last_status" table_name UNION ALL ';
 			$sql .= 'SELECT column_name id, column_name as label , "string" as type ,"cms_account_last_status" table_name from information_schema.COLUMNS  where TABLE_NAME = "cms_account_last_status" and column_name not in ("account_no") AND table_schema = "'.$DbName .'"  UNION ALL ';
-			$sql .= 'SELECT id ,reference as label , "string" as type ,table_name FROM stagging_reference WHERE reference is not null GROUP BY id  order by label asc ';
+			$sql .= 'SELECT id ,reference as label , "string" as type ,table_name FROM stagging_reference WHERE reference is not null and id !="" GROUP BY id  order by label asc ';
         }
 		
 		
@@ -352,10 +354,13 @@ class Classification_management extends \App\Controllers\BaseController
 			}else {
 				$tipe = 'string';
 			}
+
 			$res[$key]['type'] = $tipe;
+			
 		}
 		$tmp = $res;
 		$data['daftar_filter'] = json_encode($tmp);
+	
 		return view('App\Modules\ClassificationManagement\Views\Classification_add_form_view', $data);
 	}
 	function save_classification_add(){
@@ -554,6 +559,7 @@ class Classification_management extends \App\Controllers\BaseController
 						stagging_reference
 					WHERE 
 						reference IS NOT NULL
+						AND id !=''
 					GROUP BY 
 						id
 					ORDER BY 
@@ -588,6 +594,7 @@ class Classification_management extends \App\Controllers\BaseController
 						table_name 
 					FROM 
 						stagging_reference
+						AND id !=''
 					WHERE 
 						reference IS NOT NULL
 					GROUP BY 
@@ -600,7 +607,7 @@ class Classification_management extends \App\Controllers\BaseController
             $sql = 'SELECT "AGENT_ID" id ,"AGENT_ID"  as label , "string" as type ,"cpcrd_new" table_name UNION ALL ';
 			$sql .= 'SELECT "DATEDIFF(CURDATE(),CM_DTE_LST_PYMT)" id ,"DAYS SINCE LAST PAYMENT"  as label , "int" as type ,"cms_account_last_status" table_name UNION ALL ';
 			$sql .= 'SELECT column_name id, column_name as label , "string" as type ,"cms_account_last_status" table_name from information_schema.COLUMNS  where TABLE_NAME = "cms_account_last_status" and column_name not in ("account_no") AND table_schema = "'.$DbName .'"  UNION ALL ';
-			$sql .= 'SELECT id ,reference as label , "string" as type ,table_name FROM stagging_reference WHERE reference is not null GROUP BY id  order by label asc ';
+			$sql .= 'SELECT id ,reference as label , "string" as type ,table_name FROM stagging_reference WHERE reference is not null AND id !="" GROUP BY id  order by label asc ';
         }
 
 		$res = $this->db->query($sql)->getResultArray();
