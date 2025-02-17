@@ -80,6 +80,7 @@ class Fieldcoll_and_agency_class_assignment extends \App\Controllers\BaseControl
 			}
 		}
 		$data["assigned_agent_detail"] = json_encode($res);
+		// var_dump($data);die;
 
 		return view('App\Modules\FieldcollAndAgencyClassAssignment\Views\Assignment_class_agent_form_view', $data);
 	}
@@ -100,8 +101,9 @@ class Fieldcoll_and_agency_class_assignment extends \App\Controllers\BaseControl
 		return $this->response->setStatusCode(200)->setJSON($result);
 	}
 	function get_agent_detail(){
-		$agency_id= $this->input->getGet('agency_id');
-		$agency_data = $this->Common_model->get_record_values("agency_id as id,agency_name as name, 'AGENCY' as group_id", "cms_agency", "agency_id = '".$agency_id."'");
+		$agency_id= $this->input->getGet('agent_id');
+		$agency_data = $this->Common_model->get_record_values("id as id,name as name,  group_id", "cc_user", "id = '".$agency_id."'");
+		
 		return $this->response->setStatusCode(200)->setJSON($agency_data);
 		
 	}
