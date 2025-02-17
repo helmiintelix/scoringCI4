@@ -34,11 +34,11 @@ class Fc_recording_voice extends \App\Controllers\BaseController
 	function get_path(){
 		$data['id'] = $this->input->getGet('id');
 		
-		$data["file_path"] = $this->Common_model->get_record_value('file_path', 'ecentrix.ecentrix_recording', 'id = "'.$data['id'].'"');
-		$data["data"] = $this->Common_model->get_record_value('*', 'ecentrix.ecentrix_recording', 'id = "'.$data['id'].'"');
+		$data["file_path"] = $this->Common_model->get_record_value('file_path', 'ecentrix.recording', 'id = "'.$data['id'].'"');
+		$data["data"] = $this->Common_model->get_record_value('*', 'ecentrix.recording', 'id = "'.$data['id'].'"');
 
 		//$data["file_path"] = $this->Common_model->get_wav_file($data['file_path']);
-		$data["file_path"] = 'https://ecx8demo.ecentrix.net:8180/api/recording/stream/context/ecentrix-outbound/id/'.$data['id'].'/token/'.$this->Fc_recording_voice_model->get_ecx8_token();
+		// $data["file_path"] = 'https://ecentrix8.ecentrix.net:8180/api/recording/stream/context/ecentrix-outbound/id/'.$data['id'].'/token/'.$this->Fc_recording_voice_model->get_ecx8_token();
 		$rs = array('success' => true, 'message' => '', 'data' => $data);
 		return $this->response->setStatusCode(200)->setJSON($rs);
 	}
