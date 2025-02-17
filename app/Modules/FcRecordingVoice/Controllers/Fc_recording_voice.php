@@ -42,6 +42,16 @@ class Fc_recording_voice extends \App\Controllers\BaseController
 		$rs = array('success' => true, 'message' => '', 'data' => $data);
 		return $this->response->setStatusCode(200)->setJSON($rs);
 	}
+
+	function get_download(){
+		$data['id'] = $this->input->getGet('id');
+		$data["file_path"] = $this->Common_model->get_record_value('file_path', 'ecentrix.recording', 'id = "'.$data['id'].'"');
+		if (file_exists($data["file_path"])) {
+			return $this->response->download($data["file_path"], null)->setFileName(basename($data["file_path"]));
+		} else {
+			return $this->response->setStatusCode(404)->setJSON(['success' => false, 'message' => 'File not found']);
+		}
+	}
 	//karena curl yang tidak bisa dan token_spv belum ada jadi sementara menggunakan function ini untuk uji coba secara lokal.
 	//masih belum tau kenapa curl tidak bekerja di laragon versi 6.0 dan php 8.3.3
 	// public function get_path_for_dev(){
