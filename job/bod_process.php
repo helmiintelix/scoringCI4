@@ -951,11 +951,13 @@ function doBR_by_account($aRow, $seq_br){
 				$res	= $conn->query($sql);
 			}
 			// echo "$sql <br/>";
-			$affct_rows = $res->num_rows;
+            $sql_escaped = $conn->real_escape_string($sql);
+            $affct_rows = $conn->affected_rows;
+			// $affct_rows = 0;
 
 			// echo "accefted rows $affct_rows <br>";
 
-            $sql = "INSERT INTO tmp_history_br (action, br_name, sql, count, created_by, created_time) VALUES ('Do Set Class', '$class_id', '$sql', '$affct_rows', 'system', now())";
+            $sql = "INSERT INTO tmp_history_br (`action`, `br_name`, `sql`, `count`, `created_by`, `created_time`) VALUES ('Do Set Class', '$class_id', '$sql_escaped', '$affct_rows', 'system', now())";
             $res = $conn->query($sql);
 
 			$arr_notes = array();
