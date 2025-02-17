@@ -6,7 +6,7 @@
             <button type="button" class="btn btn-outline-success" id="btn-edit">Edit</button>
             <button type="button" class="btn btn-outline-danger" id="btn-disable">Disable</button>
             <button type="button" class="btn btn-outline-secondary" id="btn-test-data">Test Data</button>
-            <button type="button" class="btn btn-outline-warning" id="btn-apply-class">Apply Class</button>
+            <button type="button" class="btn btn-outline-warning" id="btn-apply-class" hidden>Apply Class</button>
         </div>
         <div class="btn-group  btn-group-sm" role="group" aria-label="Basic outlined example">
             <button type="button" class="btn btn-outline-secondary" id="btn-export-campaign">Download Campaign</button>

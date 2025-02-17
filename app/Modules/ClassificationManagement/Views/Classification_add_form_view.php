@@ -99,101 +99,105 @@
                     echo form_dropdown('opt-wa-template', $options,  "", $attributes);
                 ?>
             </div> -->
-            <div class="mb-3 ">
-                <label for="form-field-select-2" class="fs-6 text-capitalize">Campaign Detail</label>
-                <div class="col-sm-12" id='query_builder'></div>
-            </div>
-            <div class="mb-3">
-                <label for="opt-filter-list" class="fs-6 text-capitalize">History Parameter</label>
-                <div class="row">
-                    <div class="col-sm-4">
-                        <?php
-                        $options = array(
-                            '' => 'Select',
-                            'LOV1' => 'LOV 1',
-                            'LOV2' => 'LOV 2',
-                            'LOV3' => 'LOV 3',
-                            'LOV4' => 'LOV 4',
-                            'LOV5' => 'LOV 5',
-                            'MAX_DPD_30' => 'Ever DPD 30 +',
-                            'MAX_DPD_90' => 'Ever DPD 90 +',
-                            'ptp_status' => 'Status Payment'
-                        );
-                        $attributes = 'class="form-control form-control-sm mandatory" id="opt-filter-list" name="opt-filter-list" data-placeholder="-Please Select Value-"';
-                        echo form_dropdown('opt-filter-list', $options,  "", $attributes);
-                    ?>
-                    </div>
-                    <div class="col-sm-4">
-                        <?php
-                       $attributes = 'class="form-control form-control-sm mandatory" id="opt-detail-list" name="opt-detail-list"';
-                        echo form_dropdown("opt-detail-list", "", "", $attributes);
-                    ?>
-                    </div>
-                    <div class="col-sm-2">
-                        <input type="text" id="txt-times" name="txt-times"
-                            class="form-control form-control-sm mandatory" placeholder="times" />
-                    </div>
-                    <div class="col-sm-2">
-                        <input type="text" id="txt-days" name="txt-days" class="form-control form-control-sm mandatory"
-                            placeholder="days" />
-                    </div>
+            <div hidden>
+                <div class="mb-3 ">
+                    <label for="form-field-select-2" class="fs-6 text-capitalize">Campaign Detail</label>
+                    <div class="col-sm-12" id='query_builder'></div>
                 </div>
-            </div>
-            <div class="mb-3" id="set_detail">
-                <div id="div_add_set_header" name="div_add_set_header"
-                    class="mb-3 d-flex justify-content-between align-items-center">
-                    <div class="col-auto">
-                        <label for="opt-wa-template" class="fs-6 text-capitalize">Set Detail</label>
-                    </div>
-                    <div class="col-auto">
-                        <button type="button" class="btn btn-success btn-sm" id="btn_add_set"><i
-                                class="bi bi-plus-circle"></i> Add</button>
-                    </div>
-                </div>
-                <div id="div_add_set" name="div_add_set" class="row align-items-center">
-                    <div class="col-auto">
-                        <?php
-                            $attributes = 'class="form-control form-control-sm mandatory" id="opt-search" data-placeholder="-Please Select Data-"';
-                            echo form_dropdown('opt-search[]', $field_name,  "", $attributes);
-                        ?>
-                    </div>
-                    <div class="col-auto">
-                        <label for="txt-class-category" class="fs-6 text-capitalize"> = </label>
-                    </div>
-                    <div class="col-sm-3" id="opt-input">
-                        <?php
+                <div class="mb-3">
+                    <label for="opt-filter-list" class="fs-6 text-capitalize">History Parameter</label>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <?php
                             $options = array(
-                                "" => "[select data]", 
-                                "this" => "this", 
-                                "last_agent1" => "last agent"
+                                '' => 'Select',
+                                'LOV1' => 'LOV 1',
+                                'LOV2' => 'LOV 2',
+                                'LOV3' => 'LOV 3',
+                                'LOV4' => 'LOV 4',
+                                'LOV5' => 'LOV 5',
+                                'MAX_DPD_30' => 'Ever DPD 30 +',
+                                'MAX_DPD_90' => 'Ever DPD 90 +',
+                                'ptp_status' => 'Status Payment'
                             );
-                            $attributes = 'class="form-control form-control-sm mandatory" id="opt-self" data-placeholder="-Please Select Data-"';
-                            echo form_dropdown('opt-self[]', $options,  "", $attributes);
+                            $attributes = 'class="form-control form-control-sm mandatory" id="opt-filter-list" name="opt-filter-list" data-placeholder="-Please Select Value-"';
+                            echo form_dropdown('opt-filter-list', $options,  "", $attributes);
                         ?>
-                    </div>
-                    <div class="col-auto" id="text-input">
-                        <input type="text" id="txt-keyword" name="txt-keyword[]"
-                            class="form-control form-control-sm mandatory" />
-                    </div>
-                    <div class="col-auto justify-content-end">
-                        <button type="button" class="btn btn-danger btn-sm" id="btn_delete_set"><i
-                                class="bi bi-x-circle"></i> Delete</button>
+                        </div>
+                        <div class="col-sm-4">
+                            <?php
+                           $attributes = 'class="form-control form-control-sm mandatory" id="opt-detail-list" name="opt-detail-list"';
+                            echo form_dropdown("opt-detail-list", "", "", $attributes);
+                        ?>
+                        </div>
+                        <div class="col-sm-2">
+                            <input type="text" id="txt-times" name="txt-times"
+                                class="form-control form-control-sm mandatory" placeholder="times" />
+                        </div>
+                        <div class="col-sm-2">
+                            <input type="text" id="txt-days" name="txt-days" class="form-control form-control-sm mandatory"
+                                placeholder="days" />
+                        </div>
                     </div>
                 </div>
+                <div class="mb-3" id="set_detail">
+                    <div id="div_add_set_header" name="div_add_set_header"
+                        class="mb-3 d-flex justify-content-between align-items-center">
+                        <div class="col-auto">
+                            <label for="opt-wa-template" class="fs-6 text-capitalize">Set Detail</label>
+                        </div>
+                        <div class="col-auto">
+                            <button type="button" class="btn btn-success btn-sm" id="btn_add_set"><i
+                                    class="bi bi-plus-circle"></i> Add</button>
+                        </div>
+                    </div>
+                    <div id="div_add_set" name="div_add_set" class="row align-items-center">
+                        <div class="col-auto">
+                            <?php
+                                $attributes = 'class="form-control form-control-sm mandatory" id="opt-search" data-placeholder="-Please Select Data-"';
+                                echo form_dropdown('opt-search[]', $field_name,  "", $attributes);
+                            ?>
+                        </div>
+                        <div class="col-auto">
+                            <label for="txt-class-category" class="fs-6 text-capitalize"> = </label>
+                        </div>
+                        <div class="col-sm-3" id="opt-input">
+                            <?php
+                                $options = array(
+                                    "" => "[select data]", 
+                                    "this" => "this", 
+                                    "last_agent1" => "last agent"
+                                );
+                                $attributes = 'class="form-control form-control-sm mandatory" id="opt-self" data-placeholder="-Please Select Data-"';
+                                echo form_dropdown('opt-self[]', $options,  "", $attributes);
+                            ?>
+                        </div>
+                        <div class="col-auto" id="text-input">
+                            <input type="text" id="txt-keyword" name="txt-keyword[]"
+                                class="form-control form-control-sm mandatory" />
+                        </div>
+                        <div class="col-auto justify-content-end">
+                            <button type="button" class="btn btn-danger btn-sm" id="btn_delete_set"><i
+                                    class="bi bi-x-circle"></i> Delete</button>
+                        </div>
+                    </div>
+    
+                </div>
+                <div class="mb-3" style="display: none;">
+                    <label for="opt-class-type" class="fs-6 text-capitalize">Class Type</label>
+                    <?php
+                         $class_type_vals = array(
+                            'REGULAR' => 'Regular',
+                            'CHAMPION' => 'Champion',
+                            'CHALLENGER' => 'Challenger'
+                        );
+                        $attributes = 'class="form-control form-control-sm mandatory" id="opt-class-type" name="opt-class-type" data-placeholder="-Please Select Value-"';
+                        echo form_dropdown('opt-class-type', $class_type_vals,  "", $attributes);
+                    ?>
+                </div>
+            </div>
 
-            </div>
-            <div class="mb-3" style="display: none;">
-                <label for="opt-class-type" class="fs-6 text-capitalize">Class Type</label>
-                <?php
-                     $class_type_vals = array(
-                        'REGULAR' => 'Regular',
-                        'CHAMPION' => 'Champion',
-                        'CHALLENGER' => 'Challenger'
-                    );
-                    $attributes = 'class="form-control form-control-sm mandatory" id="opt-class-type" name="opt-class-type" data-placeholder="-Please Select Value-"';
-                    echo form_dropdown('opt-class-type', $class_type_vals,  "", $attributes);
-                ?>
-            </div>
+            
             <div class="mb-3">
                 <label for="opt-schedule" class="fs-6 text-capitalize">Job Schedule</label>
                 <div class="row align-items-center">
