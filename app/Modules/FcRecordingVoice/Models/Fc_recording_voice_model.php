@@ -12,10 +12,10 @@ Class Fc_recording_voice_model Extends Model
 				return session()->get('ecx8_access_token');
 			}
 		}
-        $url = "https://ecentrix8.ecentrix.net/ecentrix/auth/supervisor.php"; 
-		$clientId = "ecentrix8";
-		$authKey = "AFCD32C15ADAB0819EB48F820BC832DABD09170986BC2CA42E379D24F57CE467";
-		$spvId = "spv_oub01";
+        $url = "https://sbmobcoll.ecentrix.net/ecentrix/auth/supervisor.php"; 
+		$clientId = "sbmobcoll";
+		$authKey = "2E311779771FB8F724EB91FF83B5CE6546E89871AFA42D0C395411511551B8B0";
+		$spvId = "admin";
 			
 		$param = array(
 			"client_id" => $clientId ,

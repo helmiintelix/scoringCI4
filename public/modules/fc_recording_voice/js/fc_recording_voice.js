@@ -111,13 +111,12 @@ function get_path_recording(id) {
 
   $("#player_recording").attr("src", "");
   $("#panel-body-recording").html(html);
-  $("#player_recording").attr("src", res.url_download);
+  $("#player_recording").attr("src", res.data.file_path);
 }
 function get_path_download(id) {
   $.ajax({
     type: "GET",
-    url:
-      GLOBAL_MAIN_VARS["SITE_URL"] + "recordingfc/recording_list/get_download/",
+    url: GLOBAL_MAIN_VARS["SITE_URL"] + "recordingfc/recording_list/get_path/",
     data: { id: id },
     async: false,
     dataType: "json",
@@ -125,7 +124,7 @@ function get_path_download(id) {
       if (msg.success == true) {
         //$("#player_recording").attr('src',msg.recording.file_path);
         //location.href = msg.recording.file_path;
-        // window.open(msg.data.file_path, "_blank");
+        window.open(msg.data.file_path, "_blank");
       } else {
       }
     },
