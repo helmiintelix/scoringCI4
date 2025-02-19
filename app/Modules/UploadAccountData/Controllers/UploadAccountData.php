@@ -294,6 +294,8 @@ class UploadAccountData extends \App\Controllers\BaseController
 
 		$fileRow = $this->db->table('upload_account_data')->select('fullPath')->where('id', $uploadId)->get()->getRow();
 		$filePath = $fileRow ? $fileRow->fullPath : null;
+		$delete = $this->db->table('cms_predictive_phone_upload_tmp')->where('file_upload_id', $uploadId)->delete();
+		$delete = $this->db->table('cms_predictive_address_upload_tmp')->where('file_upload_id', $uploadId)->delete();
 		$delete = $this->db->table('cpcrd_new_upload_temp')->where('file_upload_id', $uploadId)->delete();
 		$delete= $this->db->table('upload_account_data')->where('id', $uploadId)->delete();
 		if ($delete) {
