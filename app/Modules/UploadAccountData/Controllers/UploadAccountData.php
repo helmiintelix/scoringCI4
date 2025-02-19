@@ -104,6 +104,7 @@ class UploadAccountData extends \App\Controllers\BaseController
 					"CM_OS_BALANCE" => $allDataInSheet[$i]["M"], 
 					"CM_DTE_LST_PYMT" => $allDataInSheet[$i]["N"], 
 					"CM_LST_PYMT_AMNT" => $allDataInSheet[$i]["O"], 
+					"CM_DTE_PYMT_DUE" => $allDataInSheet[$i]["O"], 
 					"AGENT_ID" => $allDataInSheet[$i]["P"], 
 					"CM_BUCKET" => $allDataInSheet[$i]["Q"], 
 					"CR_NAME_1" => $allDataInSheet[$i]["R"], 
