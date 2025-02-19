@@ -153,7 +153,7 @@ Class User_management_approval_model Extends Model
             $this->builder = $this->db->table("cc_user");
             $this->builder->insert($user);
 
-            $user['status'] = $status;
+            // $user['status'] = $status;
             $user['insert_by'] = session()->get('USER_ID');
             $user['insert_time'] = date('Y-m-d H:i:s');
             // $user[0] = $user[0] + array('status'=>$status , 'insert_by'=>session()->get('USER_ID'),'insert_time'=>date('Y-m-d H:i:s'));
