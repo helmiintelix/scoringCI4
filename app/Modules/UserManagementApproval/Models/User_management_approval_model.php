@@ -148,6 +148,7 @@ Class User_management_approval_model Extends Model
             $this->builder->where('id', $user_data["id"]);
             $user_get = $this->builder->get();
             $user = $user_get->getRowArray();
+            $user['password'] = md5($user['password']);
             
             // $user = $user_get->result_array();
             $this->builder = $this->db->table("cc_user");

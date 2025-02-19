@@ -88,9 +88,9 @@ class User_and_group extends \App\Controllers\BaseController
 			$data['is_active'] = $this->input->getPost('opt-active-flag');
 			
 			if($this->input->getPost('txt-password')==''){
-				$data["password"]	= md5($this->Common_model->get_record_value("value", "aav_configuration", "id='PASSWORD_DEFAULT'", ""));
+				$data["password"]	= $this->Common_model->get_record_value("value", "aav_configuration", "id='PASSWORD_DEFAULT'", "");
 			}else{
-				$data['password'] = md5($this->input->getPost('txt-password'));
+				$data['password'] = $this->input->getPost('txt-password');
 			}
 			$data["notes"]	= 'ADD';
 			$data["created_by"]	= session()->get('USER_ID');
@@ -140,7 +140,7 @@ class User_and_group extends \App\Controllers\BaseController
 				// $data['password'] = $pass;
 				
 			}else{
-				$data['password'] = md5($this->input->getPost('txt-password'));
+				$data['password'] = $this->input->getPost('txt-password');
 			}
 
 			

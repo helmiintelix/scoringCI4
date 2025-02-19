@@ -101,9 +101,9 @@
 			<div class="mb-3 ">
 				<label for="form-field-select-2" class="fs-6 text-capitalize">Password</label>
 				<div class="input-group input-group-sm" style="cursor:pointer">
-					<span class="input-group-text bg-light" id="showPass" onClick="showPass()" value="<?= $user_data['id_user_password']?>"><i
+					<span class="input-group-text bg-light" id="showPass" onClick="showPass()" ><i
 							class="bi bi-eye"></i></span>
-					<input type="password" name="txt-password" class="form-control form-control-sm " id="txt-password">
+					<input type="password" name="txt-password" class="form-control form-control-sm " id="txt-password" value="<?= $user_data['id_user_password']?>">
 					<div class="invalid-feedback">Please enter your password.</div>
 				</div>
 			</div>
@@ -114,7 +114,7 @@
 				<div class="input-group input-group-sm " style="cursor:pointer;margin-bottom: -7px;">
 					<span class="input-group-text bg-light" id="showPass2" onClick="showPass2()"><i
 							class="bi bi-eye"></i></span>
-					<input type="password" name="txt-password2" class="form-control form-control-sm " id="txt-password2"
+					<input type="password" name="txt-password2" class="form-control form-control-sm " id="txt-password2" value="<?= $user_data['id_user_password']?>"
 						disabled>
 					<div class="invalid-feedback">unmatch password.</div>
 				</div>
