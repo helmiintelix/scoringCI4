@@ -44,6 +44,7 @@ class User_management_approval extends \App\Controllers\BaseController
 			$data["user_data"] = $this->Common_model->get_record_values("id AS id_user, nik, employeeid, address, name AS name_user, password AS id_user_password, group_id AS user_level, report_to, is_active AS flag_active, kcu, area, agent_bucket, bisnis_unit, kcu_list,kuota_request_extend, kuota_keep_extend, email,handphone,template_email,template_sms,bucket ,receive_assigment,realocate_account,leave_start_date,image,supervisor_name,imei,join_date,type_collection,token", "cc_user_tmp", "id = '" . $data["id_user"] . "'");
 			$data["group_name"] = $this->Common_model->get_record_value("name", "cc_user_group", "id = '" . $data['user_data']["user_level"] . "'");
 			$data["supervisor_name"] = $this->Common_model->get_record_value("name", "cc_user", "id = '" . $data['user_data']["supervisor_name"] . "'");
+			// var_dump($data);die;
 			return view('\App\Modules\UserManagementApproval\Views\Approval_user_add_form_view',$data);
 
 		}else if($data["flag"]=='EDIT'){

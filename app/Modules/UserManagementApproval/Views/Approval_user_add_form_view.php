@@ -98,11 +98,10 @@
 				</div>
 
 			</div>
-
 			<div class="mb-3 ">
 				<label for="form-field-select-2" class="fs-6 text-capitalize">Password</label>
 				<div class="input-group input-group-sm" style="cursor:pointer">
-					<span class="input-group-text bg-light" id="showPass" onClick="showPass()"><i
+					<span class="input-group-text bg-light" id="showPass" onClick="showPass()" value="<?= $user_data['id_user_password']?>"><i
 							class="bi bi-eye"></i></span>
 					<input type="password" name="txt-password" class="form-control form-control-sm " id="txt-password">
 					<div class="invalid-feedback">Please enter your password.</div>
@@ -142,7 +141,7 @@
 				?>
 			</div>
 
-			<div class="mb-3" id="div_token">
+			<div class="mb-3" id="div_token" hidden>
 				<label for="form-field-select-2" class="fs-6 text-capitalize">Token</label>
 				<div class="input-group has-validation" style="cursor:pointer">
 					<input type="text" name="txt-token" class="form-control form-control-sm " id="txt-token" required
