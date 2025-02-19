@@ -109,6 +109,8 @@ Class UploadAccountData_model Extends Model
             "CM_PAID_CHARGE", 
             "CM_SOURCE_CODE", 
             "CR_ACCT_NBR", 
+            "AGENT_ID", 
+            "CM_BUCKET", 
             'file_upload_id'
         ];
 
