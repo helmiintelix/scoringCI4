@@ -37,43 +37,63 @@ class UploadAccountData extends \App\Controllers\BaseController
     }
 
     function save_file(){
-		$file = $this->input->getFile('file');
-		$validationRule = [
-            'file' => [
-                'label' => 'File',
-                'rules' => 'uploaded[file]|ext_in[file,xls,xlsx]',
-            ],
-        ];
+		// var_dump(ROOTPATH . 'writable/uploads/account_data/');die;
+		
 
-        if (!$this->validate($validationRule)) {
+		// $file = $this->input->getFile('file');
+		// $validationRule = [
+        //     'file' => [
+        //         'label' => 'File',
+        //         'rules' => 'uploaded[file]|ext_in[file,xls,xlsx]',
+        //     ],
+        // ];
+		$allowed_extensions = array("xls", "xlsx");
+		// var_dump($_FILES);die;
+		$filePath = ROOTPATH . 'writable/uploads/account_data/';  // pastikan direktori ini ada dan memiliki izin tulis
+		$originalName = basename($_FILES["file"]["name"]);
+		$targetFile = $filePath . $originalName;
+		$fileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
+		
+		// var_dump($fileType);die;
+
+		if (!in_array($fileType, $allowed_extensions)) {
 			$rs = array('success' => false, 'message' => 'File must be of type xls or xlsx', 'data' => null);
 			return $this->response->setStatusCode(200)->setJSON($rs);
+			
         } else {
-			$originalName = $file->getClientName();
-			$uploadPath = ROOTPATH . 'writable/uploads/account_data/';  // pastikan direktori ini ada dan memiliki izin tulis
-			$filePath = $uploadPath . $originalName;
-			$file->move($uploadPath, $originalName);
-			if (DIRECTORY_SEPARATOR == '\\') {
-				$filePath = str_replace('/', '\\', $filePath);
-			}
+			// Ambil informasi file
+			if (!move_uploaded_file($_FILES["file"]["tmp_name"], $targetFile)) {
+				$rs = array('success' => false, 'message' => 'upload failed', 'data' => null);
+				return $this->response->setStatusCode(200)->setJSON($rs);
+			} 
+			// $originalName = $file->getClientName();
+			// $uploadPath = ROOTPATH . 'writable/uploads/account_data/';  // pastikan direktori ini ada dan memiliki izin tulis
+			// $filePath = $uploadPath . $originalName;
+			// $file->move($uploadPath, $originalName);
+			// if (DIRECTORY_SEPARATOR == '\\') {
+			// 	$filePath = str_replace('/', '\\', $filePath);
+			// }
+			// die;
 
             $data_exclude_file = [
                 'id' => uuid(), // Generate UUID
                 'fileName' => $originalName,
-                'fullPath' => $filePath,
+                'fullPath' => $targetFile,
                 'createdTime' => date('Y-m-d H:i:s'),
                 'createdBy' => session()->get('USER_ID'),
             ];
+			// var_dump($data_exclude_file);die;
 
             // Insert data into upload_account_data table
             $this->db->table('upload_account_data')->insert($data_exclude_file);
 
 			try {
-				$inputFileType = IOFactory::identify($filePath);
+				$inputFileType = IOFactory::identify($targetFile);
 				$reader = IOFactory::createReader($inputFileType);
-				$spreadsheet = $reader->load($filePath);
+				$spreadsheet = $reader->load($targetFile);
+				// die;
 			} catch (\Exception $e) {
-				return $this->response->setJSON(['error' => 'Error loading file "' . pathinfo($filePath, PATHINFO_BASENAME) . '": ' . $e->getMessage()]);
+				return $this->response->setJSON(['error' => 'Error loading file "' . pathinfo($targetFile, PATHINFO_BASENAME) . '": ' . $e->getMessage()]);
 			}
 			$allDataInSheet = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
 			// var_dump($allDataInSheet);die;
@@ -104,20 +124,20 @@ class UploadAccountData extends \App\Controllers\BaseController
 					"CM_OS_BALANCE" => $allDataInSheet[$i]["M"], 
 					"CM_DTE_LST_PYMT" => $allDataInSheet[$i]["N"], 
 					"CM_LST_PYMT_AMNT" => $allDataInSheet[$i]["O"], 
-					"CM_DTE_PYMT_DUE" => $allDataInSheet[$i]["O"], 
-					"AGENT_ID" => $allDataInSheet[$i]["P"], 
-					"CM_BUCKET" => $allDataInSheet[$i]["Q"], 
-					"CR_NAME_1" => $allDataInSheet[$i]["R"], 
-					"CR_HANDPHONE" => $allDataInSheet[$i]["S"], 
-					"CR_HOME_PHONE" => $allDataInSheet[$i]["T"], 
-					"CR_OFFICE_PHONE" => $allDataInSheet[$i]["U"],
+					"CM_DTE_PYMT_DUE" => $allDataInSheet[$i]["P"], 
+					"AGENT_ID" => $allDataInSheet[$i]["Q"], 
+					"CM_BUCKET" => $allDataInSheet[$i]["R"], 
+					"CR_NAME_1" => $allDataInSheet[$i]["S"], 
+					"CR_HANDPHONE" => $allDataInSheet[$i]["T"], 
+					"CR_HOME_PHONE" => $allDataInSheet[$i]["U"], 
+					"CR_OFFICE_PHONE" => $allDataInSheet[$i]["V"],
 					'file_upload_id' => $data_exclude_file['id']
 				];
 
 				$data_batch_phone_hp[] = [
 					"CM_CARD_NMBR" => $allDataInSheet[$i]["B"], 
 					"PHONE_TYPE" => 'hp1', 
-					"CONTENT" => $allDataInSheet[$i]["S"], 
+					"CONTENT" => $allDataInSheet[$i]["T"], 
 					"PRIORITY" => '1',
 					"PERCENTAGE" => '100',
 					'file_upload_id' => $data_exclude_file['id']
@@ -126,7 +146,7 @@ class UploadAccountData extends \App\Controllers\BaseController
 				$data_batch_phone_home[] = [
 					"CM_CARD_NMBR" => $allDataInSheet[$i]["B"], 
 					"PHONE_TYPE" => 'home1', 
-					"CONTENT" => $allDataInSheet[$i]["T"], 
+					"CONTENT" => $allDataInSheet[$i]["U"], 
 					"PRIORITY" => '2',
 					"PERCENTAGE" => '100',
 					'file_upload_id' => $data_exclude_file['id']
@@ -135,7 +155,7 @@ class UploadAccountData extends \App\Controllers\BaseController
 				$data_batch_phone_office[] = [
 					"CM_CARD_NMBR" => $allDataInSheet[$i]["B"], 
 					"PHONE_TYPE" => 'Of1', 
-					"CONTENT" => $allDataInSheet[$i]["U"],
+					"CONTENT" => $allDataInSheet[$i]["V"],
 					"PRIORITY" => '3',
 					"PERCENTAGE" => '100',
 					'file_upload_id' => $data_exclude_file['id']
@@ -146,14 +166,14 @@ class UploadAccountData extends \App\Controllers\BaseController
 					"CM_CARD_NMBR" => $allDataInSheet[$i]["B"], 
 					"CR_NAME_1" => $allDataInSheet[$i]["S"], 
 					"ADDRESS_TYPE" => "Current",
-					"CM_PROVINCE" => $allDataInSheet[$i]["V"], 
-					"CM_CITY" => $allDataInSheet[$i]["W"], 
-					"CM_KEC" => $allDataInSheet[$i]["X"], 
-					"CM_KEL" => $allDataInSheet[$i]["Y"], 
-					"ADDRESS" => $allDataInSheet[$i]["Z"], 
-					"ZIP_CODE" => $allDataInSheet[$i]["AA"], 
-					"LONGITUDE" => $allDataInSheet[$i]["AB"], 
+					"CM_PROVINCE" => $allDataInSheet[$i]["W"], 
+					"CM_CITY" => $allDataInSheet[$i]["X"], 
+					"CM_KEC" => $allDataInSheet[$i]["Y"], 
+					"CM_KEL" => $allDataInSheet[$i]["Z"], 
+					"ADDRESS" => $allDataInSheet[$i]["AA"], 
+					"ZIP_CODE" => $allDataInSheet[$i]["AB"], 
 					"LONGITUDE" => $allDataInSheet[$i]["AC"], 
+					"LONGITUDE" => $allDataInSheet[$i]["AD"], 
 					"PRIORITY" => '3',
 					'file_upload_id' => $data_exclude_file['id']
 
@@ -162,14 +182,14 @@ class UploadAccountData extends \App\Controllers\BaseController
 					"CM_CARD_NMBR" => $allDataInSheet[$i]["B"], 
 					"CR_NAME_1" => $allDataInSheet[$i]["S"], 
 					"ADDRESS_TYPE" => "Home",
-					"CM_PROVINCE" => $allDataInSheet[$i]["AD"], 
-					"CM_CITY" => $allDataInSheet[$i]["AE"], 
-					"CM_KEC" => $allDataInSheet[$i]["AF"], 
-					"CM_KEL" => $allDataInSheet[$i]["AG"], 
-					"ADDRESS" => $allDataInSheet[$i]["AH"], 
-					"ZIP_CODE" => $allDataInSheet[$i]["AI"], 
-					"LATITUDE" => $allDataInSheet[$i]["AJ"], 
-					"LONGITUDE" => $allDataInSheet[$i]["AK"], 
+					"CM_PROVINCE" => $allDataInSheet[$i]["AE"], 
+					"CM_CITY" => $allDataInSheet[$i]["AF"], 
+					"CM_KEC" => $allDataInSheet[$i]["AG"], 
+					"CM_KEL" => $allDataInSheet[$i]["AH"], 
+					"ADDRESS" => $allDataInSheet[$i]["AI"], 
+					"ZIP_CODE" => $allDataInSheet[$i]["AJ"], 
+					"LATITUDE" => $allDataInSheet[$i]["AK"], 
+					"LONGITUDE" => $allDataInSheet[$i]["AL"], 
 					"PRIORITY" => '3',
 					'file_upload_id' => $data_exclude_file['id']
 
@@ -178,14 +198,14 @@ class UploadAccountData extends \App\Controllers\BaseController
 					"CM_CARD_NMBR" => $allDataInSheet[$i]["B"], 
 					"CR_NAME_1" => $allDataInSheet[$i]["S"], 
 					"ADDRESS_TYPE" => "Office",
-					"CM_PROVINCE" => $allDataInSheet[$i]["AL"], 
-					"CM_CITY" => $allDataInSheet[$i]["AM"], 
-					"CM_KEC" => $allDataInSheet[$i]["AN"], 
-					"CM_KEL" => $allDataInSheet[$i]["AO"], 
-					"ADDRESS" => $allDataInSheet[$i]["AP"], 
-					"ZIP_CODE" => $allDataInSheet[$i]["AQ"], 
-					"LATITUDE" => $allDataInSheet[$i]["AR"], 
-					"LONGITUDE" => $allDataInSheet[$i]["AS"], 
+					"CM_PROVINCE" => $allDataInSheet[$i]["AM"], 
+					"CM_CITY" => $allDataInSheet[$i]["AN"], 
+					"CM_KEC" => $allDataInSheet[$i]["AO"], 
+					"CM_KEL" => $allDataInSheet[$i]["AP"], 
+					"ADDRESS" => $allDataInSheet[$i]["AQ"], 
+					"ZIP_CODE" => $allDataInSheet[$i]["AR"], 
+					"LATITUDE" => $allDataInSheet[$i]["AS"], 
+					"LONGITUDE" => $allDataInSheet[$i]["AT"], 
 					"PRIORITY" => '3',
 					'file_upload_id' => $data_exclude_file['id']
 
