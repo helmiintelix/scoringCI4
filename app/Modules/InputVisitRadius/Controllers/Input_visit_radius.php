@@ -17,7 +17,7 @@ class Input_visit_radius extends \App\Controllers\BaseController
 		
 		$data['classification'] = $this->input->getPost('classification');
 		
-		return view('\App\Modules\InputVisitRadius\Views\input_visit_radius_view',$data);
+		return view('\App\Modules\InputVisitRadius\Views\Input_visit_radius_view',$data);
 	}
 
 	function visit_radius_all_list()
