@@ -57,7 +57,7 @@ $routes->add('user_and_group/user_management', '\App\Modules\UserAndGroup\Contro
 #UserManagementApproval
 $routes->add('user_and_group/user_management_temp', '\App\Modules\UserManagementApproval\Controllers\User_management_approval::index',['filter' => 'authfilter']);
 #InputVisitRadius
-$routes->add('input_visit_radius/visit_radius_all', '\App\Modules\InputVisitRadius\Controllers\Input_visit_radius::visit_radius_all',['filter' => 'authfilter']);
+$routes->add('visit_radius/visit_radius_all', '\App\Modules\InputVisitRadius\Controllers\Input_visit_radius::visit_radius_all',['filter' => 'authfilter']);
 #SetupAreaBranch
 $routes->add('setup_area_branch/branch', '\App\Modules\SetupAreaBranch\Controllers\Setup_area_branch::branch',['filter' => 'authfilter']);
 #SetupAreaBranchtemp

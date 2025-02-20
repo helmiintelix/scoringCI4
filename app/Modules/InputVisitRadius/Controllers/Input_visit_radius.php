@@ -25,15 +25,17 @@ class Input_visit_radius extends \App\Controllers\BaseController
 		
 		$cache = session()->get('USER_ID').'_visit_radius_all_list';
 
-		if($this->cache->get($cache)){
-			$data = json_decode($this->cache->get($cache));
-			$rs = array('success' => true, 'message' => '', 'data' => $data);
-		}else{
-			$data = $this->Input_visit_radius_model->get_visit_radius_all_list();
-			$this->cache->save($cache, json_encode($data), env('TIMECACHE_1')); 
+		// if($this->cache->get($cache)){
+		// 	$data = json_decode($this->cache->get($cache));
+		// 	$rs = array('success' => true, 'message' => '', 'data' => $data);
+		// }else{
+		// 	$data = $this->Input_visit_radius_model->get_visit_radius_all_list();
+		// 	$this->cache->save($cache, json_encode($data), env('TIMECACHE_1')); 
 
-			$rs = array('success' => true, 'message' => '', 'data' => $data);
-		}
+		// 	$rs = array('success' => true, 'message' => '', 'data' => $data);
+		// }
+		$data = $this->Input_visit_radius_model->get_visit_radius_all_list();
+		$rs = array('success' => true, 'message' => '', 'data' => $data);
 		
 		return $this->response->setStatusCode(200)->setJSON($rs);
 	}
