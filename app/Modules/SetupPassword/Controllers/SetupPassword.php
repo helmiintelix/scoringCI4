@@ -27,6 +27,7 @@ class SetupPassword extends \App\Controllers\BaseController
 	{
 		$param_data["id"]			= strtoupper($this->input->getPost('id'));
 		$param_data["value"]	= $this->input->getPost("value");
+		$param_data["parameter"]	= $this->input->getPost("parameter");
 		$param_data["add_field1"]	= "APPROVAL";
 		$param_data["created_by"] = session()->get('USER_ID');
 		$param_data["created_time"] = date('Y-m-d H:i:s');
@@ -65,6 +66,7 @@ class SetupPassword extends \App\Controllers\BaseController
 	{
 		$param_data["id"]			= strtoupper($this->input->getPost('id'));
 		$param_data["value"]	= $this->input->getPost("value");
+		$param_data["parameter"]	= $this->input->getPost("param");
 		$param_data["add_field1"]	= "APPROVED";
 		$param_data["created_by"] = session()->get('USER_ID');
 		$param_data["created_time"] = date('Y-m-d H:i:s');
@@ -87,6 +89,7 @@ class SetupPassword extends \App\Controllers\BaseController
 	{
 		$param_data["id"]			= $this->input->getPost('id');
 		$param_data["value"]	= $this->input->getPost("value");
+		$param_data["parameter"]	= $this->input->getPost("param");
 		$param_data["add_field1"]	= "REJECTED";
 		$param_data["created_by"] = session()->get('USER_ID');
 		$param_data["created_time"] = date('Y-m-d H:i:s');
