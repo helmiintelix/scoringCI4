@@ -375,7 +375,7 @@ if($uri->getTotalSegments() > 2){
     $routes->add('settings/letter_template_temp/'.$function, '\App\Modules\SuratPeringatanSPTemplate\Controllers\Surat_peringatan_sp_template_temp::'.$function,['filter' => 'authfilter']);
     
     #SetupListOfValue
-    $routes->add('setup_list_of_value/setup_list_of_value/'.$function, '\App\Modules\SetupListOfValue\Controllers\setup_list_of_value::'.$function,['filter' => 'authfilter']);
+    $routes->add('setup_list_of_value/setup_list_of_value/'.$function, '\App\Modules\SetupListOfValue\Controllers\Setup_list_of_value::'.$function,['filter' => 'authfilter']);
 
     #ChecklistAsset
     $routes->add('checklist_asset/checklist_asset/'.$function, '\App\Modules\ChecklistAsset\Controllers\checklist_asset::'.$function,['filter' => 'authfilter']);
