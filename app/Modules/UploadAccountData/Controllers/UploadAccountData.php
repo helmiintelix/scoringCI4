@@ -176,7 +176,7 @@ class UploadAccountData extends \App\Controllers\BaseController
 					"ZIP_CODE" => $allDataInSheet[$i]["AB"], 
 					"LONGITUDE" => $allDataInSheet[$i]["AC"], 
 					"LONGITUDE" => $allDataInSheet[$i]["AD"], 
-					"PRIORITY" => '3',
+					"PRIORITY" => '1',
 					'file_upload_id' => $data_exclude_file['id']
 
 				];
@@ -192,7 +192,7 @@ class UploadAccountData extends \App\Controllers\BaseController
 					"ZIP_CODE" => $allDataInSheet[$i]["AJ"], 
 					"LATITUDE" => $allDataInSheet[$i]["AK"], 
 					"LONGITUDE" => $allDataInSheet[$i]["AL"], 
-					"PRIORITY" => '3',
+					"PRIORITY" => '2',
 					'file_upload_id' => $data_exclude_file['id']
 
 				];
