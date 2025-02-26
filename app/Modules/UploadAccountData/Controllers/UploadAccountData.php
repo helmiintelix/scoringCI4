@@ -47,10 +47,11 @@ class UploadAccountData extends \App\Controllers\BaseController
         //         'rules' => 'uploaded[file]|ext_in[file,xls,xlsx]',
         //     ],
         // ];
+		$id=uuid(false);
 		$allowed_extensions = array("xls", "xlsx");
 		// var_dump($_FILES);die;
 		$filePath = ROOTPATH . 'writable/uploads/account_data/';  // pastikan direktori ini ada dan memiliki izin tulis
-		$originalName = basename($_FILES["file"]["name"]);
+		$originalName = $id."_".basename($_FILES["file"]["name"]);
 		$targetFile = $filePath . $originalName;
 		$fileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
 		
@@ -76,7 +77,7 @@ class UploadAccountData extends \App\Controllers\BaseController
 			// die;
 
             $data_exclude_file = [
-                'id' => uuid(), // Generate UUID
+                'id' => $id, // Generate UUID
                 'fileName' => $originalName,
                 'fullPath' => $targetFile,
                 'createdTime' => date('Y-m-d H:i:s'),
@@ -105,6 +106,7 @@ class UploadAccountData extends \App\Controllers\BaseController
 			$data_batch_address_cur = [];
 			$data_batch_address_home = [];
 			$data_batch_address_off = [];
+			$data_batch_lastStatus = [];
 			for ($i = 2; $i <= $arrayCount; $i++) {
 				
 				//jenis_letter belum tau ambil field dari apa
@@ -210,6 +212,14 @@ class UploadAccountData extends \App\Controllers\BaseController
 					'file_upload_id' => $data_exclude_file['id']
 
 				];
+				$data_batch_lastStatus[] = [
+					"account_no" => $allDataInSheet[$i]["B"], 
+					"assigned_agent" => $allDataInSheet[$i]["Q"], 
+					"assignment_start_date" => $allDataInSheet[$i]["AU"], 
+					"assignment_end_date" => $allDataInSheet[$i]["AV"], 
+					'file_upload_id' => $data_exclude_file['id']
+
+				];
 			}
 			// var_dump($data_batch);die;
 
@@ -222,7 +232,8 @@ class UploadAccountData extends \App\Controllers\BaseController
 			$return = $this->db->table('cms_predictive_address_upload_tmp')->insertBatch($data_batch_address_cur);
 			$return = $this->db->table('cms_predictive_address_upload_tmp')->insertBatch($data_batch_address_home);
 			$return = $this->db->table('cms_predictive_address_upload_tmp')->insertBatch($data_batch_address_off);
-
+			
+			$return = $this->db->table('cms_account_last_status_upload_tmp')->insertBatch($data_batch_lastStatus);
 			if($return){
 				$cache = session()->get('USER_ID').'_get_upload_data';
 				$this->cache->delete($cache);
@@ -278,6 +289,7 @@ class UploadAccountData extends \App\Controllers\BaseController
 		$truncate = $this->db->table('cpcrd_new')->truncate();
 		$truncate = $this->db->table('cms_predictive_address')->truncate();
 		$truncate = $this->db->table('cms_predictive_phone')->truncate();
+		// $truncate = $this->db->table('cms_account_last_status')->truncate();
 
 		if ($truncate) {
 			$query = "INSERT INTO cpcrd_new (CM_CUSTOMER_NMBR, CM_CARD_NMBR, CM_TYPE, CM_CRLIMIT, CM_CREDIT_LINE, CM_DTE_OPENED, CM_INTEREST, CM_TENOR, FLD_DATE_5, MOB, CM_DTE_LIQUIDATE, CM_CURRENCY_CODE, CM_HOLD_AMOUNT, CM_AO_CODE, CM_OFFICER_NAME, CM_SECTOR_CODE, CM_SECTOR_DESC, CM_DTE_PK, CM_CARD_EXPIR_DTE, CM_INSTALLMENT_AMOUNT, CM_INSTL_BAL, CM_INTR_PER_DIEM, CM_INSTL_LIMIT, CM_AMNT_OUTST_INSTL, CM_TOTALDUE, CM_CYCLE, CM_INSTALLMENT_NO, CM_DTE_PYMT_DUE, DPD, CM_BUCKET_PROGRAM, FLD_CHAR_2, CM_STATUS, CM_COLLECTIBILITY, CM_BLOCK_CODE, CM_DTE_BLOCK_CODE, CM_OS_BALANCE, CM_OS_PRINCIPAL, CM_OS_INTEREST, CM_RTL_MISC_FEES, CM_TOTAL_OS_AR, CM_CHGOFF_STATUS_FLAG, CM_DTE_CHGOFF_STAT_CHANGE, SUM_WO_BALANCE, CM_CHGOFF_PRICIPLE, CM_ZIP_REC, CM_DELQ_COUNTER1, CM_DELQ_COUNTER2, CM_DELQ_COUNTER3, CM_DELQ_COUNTER4, CM_DELQ_COUNTER5, CM_DELQ_COUNTER6, CM_DELQ_COUNTER7, CM_DELQ_COUNTER8, CM_DELQ_COUNTER9, CM_CURR_DUE, CM_PAST_DUE, CM_30DAYS_DELQ, CM_60DAYS_DELQ, CM_90DAYS_DELQ, CM_120DAYS_DELQ, CM_150DAYS_DELQ, CM_180DAYS_DELQ, CM_210DAYS_DELQ, CM_RESTRUCTURE_FLAG, CM_DTE_RESTRUCTURE, CM_DTE_LST_PYMT, CM_STATUS_DESC, CM_LST_PYMT_AMNT, CM_PAID_PRICIPAL, CM_PAID_INTEREST, CM_PAID_CHARGE, CM_SOURCE_CODE, CR_ACCT_NBR, AGENT_ID, CM_BUCKET)
@@ -294,6 +306,12 @@ class UploadAccountData extends \App\Controllers\BaseController
 			$query = "INSERT INTO cms_predictive_phone (CM_CARD_NMBR,PHONE_TYPE,CONTENT,PRIORITY,PERCENTAGE)
 						SELECT CM_CARD_NMBR,PHONE_TYPE,CONTENT,PRIORITY,PERCENTAGE 
 						FROM cms_predictive_phone_upload_tmp
+						WHERE file_upload_id = ?";
+			$this->db->query($query, [$uploadId]);
+			
+			$query = "replace INTO cms_account_last_status (account_no,assigned_agent,assignment_start_date,assignment_end_date)
+						SELECT account_no,assigned_agent,assignment_start_date,assignment_end_date
+						FROM cms_account_last_status_upload_tmp
 						WHERE file_upload_id = ?";
 			$this->db->query($query, [$uploadId]);
 
