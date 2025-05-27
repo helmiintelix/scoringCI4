@@ -539,7 +539,9 @@ class Detail_account extends \App\Controllers\BaseController
 		}
 
 		$data['contracts'] = $this->Detail_account_model->get_contract_data_new($data['customer_id'],$data['account_id']);
-		
+		$data['subject'] = $this->Common_model->get_record_value("subject","acs_agent_script","id='66e13f1ad9417f1465352937316bbab9'");
+		$data['script'] = $this->Common_model->get_record_value("script","acs_agent_script","id='66e13f1ad9417f1465352937316bbab9'");
+
 
         $output = view('\App\Modules\DetailAccount\Views\Contract_detail_view', $data);
 		cache()->save($cache,$output,env('TIMECACHE_2'));
