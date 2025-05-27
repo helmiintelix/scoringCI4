@@ -34,11 +34,11 @@ class Email_sms_template_maker extends \App\Controllers\BaseController
 		return $this->response->setStatusCode(200)->setJSON($rs);
 	}
 	function email_sms_add_form() {
-		$builder = $this->db->table('cms_product');
-		$builder->select('description','product_id');
-		$builder->groupBy('product_id');
-		$builder->groupBy('description');
-		$data['product'] = $builder->get()->getResultArray();
+		// $builder = $this->db->table('cms_product');
+		// $builder->select('description','product_id');
+		// $builder->groupBy('product_id');
+		// $builder->groupBy('description');
+		$data['product'] = [];
 		$data['bucket'] = $this->Common_model->get_record_list("bucket_id value, bucket_label AS item", "cms_bucket", "is_active='1'", "bucket_label");
 
 		return view('App\Modules\EmailSmsTemplate\Views\Email_sms_add_form_view', $data);
@@ -141,11 +141,11 @@ class Email_sms_template_maker extends \App\Controllers\BaseController
 		$data['select_time'] = $data['data']['select_time'];
 		$data['is_active'] = $data['data']['is_active'];
 		$data['template_design'] = $data['data']['template_design'];
-		$builder = $this->db->table('cms_product');
-		$builder->select('description','product_id');
-		$builder->groupBy('product_id');
-		$builder->groupBy('description');
-		$data["product_code_master"] = $builder->get()->getResultArray();
+		// $builder = $this->db->table('cms_product');
+		// $builder->select('description','product_id');
+		// $builder->groupBy('product_id');
+		// $builder->groupBy('description');
+		$data["product_code_master"] = [];
 		$param = $data['product'];
 		$where = '';
 		foreach ($param as $i => $rows) {

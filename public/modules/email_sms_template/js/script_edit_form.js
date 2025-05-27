@@ -113,6 +113,8 @@ $(document).ready(function () {
       case "Escalate Account Deskcoll":
       case "Request Billing dari Layar Agent Deskcoll":
       case "Flag Class Parameter":
+        $("#rules_ptp").hide();
+        break;
       case "Surat Keterangan Lunas":
         $("#template_program").hide();
         $("#rules_ptp").hide();
@@ -170,7 +172,7 @@ function addField() {
 
 try {
   tinymce.remove();
-} catch (error) {}
+} catch (error) { }
 
 tinymce.init({
   selector: "#txt-template-content",
