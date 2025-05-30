@@ -309,6 +309,12 @@ $routes->add('settings/upload_account_data', '\App\Modules\UploadAccountData\Con
 $routes->add('whatsappConversation/conversationWaView', '\App\Modules\WhatsappConversation\Controllers\WhatsappConversation::conversationWaView',['filter' => 'authfilter']);
 $routes->add('whatsappConversation/wa2wayListView', '\App\Modules\WhatsappConversation\Controllers\WhatsappConversation::wa2wayListView',['filter' => 'authfilter']);
 
+#Chat modules
+$routes->add('Chat/conversationChatView', '\App\Modules\Chat\Controllers\Chat::conversationChatView',['filter' => 'authfilter']);
+$routes->add('Chat/chatListView', '\App\Modules\Chat\Controllers\Chat::chatListView',['filter' => 'authfilter']);
+$routes->add('Chat/sendMessage', '\App\Modules\Chat\Controllers\Chat::sendMessage',['filter' => 'authfilter']);
+$routes->add('Chat/updateSeenAt', '\App\Modules\Chat\Controllers\Chat::updateSeenAt',['filter' => 'authfilter']);
+
 #untuk module
 if($uri->getTotalSegments() > 2){
     $function = $uri->getSegment(3);

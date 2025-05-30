@@ -138,6 +138,15 @@
             </span>
           </a>
 
+          <!-- #Chat modules -->
+          <a style="margin-right: 20px;" class="nav-link nav-icon text-white position-relative" href="#" data-bs-toggle="offcanvas" data-bs-target="#staticBackdropChat" aria-controls="staticBackdrop" >
+            <i class="bi bi-chat text-white" style="font-size: 15px" data-bs-toggle="tooltip" data-bs-placement="bottom" title="chat"></i>
+            <span id="iconNotifNewChat" style="width: 11px;height: 11px;top: 11px; display:none;" class="position-absolute start-100 translate-middle bg-danger border border-light rounded-circle">
+              <span class="visually-hidden" style="width: 5px;">New alerts</span>
+            </span>
+          </a>
+          <!-- #Chat modules -->
+
         <li class="nav-item dropdown">
           <a class="nav-link nav-icon text-white" href="#" data-bs-toggle="dropdown" >
             <i class="bi bi-bell text-white" style="font-size: 15px"></i>
@@ -362,6 +371,19 @@
     
       </div>
   </div>
+  <!-- #Chat modules -->
+  <div class="offcanvas offcanvas-end" tabindex="-1" data-bs-scroll="true" id="staticBackdropChat" aria-labelledby="staticBackdropLabel">
+      <div class="offcanvas-header bg-warning text-white">
+        <a href="#" class="link-light" id="canvasLinkBackChat"><i class="bi bi-arrow-left"></i></a>
+        <i class="bi bi-chat" id="canvasIconChat"></i>
+        <h5 class="offcanvas-title" id="staticBackdropLabel">Chat</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body" id="chatCanvas">
+    
+      </div>
+  </div>
+  <!-- #Chat modules -->
 
 
   <!-- ======= Footer ======= -->
@@ -1347,7 +1369,17 @@
   <script src="<?= base_url(); ?>assets/js/jquery-idle.min.js"></script>
   <script src="<?= base_url(); ?>private/js/main.js?v=<?= rand(); ?>"></script>
   <script src="<?= base_url(); ?>private/js/admin_main.js?v=<?= rand(); ?>"></script>
-  
+
+  <!-- #Chat modules -->
+  <script>
+    var HOST_SOCKET_SERVER = "<?= env('HOST_SOCKET_SERVER') ?>";
+    var PORT_SOCKET_SERVER = <?= env('PORT_SOCKET_SERVER') ?>; // Ganti dengan port yang sesuai jika berbeda
+  </script>
+  <script src="<?= base_url(); ?>assets/socket/socket.io.min.js?v=<?= rand(); ?>"></script>
+  <script src="<?= base_url(); ?>private/js/chat.js?v=<?= rand(); ?>"></script>
+  <script src="<?= base_url(); ?>private/js/socket.js?v=<?= rand(); ?>"></script>
+  <!-- #Chat modules -->
+
   <script src="<?= base_url(); ?>assets/datetimepicker/moment.min.js"></script>
   <script src="<?= base_url(); ?>assets/datetimepicker/daterangepicker.js"></script>
 
