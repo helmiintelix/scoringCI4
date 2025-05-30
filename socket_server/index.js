@@ -1,3 +1,5 @@
+import { readFileSync } from "fs";
+import https from "https";
 import express from "express";
 import mysql from "mysql2";
 import { Server } from "socket.io";
@@ -9,6 +11,11 @@ import sockerHandler from "./utils/socketHandler.js";
 dotenv.config();
 
 const PORT = process.env.APP_PORT || 3000;
+const PROTOCOL = process.env.PROTOCOL || "http";
+const KEY_SSL =
+  process.env.KEY_SSL || "/home/ecentrix/ssl/ssl_ecentrix.net.pem";
+const CERT_SSL =
+  process.env.CERT_SSL || "/home/ecentrix/ssl/ssl_ecentrix.net.pem";
 
 const app = express();
 const corsOptions = {
@@ -32,23 +39,42 @@ db.connect((err) => {
   } else {
     console.log("Connected to the database!");
 
-    const server = http.createServer(app);
-    const io = new Server(server, {
-      transports: ["websocket"],
-      cors: {
-        origin: "*",
-        methods: ["GET", "POST"],
-      },
-    });
-
-    sockerHandler(io, db);
-
     app.get("/", (req, res) => {
       res.send("Socket server is running");
     });
+    if (PROTOCOL == "https") {
+      const serverHttps = https.createServer({
+        key: readFileSync(KEY_SSL),
+        cert: readFileSync(CERT_SSL),
+      });
+      const io = new Server(serverHttps, {
+        transports: ["websocket"],
+        cors: {
+          origin: "*",
+          methods: ["GET", "POST"],
+        },
+      });
 
-    server.listen(PORT, () => {
-      console.log(`Server is running on port ${PORT}`);
-    });
+      sockerHandler(io, db);
+
+      serverHttps.listen(PORT, () => {
+        console.log(`Server https is running on port ${PORT}`);
+      });
+    } else {
+      const server = http.createServer(app);
+      const io = new Server(server, {
+        transports: ["websocket"],
+        cors: {
+          origin: "*",
+          methods: ["GET", "POST"],
+        },
+      });
+
+      sockerHandler(io, db);
+
+      server.listen(PORT, () => {
+        console.log(`Server http is running on port ${PORT}`);
+      });
+    }
   }
 });
