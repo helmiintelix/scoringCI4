@@ -1,4 +1,5 @@
 let dataListChat = [];
+// fungsi timeDif ada di file /projectApp/public/assets/push_notification/cms_notification.js
 
 function addChatBubble(message, sender, userLogin, userTarget, sentAt = null) {
   const idElement = `chatMessages_${userTarget}`;
