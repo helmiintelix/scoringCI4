@@ -32,49 +32,42 @@ const dbConfig = {
 };
 
 const db = mysql.createPool(dbConfig);
-db.connect((err) => {
-  if (err) {
-    console.error("Database connection failed:", err);
-    process.exit(1);
-  } else {
-    console.log("Connected to the database!");
+console.log("Connected to the database!");
 
-    app.get("/", (req, res) => {
-      res.send("Socket server is running");
-    });
-    if (PROTOCOL == "https") {
-      const serverHttps = https.createServer({
-        key: readFileSync(KEY_SSL),
-        cert: readFileSync(CERT_SSL),
-      });
-      const io = new Server(serverHttps, {
-        transports: ["websocket"],
-        cors: {
-          origin: "*",
-          methods: ["GET", "POST"],
-        },
-      });
-
-      sockerHandler(io, db);
-
-      serverHttps.listen(PORT, () => {
-        console.log(`Server https is running on port ${PORT}`);
-      });
-    } else {
-      const server = http.createServer(app);
-      const io = new Server(server, {
-        transports: ["websocket"],
-        cors: {
-          origin: "*",
-          methods: ["GET", "POST"],
-        },
-      });
-
-      sockerHandler(io, db);
-
-      server.listen(PORT, () => {
-        console.log(`Server http is running on port ${PORT}`);
-      });
-    }
-  }
+app.get("/", (req, res) => {
+  res.send("Socket server is running");
 });
+if (PROTOCOL == "https") {
+  const serverHttps = https.createServer({
+    key: readFileSync(KEY_SSL),
+    cert: readFileSync(CERT_SSL),
+  });
+  const io = new Server(serverHttps, {
+    transports: ["websocket"],
+    cors: {
+      origin: "*",
+      methods: ["GET", "POST"],
+    },
+  });
+
+  sockerHandler(io, db);
+
+  serverHttps.listen(PORT, () => {
+    console.log(`Server https is running on port ${PORT}`);
+  });
+} else {
+  const server = http.createServer(app);
+  const io = new Server(server, {
+    transports: ["websocket"],
+    cors: {
+      origin: "*",
+      methods: ["GET", "POST"],
+    },
+  });
+
+  sockerHandler(io, db);
+
+  server.listen(PORT, () => {
+    console.log(`Server http is running on port ${PORT}`);
+  });
+}
