@@ -17,12 +17,15 @@ function addChatBubble(message, sender, userLogin, userTarget, sentAt = null) {
     userLogin == "newMessage"
       ? `<div class="d-flex mb-2 justify-content-center newMessageChat" style="font-size: 0.60em; opacity: 0.7;">- New Message -</div>`
       : `<div class="d-flex mb-2">
-                <div class="${bubbleClass} rounded px-3 py-2 ${alignClass}" style="max-width: 70%;">
+                <div class="${bubbleClass} rounded px-3 py-2 ${alignClass}" style="max-width: 70%; min-width: 30%;">
                     <div class="fw-bold small mb-1">${
                       isUser ? "You" : sender
                     }</div>
                     ${$("<div>").text(message).html()}
-                    <div class="text-end small mt-1" style="font-size: 0.60em; opacity: 0.7;">${time}</div>
+                    <div class="text-end small mt-1 timeChat" style="font-size: 0.60em; opacity: 0.7;" id="timeChat_${uuid()}" data-time="${time}"> ${timeDif(
+          time,
+          true
+        )}</div>
                 </div>
             </div>`
   }`;
@@ -35,37 +38,39 @@ function generateListChat(param) {
   $("#list-group-chat").html("");
 
   const list = param.map((val, index) => {
+    var createdTime = val.createdTime
+      ? new Date(val.createdTime)
+          .toLocaleString("sv-SE", {
+            hour12: false,
+          })
+          .replace(" ", " ")
+      : "-";
     return `<div class="card mb-1" style="cursor: pointer;" id="chat-${
       val.userId
     }" onclick="chatHistoryAgent('${val.userId}')">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-item-center fs-6">
-                            <p style="font-weight: bold;"> ${val.userName} </p>
-                            <p style="font-size: 0.60em; opacity: 0.7;"> ${
-                              val.createdTime
-                                ? new Date(val.createdTime)
-                                    .toLocaleString("sv-SE", { hour12: false })
-                                    .replace(" ", " ")
-                                : "-"
-                            } </p>
-                        </div>
-                        <div class="d-flex justify-content-between align-item-center">
-                            <p class="fs-6 text-secondary m-0">${
-                              val.messageFrom == AGENT_ID ? "You: " : ""
-                            } ${limitChar(val.messageContent) || "-"}</p>
-                            <div 
-                                class="dot-pulse" 
-                                id="dot-pulse-${val.userId}" 
-                                style="display:${
-                                  !val.seenAt &&
-                                  val.messageContent &&
-                                  val.messageTo == AGENT_ID
-                                    ? "block"
-                                    : "none"
-                                };"></div>
-                        </div>
-                    </div>
-                </div>`;
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-item-center fs-6">
+            <p style="font-weight: bold;"> ${val.userName} </p>
+            <p style="font-size: 0.60em; opacity: 0.7;" class="timeChat" id="timeChat_${uuid()}" data-time="${createdTime}"> ${timeDif(
+      createdTime,
+      true
+    )} </p>
+          </div>
+          <div class="d-flex justify-content-between align-item-center">
+            <p class="fs-6 text-secondary m-0">${
+              val.messageFrom == AGENT_ID ? "You: " : ""
+            } ${limitChar(val.messageContent) || "-"}</p>
+            <div 
+              class="dot-pulse" 
+              id="dot-pulse-${val.userId}" 
+              style="display:${
+                !val.seenAt && val.messageContent && val.messageTo == AGENT_ID
+                  ? "block"
+                  : "none"
+              };"></div>
+          </div>
+        </div>
+      </div>`;
   });
 
   $("#list-group-chat").append(list);
@@ -137,3 +142,24 @@ function checkSeenAt() {
   }
   return hasEmptySeenAt;
 }
+
+var updateTimeChat = () => {
+  $(".timeChat").each(function () {
+    let createdTime = $(this).data("time");
+    // console.log(createdTime, "createdTime");
+
+    if (createdTime != "-") {
+      let time = timeDif(createdTime, true);
+      $(this).html(time);
+    } else {
+      $(this).html("-");
+    }
+  });
+};
+
+getFirst();
+setTimeout(() => {
+  setInterval(() => {
+    updateTimeChat();
+  }, 2000);
+}, 3000);
