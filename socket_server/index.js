@@ -31,7 +31,7 @@ const dbConfig = {
   password: process.env.DB_PASSWORD,
 };
 
-const db = mysql.createConnection(dbConfig);
+const db = mysql.createPool(dbConfig);
 db.connect((err) => {
   if (err) {
     console.error("Database connection failed:", err);
