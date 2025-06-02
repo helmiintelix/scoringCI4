@@ -3,7 +3,7 @@ namespace App\Modules\VisitRadius\Controllers;
 // namespace App\Modules\VisitRadius\Controllers;
 use CodeIgniter\Cookie\Cookie;
 // use App\Modules\VisitRadius\models\User_and_group_model;
-use App\Modules\VisitRadius\models\Visit_radius_temp_model;
+use App\Modules\VisitRadius\Models\Visit_radius_temp_model;
 
 
 class Visit_radius_temp extends \App\Controllers\BaseController

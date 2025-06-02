@@ -27,7 +27,7 @@
 
 <!-- <script src="<?= base_url(); ?>modules/SetupPassword/js/setupPassword_temp.js?v=<?= rand() ?>"></script> -->
 <script>
-var selr, val;
+var selr, val, param;
 var selected_data;
 var TOKEN_VALID = false;
 
@@ -89,6 +89,7 @@ var gridOptions = {
     selected_data = params.data;
     selr = params.data.id;
     val = params.data.value;
+    param = params.data.parameter;
   },
 };
 var eGridDiv = document.getElementById("myGridTemp");
@@ -123,6 +124,7 @@ $("#btn-approve").click(function () {
             {
               id: selr,
               value: val,
+              param: param,
             },
             function (data) {
               console.log(data);
@@ -152,6 +154,7 @@ $("#btn-reject").click(function () {
           {
             id: selr,
             value: val,
+            param: param,
           },
           function (data) {
             console.log(data);

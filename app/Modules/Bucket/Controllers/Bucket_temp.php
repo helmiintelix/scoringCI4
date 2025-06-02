@@ -2,7 +2,7 @@
 namespace App\Modules\Bucket\Controllers;
 // namespace App\Modules\VisitRadius\Controllers;
 use CodeIgniter\Cookie\Cookie;
-use App\Modules\Bucket\models\Bucket_temp_model;
+use App\Modules\Bucket\Models\Bucket_temp_model;
 
 
 class Bucket_temp extends \App\Controllers\BaseController

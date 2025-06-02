@@ -8,7 +8,7 @@
         <div class="col-md-4">
             <div class="input-group">
                 <input type="text" class="form-control editable" id="PASSWORD_MIN_LENGTH" value="<?=@$general_setting["PASSWORD_MIN_LENGTH"]?>">
-                <button class="btn btn-primary" data-id="PASSWORD_MIN_LENGTH" type="button">Save</button>
+                <button class="btn btn-primary btn_system" data-id="PASSWORD_MIN_LENGTH" type="button">Save</button>
             </div>
         </div>
         &nbsp; char(s)
@@ -18,7 +18,7 @@
         <div class="col-md-4">
             <div class="input-group">
                 <input type="text" class="form-control editable" id="PASSWORD_MAX_LENGTH" value="<?=@$general_setting["PASSWORD_MAX_LENGTH"]?>">
-                <button class="btn btn-primary" data-id="PASSWORD_MAX_LENGTH" type="button">Save</button>
+                <button class="btn btn-primary btn_system" data-id="PASSWORD_MAX_LENGTH" type="button">Save</button>
             </div>
         </div>
         &nbsp; char(s)
@@ -31,7 +31,7 @@
                     <option value="Y" <?=@$general_setting["PASSWORD_INCLD_NUMERIC"]=="Y"?"selected":""?>>Y</option>
                     <option value="N" <?=@$general_setting["PASSWORD_INCLD_NUMERIC"]=="N"?"selected":""?>>N</option>
                 </select>
-                <button class="btn btn-primary" data-id="PASSWORD_INCLD_NUMERIC" type="button">Save</button>
+                <button class="btn btn-primary btn_system" data-id="PASSWORD_INCLD_NUMERIC" type="button">Save</button>
             </div>
         </div>
         &nbsp; 
@@ -44,7 +44,7 @@
                     <option value="Y" <?=@$general_setting["PASSWORD_INCLD_ALPHABET"]=="Y"?"selected":""?>>Y</option>
                     <option value="N" <?=@$general_setting["PASSWORD_INCLD_ALPHABET"]=="N"?"selected":""?>>N</option>
                 </select>
-                <button class="btn btn-primary" data-id="PASSWORD_INCLD_ALPHABET" type="button">Save</button>
+                <button class="btn btn-primary btn_system" data-id="PASSWORD_INCLD_ALPHABET" type="button">Save</button>
             </div>
         </div>
         &nbsp; 
@@ -57,7 +57,7 @@
                     <option value="Y" <?=@$general_setting["PASSWORD_INCLD_SPECIAL_CHAR"]=="Y"?"selected":""?>>Y</option>
                     <option value="N" <?=@$general_setting["PASSWORD_INCLD_SPECIAL_CHAR"]=="N"?"selected":""?>>N</option>
                 </select>
-                <button class="btn btn-primary" data-id="PASSWORD_INCLD_SPECIAL_CHAR" type="button">Save</button>
+                <button class="btn btn-primary btn_system" data-id="PASSWORD_INCLD_SPECIAL_CHAR" type="button">Save</button>
             </div>
         </div>
         &nbsp; 
@@ -70,7 +70,7 @@
                     <option value="Y" <?=@$general_setting["PASSWORD_CASE_SENSITIVE"]=="Y"?"selected":""?>>Y</option>
                     <option value="N" <?=@$general_setting["PASSWORD_CASE_SENSITIVE"]=="N"?"selected":""?>>N</option>
                 </select>
-                <button class="btn btn-primary" data-id="PASSWORD_CASE_SENSITIVE" type="button">Save</button>
+                <button class="btn btn-primary btn_system" data-id="PASSWORD_CASE_SENSITIVE" type="button">Save</button>
             </div>
         </div>
         &nbsp; 
@@ -80,7 +80,7 @@
         <div class="col-md-4">
             <div class="input-group">
                 <input type="text" class="form-control editable" id="PASSWORD_EXPIRE_DURATION" value="<?=@$general_setting["PASSWORD_EXPIRE_DURATION"]?>">
-                <button class="btn btn-primary" data-id="PASSWORD_EXPIRE_DURATION" type="button">Save</button>
+                <button class="btn btn-primary btn_system" data-id="PASSWORD_EXPIRE_DURATION" type="button">Save</button>
             </div>
         </div>
         &nbsp; day(s)
@@ -90,7 +90,7 @@
         <div class="col-md-4">
             <div class="input-group">
                 <input type="text" class="form-control editable" id="PASSWORD_MAX_FAILED_ATTEMPS" value="<?=@$general_setting["PASSWORD_MAX_FAILED_ATTEMPS"]?>">
-                <button class="btn btn-primary" data-id="PASSWORD_MAX_FAILED_ATTEMPS" type="button">Save</button>
+                <button class="btn btn-primary btn_system" data-id="PASSWORD_MAX_FAILED_ATTEMPS" type="button">Save</button>
             </div>
         </div>
         &nbsp; attempt(s)
@@ -103,7 +103,7 @@
                     <option value="Y" <?=@$general_setting["PASSWORD_CHANGE_AT_FIRST_LOGIN"]=="Y"?"selected":""?>>Y</option>
                     <option value="N" <?=@$general_setting["PASSWORD_CHANGE_AT_FIRST_LOGIN"]=="N"?"selected":""?>>N</option>
                 </select>
-                <button class="btn btn-primary" data-id="PASSWORD_CHANGE_AT_FIRST_LOGIN" type="button">Save</button>
+                <button class="btn btn-primary btn_system" data-id="PASSWORD_CHANGE_AT_FIRST_LOGIN" type="button">Save</button>
             </div>
         </div>
         &nbsp; 
@@ -113,7 +113,7 @@
         <div class="col-md-4">
             <div class="input-group">
                 <input type="text" class="form-control editable" id="PASSWORD_DEFAULT" value="<?=@$general_setting["PASSWORD_DEFAULT"]?>">
-                <button class="btn btn-primary" data-id="PASSWORD_DEFAULT" type="button">Save</button>
+                <button class="btn btn-primary btn_system" data-id="PASSWORD_DEFAULT" type="button">Save</button>
             </div>
         </div>
         &nbsp; attempt(s)
@@ -123,7 +123,7 @@
         <div class="col-md-4">
             <div class="input-group">
                 <input type="text" class="form-control editable" id="FORCED_EXIT" value="<?=@$general_setting["FORCED_EXIT"]?>">
-                <button class="btn btn-primary" data-id="FORCED_EXIT" type="button">Save</button>
+                <button class="btn btn-primary btn_system" data-id="FORCED_EXIT" type="button">Save</button>
             </div>
         </div>
         &nbsp; minute(s)
@@ -132,8 +132,8 @@
         <div class="col-md-3 fw-bold">Password History</div>
         <div class="col-md-4">
             <div class="input-group">
-                <input type="text" class="form-control editable" id="pass-min-history" value="<?=@$general_setting["PASSWORD_HISTORY"]?>">
-                <button class="btn btn-primary" data-id="pass-min-history" type="button">Save</button>
+                <input type="text" class="form-control editable" id="PASSWORD_HISTORY" value="<?=@$general_setting["PASSWORD_HISTORY"]?>">
+                <button class="btn btn-primary btn_system" data-id="PASSWORD_HISTORY" type="button">Save</button>
             </div>
         </div>
         &nbsp; time(s)
@@ -142,8 +142,8 @@
         <div class="col-md-3 fw-bold">Min. Not Login</div>
         <div class="col-md-4">
             <div class="input-group">
-                <input type="text" class="form-control editable" id="min-days-not-login" value="<?=@$general_setting["REPORT_LAST_LOGIN"]?>">
-                <button class="btn btn-primary" data-id="min-days-not-login" type="button">Save</button>
+                <input type="text" class="form-control editable" id="REPORT_LAST_LOGIN" value="<?=@$general_setting["REPORT_LAST_LOGIN"]?>">
+                <button class="btn btn-primary btn_system" data-id="REPORT_LAST_LOGIN" type="button">Save</button>
             </div>
         </div>
         &nbsp; day(s)
@@ -160,7 +160,7 @@
         <div class="col-md-4">
             <div class="input-group">
                 <input type="text" class="form-control editable" id="IDLE_TIME" value="<?=@$general_setting["IDLE_TIME"]?>">
-                <button class="btn btn-primary" data-id="IDLE_TIME" type="button">Save</button>
+                <button class="btn btn-primary btn_mobcoll" data-id="IDLE_TIME" type="button">Save</button>
             </div>
         </div>
         &nbsp; second(s)
@@ -170,7 +170,7 @@
         <div class="col-md-4">
             <div class="input-group">
                 <input type="text" class="form-control editable" id="INTERVAL_LOCATION" value="<?=@$general_setting["INTERVAL_LOCATION"]?>">
-                <button class="btn btn-primary" data-id="INTERVAL_LOCATION" type="button">Save</button>
+                <button class="btn btn-primary btn_mobcoll" data-id="INTERVAL_LOCATION" type="button">Save</button>
             </div>
         </div>
         &nbsp; second(s)
@@ -180,7 +180,7 @@
         <div class="col-md-4">
             <div class="input-group">
                 <input type="time" class="form-control editable" id="LOGIN_TIME" value="<?=@$general_setting["LOGIN_TIME"]?>">
-                <button class="btn btn-primary" data-id="LOGIN_TIME" type="button">Save</button>
+                <button class="btn btn-primary btn_mobcoll" data-id="LOGIN_TIME" type="button">Save</button>
             </div>
         </div>
         &nbsp; second(s)
@@ -190,7 +190,7 @@
         <div class="col-md-4">
             <div class="input-group">
                 <input type="time" class="form-control editable" id="LOGOUT_TIME" value="<?=@$general_setting["LOGOUT_TIME"]?>">
-                <button class="btn btn-primary" data-id="LOGOUT_TIME" type="button">Save</button>
+                <button class="btn btn-primary btn_mobcoll" data-id="LOGOUT_TIME" type="button">Save</button>
             </div>
         </div>
         &nbsp; second(s)
@@ -202,9 +202,9 @@
 	jQuery(function($) {
 	
 
-		var update_system_setting = function(id, value)
+		var update_system_setting = function(id, value, parameter)
 		{
-			$.post(GLOBAL_MAIN_VARS["SITE_URL"] + "settings/update_system_setting/", { id: id, value: value }, function(responseText) {
+			$.post(GLOBAL_MAIN_VARS["SITE_URL"] + "settings/update_system_setting/", { id: id, value: value, parameter:parameter }, function(responseText) {
 				if(responseText.success) {
 					showInfo("Data telah disimpan dan menunggu approval.");
 				} else{
@@ -213,9 +213,9 @@
 			}, "json");
 		}	
 		
-		var update_mobcoll_setting = function(id, value)
+		var update_mobcoll_setting = function(id, value, parameter)
 		{
-			$.post(GLOBAL_MAIN_VARS["SITE_URL"] + "settings/update_mobcoll_setting/", { id: id, value: value }, function(responseText) {
+			$.post(GLOBAL_MAIN_VARS["SITE_URL"] + "settings/update_mobcoll_setting/", { id: id, value: value, parameter:parameter }, function(responseText) {
 				if(responseText.success) {
 					showInfo("Data telah disimpan dan menunggu approval.");
 				} else{
@@ -224,12 +224,21 @@
 			}, "json");
 		}
 
-        $(".btn").each(function () {
+        $(".btn_system").each(function () {
             $(this).click(function () {
                 var id = this.dataset.id
                 var value = $(`#${id}`).val();
                 console.log(id, value, this.dataset.id, "eheheheheh")
-                update_mobcoll_setting(id, value);
+                update_system_setting(id, value, "SYSTEM");
+            });
+        });
+       
+        $(".btn_mobcoll").each(function () {
+            $(this).click(function () {
+                var id = this.dataset.id
+                var value = $(`#${id}`).val();
+                console.log(id, value, this.dataset.id, "eheheheheh")
+                update_system_setting(id, value, 'MOBCOLL');
             });
         });
 		

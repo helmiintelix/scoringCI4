@@ -37,131 +37,203 @@ class UploadAccountData extends \App\Controllers\BaseController
     }
 
     function save_file(){
-		$file = $this->input->getFile('file');
-		$validationRule = [
-            'file' => [
-                'label' => 'File',
-                'rules' => 'uploaded[file]|ext_in[file,xls,xlsx]',
-            ],
-        ];
+		// var_dump(ROOTPATH . 'writable/uploads/account_data/');die;
+		
 
-        if (!$this->validate($validationRule)) {
+		// $file = $this->input->getFile('file');
+		// $validationRule = [
+        //     'file' => [
+        //         'label' => 'File',
+        //         'rules' => 'uploaded[file]|ext_in[file,xls,xlsx]',
+        //     ],
+        // ];
+		$id=uuid(false);
+		$allowed_extensions = array("xls", "xlsx");
+		// var_dump($_FILES);die;
+		$filePath = ROOTPATH . 'writable/uploads/account_data/';  // pastikan direktori ini ada dan memiliki izin tulis
+		$originalName = $id."_".basename($_FILES["file"]["name"]);
+		$targetFile = $filePath . $originalName;
+		$fileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
+		
+		// var_dump($fileType);die;
+
+		if (!in_array($fileType, $allowed_extensions)) {
 			$rs = array('success' => false, 'message' => 'File must be of type xls or xlsx', 'data' => null);
 			return $this->response->setStatusCode(200)->setJSON($rs);
+			
         } else {
-			$originalName = $file->getClientName();
-			$uploadPath = ROOTPATH . 'writable/uploads/account_data/';  // pastikan direktori ini ada dan memiliki izin tulis
-			$filePath = $uploadPath . $originalName;
-			$file->move($uploadPath, $originalName);
-			if (DIRECTORY_SEPARATOR == '\\') {
-				$filePath = str_replace('/', '\\', $filePath);
-			}
+			// Ambil informasi file
+			if (!move_uploaded_file($_FILES["file"]["tmp_name"], $targetFile)) {
+				$rs = array('success' => false, 'message' => 'upload failed', 'data' => null);
+				return $this->response->setStatusCode(200)->setJSON($rs);
+			} 
+			// $originalName = $file->getClientName();
+			// $uploadPath = ROOTPATH . 'writable/uploads/account_data/';  // pastikan direktori ini ada dan memiliki izin tulis
+			// $filePath = $uploadPath . $originalName;
+			// $file->move($uploadPath, $originalName);
+			// if (DIRECTORY_SEPARATOR == '\\') {
+			// 	$filePath = str_replace('/', '\\', $filePath);
+			// }
+			// die;
 
             $data_exclude_file = [
-                'id' => uuid(), // Generate UUID
+                'id' => $id, // Generate UUID
                 'fileName' => $originalName,
-                'fullPath' => $filePath,
+                'fullPath' => $targetFile,
                 'createdTime' => date('Y-m-d H:i:s'),
                 'createdBy' => session()->get('USER_ID'),
             ];
+			// var_dump($data_exclude_file);die;
 
             // Insert data into upload_account_data table
             $this->db->table('upload_account_data')->insert($data_exclude_file);
 
 			try {
-				$inputFileType = IOFactory::identify($filePath);
+				$inputFileType = IOFactory::identify($targetFile);
 				$reader = IOFactory::createReader($inputFileType);
-				$spreadsheet = $reader->load($filePath);
+				$spreadsheet = $reader->load($targetFile);
+				// die;
 			} catch (\Exception $e) {
-				return $this->response->setJSON(['error' => 'Error loading file "' . pathinfo($filePath, PATHINFO_BASENAME) . '": ' . $e->getMessage()]);
+				return $this->response->setJSON(['error' => 'Error loading file "' . pathinfo($targetFile, PATHINFO_BASENAME) . '": ' . $e->getMessage()]);
 			}
 			$allDataInSheet = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
+			// var_dump($allDataInSheet);die;
         	$arrayCount = count($allDataInSheet);
 			$data_batch = [];
+			$data_batch_phone_hp = [];
+			$data_batch_phone_home = [];
+			$data_batch_phone_office = [];
+			$data_batch_address_cur = [];
+			$data_batch_address_home = [];
+			$data_batch_address_off = [];
+			$data_batch_lastStatus = [];
 			for ($i = 2; $i <= $arrayCount; $i++) {
 				
 				//jenis_letter belum tau ambil field dari apa
 				$data_batch[] = [	
-					"CM_CUSTOMER_NMBR" => $allDataInSheet[$i]["A"],
-					"CM_CARD_NMBR" => $allDataInSheet[$i]["B"],
-					"CM_TYPE" => $allDataInSheet[$i]["C"],
-					"CM_CRLIMIT" => $allDataInSheet[$i]["D"],
-					"CM_CREDIT_LINE" => $allDataInSheet[$i]["E"],
-					"CM_DTE_OPENED" => $allDataInSheet[$i]["F"],
-					"CM_INTEREST" => $allDataInSheet[$i]["G"],
-					"CM_TENOR" => $allDataInSheet[$i]["H"],
-					"FLD_DATE_5" => $allDataInSheet[$i]["I"],
-					"MOB" => $allDataInSheet[$i]["J"],
-					"CM_DTE_LIQUIDATE" => $allDataInSheet[$i]["K"],
-					"CM_CURRENCY_CODE" => $allDataInSheet[$i]["L"],
-					"CM_HOLD_AMOUNT" => $allDataInSheet[$i]["M"],
-					"CM_AO_CODE" => $allDataInSheet[$i]["N"],
-					"CM_OFFICER_NAME" => $allDataInSheet[$i]["O"],
-					"CM_SECTOR_CODE" => $allDataInSheet[$i]["P"],
-					"CM_SECTOR_DESC" => $allDataInSheet[$i]["Q"],
-					"CM_DTE_PK" => $allDataInSheet[$i]["R"],
-					"CM_CARD_EXPIR_DTE" => $allDataInSheet[$i]["S"],
-					"CM_INSTALLMENT_AMOUNT" => $allDataInSheet[$i]["T"],
-					"CM_INSTL_BAL" => $allDataInSheet[$i]["U"],
-					"CM_INTR_PER_DIEM" => $allDataInSheet[$i]["V"],
-					"CM_INSTL_LIMIT" => $allDataInSheet[$i]["W"],
-					"CM_AMNT_OUTST_INSTL" => $allDataInSheet[$i]["X"],
-					"CM_TOTALDUE" => $allDataInSheet[$i]["Y"],
-					"CM_CYCLE" => $allDataInSheet[$i]["Z"],
-					"CM_INSTALLMENT_NO" => $allDataInSheet[$i]["AA"],
-					"CM_DTE_PYMT_DUE" => $allDataInSheet[$i]["AB"],
-					"DPD" => $allDataInSheet[$i]["AC"],
-					"CM_BUCKET_PROGRAM" => $allDataInSheet[$i]["AD"],
-					"FLD_CHAR_2" => $allDataInSheet[$i]["AE"],
-					"CM_STATUS" => $allDataInSheet[$i]["AF"],
-					"CM_COLLECTIBILITY" => $allDataInSheet[$i]["AG"],
-					"CM_BLOCK_CODE" => $allDataInSheet[$i]["AH"],
-					"CM_DTE_BLOCK_CODE" => $allDataInSheet[$i]["AI"],
-					"CM_OS_BALANCE" => $allDataInSheet[$i]["AJ"],
-					"CM_OS_PRINCIPAL" => $allDataInSheet[$i]["AK"],
-					"CM_OS_INTEREST" => $allDataInSheet[$i]["AL"],
-					"CM_RTL_MISC_FEES" => $allDataInSheet[$i]["AM"],
-					"CM_TOTAL_OS_AR" => $allDataInSheet[$i]["AN"],
-					"CM_CHGOFF_STATUS_FLAG" => $allDataInSheet[$i]["AO"],
-					"CM_DTE_CHGOFF_STAT_CHANGE" => $allDataInSheet[$i]["AP"],
-					"SUM_WO_BALANCE" => $allDataInSheet[$i]["AQ"],
-					"CM_CHGOFF_PRICIPLE" => $allDataInSheet[$i]["AR"],
-					"CM_ZIP_REC" => $allDataInSheet[$i]["AS"],
-					"CM_DELQ_COUNTER1" => $allDataInSheet[$i]["AT"],
-					"CM_DELQ_COUNTER2" => $allDataInSheet[$i]["AU"],
-					"CM_DELQ_COUNTER3" => $allDataInSheet[$i]["AV"],
-					"CM_DELQ_COUNTER4" => $allDataInSheet[$i]["AW"],
-					"CM_DELQ_COUNTER5" => $allDataInSheet[$i]["AX"],
-					"CM_DELQ_COUNTER6" => $allDataInSheet[$i]["AY"],
-					"CM_DELQ_COUNTER7" => $allDataInSheet[$i]["AZ"],
-					"CM_DELQ_COUNTER8" => $allDataInSheet[$i]["BA"],
-					"CM_DELQ_COUNTER9" => $allDataInSheet[$i]["BB"],
-					"CM_CURR_DUE" => $allDataInSheet[$i]["BC"],
-					"CM_PAST_DUE" => $allDataInSheet[$i]["BD"],
-					"CM_30DAYS_DELQ" => $allDataInSheet[$i]["BE"],
-					"CM_60DAYS_DELQ" => $allDataInSheet[$i]["BF"],
-					"CM_90DAYS_DELQ" => $allDataInSheet[$i]["BG"],
-					"CM_120DAYS_DELQ" => $allDataInSheet[$i]["BH"],
-					"CM_150DAYS_DELQ" => $allDataInSheet[$i]["BI"],
-					"CM_180DAYS_DELQ" => $allDataInSheet[$i]["BJ"],
-					"CM_210DAYS_DELQ" => $allDataInSheet[$i]["BK"],
-					"CM_RESTRUCTURE_FLAG" => $allDataInSheet[$i]["BL"],
-					"CM_DTE_RESTRUCTURE" => $allDataInSheet[$i]["BM"],
-					"CM_DTE_LST_PYMT" => $allDataInSheet[$i]["BN"],
-					"CM_STATUS_DESC" => $allDataInSheet[$i]["BO"],
-					"CM_LST_PYMT_AMNT" => $allDataInSheet[$i]["BP"],
-					"CM_PAID_PRICIPAL" => $allDataInSheet[$i]["BQ"],
-					"CM_PAID_INTEREST" => $allDataInSheet[$i]["BR"],
-					"CM_PAID_CHARGE" => $allDataInSheet[$i]["BS"],
-					"CM_SOURCE_CODE" => $allDataInSheet[$i]["BT"],
-					"CR_ACCT_NBR" => $allDataInSheet[$i]["BU"], 
-					'file_upload_id' => $data_exclude_file['id'],
+					"CM_CUSTOMER_NMBR" => $allDataInSheet[$i]["A"], 
+					"CM_CARD_NMBR" => $allDataInSheet[$i]["B"], 
+					"CM_TYPE" => $allDataInSheet[$i]["C"], 
+					"CM_CRLIMIT" => $allDataInSheet[$i]["D"], 
+					"CM_DTE_OPENED" => $allDataInSheet[$i]["E"], 
+					"CM_TENOR" => $allDataInSheet[$i]["F"], 
+					"CM_DTE_LIQUIDATE" => $allDataInSheet[$i]["G"], 
+					"CM_INSTALLMENT_AMOUNT" => $allDataInSheet[$i]["H"], 
+					"CM_CYCLE" => $allDataInSheet[$i]["I"], 
+					"CM_INSTALLMENT_NO" => $allDataInSheet[$i]["J"], 
+					"DPD" => $allDataInSheet[$i]["K"], 
+					"CM_COLLECTIBILITY" => $allDataInSheet[$i]["L"], 
+					"CM_OS_BALANCE" => $allDataInSheet[$i]["M"], 
+					"CM_DTE_LST_PYMT" => $allDataInSheet[$i]["N"], 
+					"CM_LST_PYMT_AMNT" => $allDataInSheet[$i]["O"], 
+					"CM_DTE_PYMT_DUE" => $allDataInSheet[$i]["P"], 
+					"AGENT_ID" => $allDataInSheet[$i]["Q"], 
+					"CM_BUCKET" => $allDataInSheet[$i]["R"], 
+					"CR_NAME_1" => $allDataInSheet[$i]["S"], 
+					"CR_HANDPHONE" => $allDataInSheet[$i]["T"], 
+					"CR_HOME_PHONE" => $allDataInSheet[$i]["U"], 
+					"CR_OFFICE_PHONE" => $allDataInSheet[$i]["V"],
+					'file_upload_id' => $data_exclude_file['id']
+				];
+
+				$data_batch_phone_hp[] = [
+					"CM_CARD_NMBR" => $allDataInSheet[$i]["B"], 
+					"PHONE_TYPE" => 'hp1', 
+					"CONTENT" => $allDataInSheet[$i]["T"], 
+					"PRIORITY" => '1',
+					"PERCENTAGE" => '100',
+					'file_upload_id' => $data_exclude_file['id']
+
+				]; 
+				$data_batch_phone_home[] = [
+					"CM_CARD_NMBR" => $allDataInSheet[$i]["B"], 
+					"PHONE_TYPE" => 'home1', 
+					"CONTENT" => $allDataInSheet[$i]["U"], 
+					"PRIORITY" => '2',
+					"PERCENTAGE" => '100',
+					'file_upload_id' => $data_exclude_file['id']
+
+				]; 
+				$data_batch_phone_office[] = [
+					"CM_CARD_NMBR" => $allDataInSheet[$i]["B"], 
+					"PHONE_TYPE" => 'Of1', 
+					"CONTENT" => $allDataInSheet[$i]["V"],
+					"PRIORITY" => '3',
+					"PERCENTAGE" => '100',
+					'file_upload_id' => $data_exclude_file['id']
+
+				]; 
+
+				$data_batch_address_cur[] = [
+					"CM_CARD_NMBR" => $allDataInSheet[$i]["B"], 
+					"CR_NAME_1" => $allDataInSheet[$i]["S"], 
+					"ADDRESS_TYPE" => "Current",
+					"CM_PROVINCE" => $allDataInSheet[$i]["W"], 
+					"CM_CITY" => $allDataInSheet[$i]["X"], 
+					"CM_KEC" => $allDataInSheet[$i]["Y"], 
+					"CM_KEL" => $allDataInSheet[$i]["Z"], 
+					"ADDRESS" => $allDataInSheet[$i]["AA"], 
+					"ZIP_CODE" => $allDataInSheet[$i]["AB"], 
+					"LONGITUDE" => $allDataInSheet[$i]["AC"], 
+					"LONGITUDE" => $allDataInSheet[$i]["AD"], 
+					"PRIORITY" => '1',
+					'file_upload_id' => $data_exclude_file['id']
+
+				];
+				$data_batch_address_home[] = [
+					"CM_CARD_NMBR" => $allDataInSheet[$i]["B"], 
+					"CR_NAME_1" => $allDataInSheet[$i]["S"], 
+					"ADDRESS_TYPE" => "Home",
+					"CM_PROVINCE" => $allDataInSheet[$i]["AE"], 
+					"CM_CITY" => $allDataInSheet[$i]["AF"], 
+					"CM_KEC" => $allDataInSheet[$i]["AG"], 
+					"CM_KEL" => $allDataInSheet[$i]["AH"], 
+					"ADDRESS" => $allDataInSheet[$i]["AI"], 
+					"ZIP_CODE" => $allDataInSheet[$i]["AJ"], 
+					"LATITUDE" => $allDataInSheet[$i]["AK"], 
+					"LONGITUDE" => $allDataInSheet[$i]["AL"], 
+					"PRIORITY" => '2',
+					'file_upload_id' => $data_exclude_file['id']
+
+				];
+				$data_batch_address_off[] = [
+					"CM_CARD_NMBR" => $allDataInSheet[$i]["B"], 
+					"CR_NAME_1" => $allDataInSheet[$i]["S"], 
+					"ADDRESS_TYPE" => "Office",
+					"CM_PROVINCE" => $allDataInSheet[$i]["AM"], 
+					"CM_CITY" => $allDataInSheet[$i]["AN"], 
+					"CM_KEC" => $allDataInSheet[$i]["AO"], 
+					"CM_KEL" => $allDataInSheet[$i]["AP"], 
+					"ADDRESS" => $allDataInSheet[$i]["AQ"], 
+					"ZIP_CODE" => $allDataInSheet[$i]["AR"], 
+					"LATITUDE" => $allDataInSheet[$i]["AS"], 
+					"LONGITUDE" => $allDataInSheet[$i]["AT"], 
+					"PRIORITY" => '3',
+					'file_upload_id' => $data_exclude_file['id']
+
+				];
+				$data_batch_lastStatus[] = [
+					"account_no" => $allDataInSheet[$i]["B"], 
+					"assigned_agent" => $allDataInSheet[$i]["Q"], 
+					"assignment_start_date" => $allDataInSheet[$i]["AU"], 
+					"assignment_end_date" => $allDataInSheet[$i]["AV"], 
+					'file_upload_id' => $data_exclude_file['id']
+
 				];
 			}
 			// var_dump($data_batch);die;
 
 			$return = $this->db->table('cpcrd_new_upload_temp')->insertBatch($data_batch);
-
+			
+			$return = $this->db->table('cms_predictive_phone_upload_tmp')->insertBatch($data_batch_phone_hp);
+			$return = $this->db->table('cms_predictive_phone_upload_tmp')->insertBatch($data_batch_phone_home);
+			$return = $this->db->table('cms_predictive_phone_upload_tmp')->insertBatch($data_batch_phone_office);
+			
+			$return = $this->db->table('cms_predictive_address_upload_tmp')->insertBatch($data_batch_address_cur);
+			$return = $this->db->table('cms_predictive_address_upload_tmp')->insertBatch($data_batch_address_home);
+			$return = $this->db->table('cms_predictive_address_upload_tmp')->insertBatch($data_batch_address_off);
+			
+			$return = $this->db->table('cms_account_last_status_upload_tmp')->insertBatch($data_batch_lastStatus);
 			if($return){
 				$cache = session()->get('USER_ID').'_get_upload_data';
 				$this->cache->delete($cache);
@@ -215,12 +287,32 @@ class UploadAccountData extends \App\Controllers\BaseController
 		$uploadId = $this->request->getPost('id');
 
 		$truncate = $this->db->table('cpcrd_new')->truncate();
+		$truncate = $this->db->table('cms_predictive_address')->truncate();
+		$truncate = $this->db->table('cms_predictive_phone')->truncate();
+		// $truncate = $this->db->table('cms_account_last_status')->truncate();
 
 		if ($truncate) {
-			$query = "INSERT INTO cpcrd_new (CM_CUSTOMER_NMBR, CM_CARD_NMBR, CM_TYPE, CM_CRLIMIT, CM_CREDIT_LINE, CM_DTE_OPENED, CM_INTEREST, CM_TENOR, FLD_DATE_5, MOB, CM_DTE_LIQUIDATE, CM_CURRENCY_CODE, CM_HOLD_AMOUNT, CM_AO_CODE, CM_OFFICER_NAME, CM_SECTOR_CODE, CM_SECTOR_DESC, CM_DTE_PK, CM_CARD_EXPIR_DTE, CM_INSTALLMENT_AMOUNT, CM_INSTL_BAL, CM_INTR_PER_DIEM, CM_INSTL_LIMIT, CM_AMNT_OUTST_INSTL, CM_TOTALDUE, CM_CYCLE, CM_INSTALLMENT_NO, CM_DTE_PYMT_DUE, DPD, CM_BUCKET_PROGRAM, FLD_CHAR_2, CM_STATUS, CM_COLLECTIBILITY, CM_BLOCK_CODE, CM_DTE_BLOCK_CODE, CM_OS_BALANCE, CM_OS_PRINCIPAL, CM_OS_INTEREST, CM_RTL_MISC_FEES, CM_TOTAL_OS_AR, CM_CHGOFF_STATUS_FLAG, CM_DTE_CHGOFF_STAT_CHANGE, SUM_WO_BALANCE, CM_CHGOFF_PRICIPLE, CM_ZIP_REC, CM_DELQ_COUNTER1, CM_DELQ_COUNTER2, CM_DELQ_COUNTER3, CM_DELQ_COUNTER4, CM_DELQ_COUNTER5, CM_DELQ_COUNTER6, CM_DELQ_COUNTER7, CM_DELQ_COUNTER8, CM_DELQ_COUNTER9, CM_CURR_DUE, CM_PAST_DUE, CM_30DAYS_DELQ, CM_60DAYS_DELQ, CM_90DAYS_DELQ, CM_120DAYS_DELQ, CM_150DAYS_DELQ, CM_180DAYS_DELQ, CM_210DAYS_DELQ, CM_RESTRUCTURE_FLAG, CM_DTE_RESTRUCTURE, CM_DTE_LST_PYMT, CM_STATUS_DESC, CM_LST_PYMT_AMNT, CM_PAID_PRICIPAL, CM_PAID_INTEREST, CM_PAID_CHARGE, CM_SOURCE_CODE, CR_ACCT_NBR)
-					  SELECT CM_CUSTOMER_NMBR, CM_CARD_NMBR, CM_TYPE, CM_CRLIMIT, CM_CREDIT_LINE, CM_DTE_OPENED, CM_INTEREST, CM_TENOR, FLD_DATE_5, MOB, CM_DTE_LIQUIDATE, CM_CURRENCY_CODE, CM_HOLD_AMOUNT, CM_AO_CODE, CM_OFFICER_NAME, CM_SECTOR_CODE, CM_SECTOR_DESC, CM_DTE_PK, CM_CARD_EXPIR_DTE, CM_INSTALLMENT_AMOUNT, CM_INSTL_BAL, CM_INTR_PER_DIEM, CM_INSTL_LIMIT, CM_AMNT_OUTST_INSTL, CM_TOTALDUE, CM_CYCLE, CM_INSTALLMENT_NO, CM_DTE_PYMT_DUE, DPD, CM_BUCKET_PROGRAM, FLD_CHAR_2, CM_STATUS, CM_COLLECTIBILITY, CM_BLOCK_CODE, CM_DTE_BLOCK_CODE, CM_OS_BALANCE, CM_OS_PRINCIPAL, CM_OS_INTEREST, CM_RTL_MISC_FEES, CM_TOTAL_OS_AR, CM_CHGOFF_STATUS_FLAG, CM_DTE_CHGOFF_STAT_CHANGE, SUM_WO_BALANCE, CM_CHGOFF_PRICIPLE, CM_ZIP_REC, CM_DELQ_COUNTER1, CM_DELQ_COUNTER2, CM_DELQ_COUNTER3, CM_DELQ_COUNTER4, CM_DELQ_COUNTER5, CM_DELQ_COUNTER6, CM_DELQ_COUNTER7, CM_DELQ_COUNTER8, CM_DELQ_COUNTER9, CM_CURR_DUE, CM_PAST_DUE, CM_30DAYS_DELQ, CM_60DAYS_DELQ, CM_90DAYS_DELQ, CM_120DAYS_DELQ, CM_150DAYS_DELQ, CM_180DAYS_DELQ, CM_210DAYS_DELQ, CM_RESTRUCTURE_FLAG, CM_DTE_RESTRUCTURE, CM_DTE_LST_PYMT, CM_STATUS_DESC, CM_LST_PYMT_AMNT, CM_PAID_PRICIPAL, CM_PAID_INTEREST, CM_PAID_CHARGE, CM_SOURCE_CODE, CR_ACCT_NBR
+			$query = "INSERT INTO cpcrd_new (CM_CUSTOMER_NMBR, CM_CARD_NMBR, CM_TYPE, CM_CRLIMIT, CM_CREDIT_LINE, CM_DTE_OPENED, CM_INTEREST, CM_TENOR, FLD_DATE_5, MOB, CM_DTE_LIQUIDATE, CM_CURRENCY_CODE, CM_HOLD_AMOUNT, CM_AO_CODE, CM_OFFICER_NAME, CM_SECTOR_CODE, CM_SECTOR_DESC, CM_DTE_PK, CM_CARD_EXPIR_DTE, CM_INSTALLMENT_AMOUNT, CM_INSTL_BAL, CM_INTR_PER_DIEM, CM_INSTL_LIMIT, CM_AMNT_OUTST_INSTL, CM_TOTALDUE, CM_CYCLE, CM_INSTALLMENT_NO, CM_DTE_PYMT_DUE, DPD, CM_BUCKET_PROGRAM, FLD_CHAR_2, CM_STATUS, CM_COLLECTIBILITY, CM_BLOCK_CODE, CM_DTE_BLOCK_CODE, CM_OS_BALANCE, CM_OS_PRINCIPAL, CM_OS_INTEREST, CM_RTL_MISC_FEES, CM_TOTAL_OS_AR, CM_CHGOFF_STATUS_FLAG, CM_DTE_CHGOFF_STAT_CHANGE, SUM_WO_BALANCE, CM_CHGOFF_PRICIPLE, CM_ZIP_REC, CM_DELQ_COUNTER1, CM_DELQ_COUNTER2, CM_DELQ_COUNTER3, CM_DELQ_COUNTER4, CM_DELQ_COUNTER5, CM_DELQ_COUNTER6, CM_DELQ_COUNTER7, CM_DELQ_COUNTER8, CM_DELQ_COUNTER9, CM_CURR_DUE, CM_PAST_DUE, CM_30DAYS_DELQ, CM_60DAYS_DELQ, CM_90DAYS_DELQ, CM_120DAYS_DELQ, CM_150DAYS_DELQ, CM_180DAYS_DELQ, CM_210DAYS_DELQ, CM_RESTRUCTURE_FLAG, CM_DTE_RESTRUCTURE, CM_DTE_LST_PYMT, CM_STATUS_DESC, CM_LST_PYMT_AMNT, CM_PAID_PRICIPAL, CM_PAID_INTEREST, CM_PAID_CHARGE, CM_SOURCE_CODE, CR_ACCT_NBR, AGENT_ID, CM_BUCKET, CR_NAME_1)
+					  SELECT CM_CUSTOMER_NMBR, CM_CARD_NMBR, CM_TYPE, CM_CRLIMIT, CM_CREDIT_LINE, CM_DTE_OPENED, CM_INTEREST, CM_TENOR, FLD_DATE_5, MOB, CM_DTE_LIQUIDATE, CM_CURRENCY_CODE, CM_HOLD_AMOUNT, CM_AO_CODE, CM_OFFICER_NAME, CM_SECTOR_CODE, CM_SECTOR_DESC, CM_DTE_PK, CM_CARD_EXPIR_DTE, CM_INSTALLMENT_AMOUNT, CM_INSTL_BAL, CM_INTR_PER_DIEM, CM_INSTL_LIMIT, CM_AMNT_OUTST_INSTL, CM_TOTALDUE, CM_CYCLE, CM_INSTALLMENT_NO, CM_DTE_PYMT_DUE, DPD, CM_BUCKET_PROGRAM, FLD_CHAR_2, CM_STATUS, CM_COLLECTIBILITY, CM_BLOCK_CODE, CM_DTE_BLOCK_CODE, CM_OS_BALANCE, CM_OS_PRINCIPAL, CM_OS_INTEREST, CM_RTL_MISC_FEES, CM_TOTAL_OS_AR, CM_CHGOFF_STATUS_FLAG, CM_DTE_CHGOFF_STAT_CHANGE, SUM_WO_BALANCE, CM_CHGOFF_PRICIPLE, CM_ZIP_REC, CM_DELQ_COUNTER1, CM_DELQ_COUNTER2, CM_DELQ_COUNTER3, CM_DELQ_COUNTER4, CM_DELQ_COUNTER5, CM_DELQ_COUNTER6, CM_DELQ_COUNTER7, CM_DELQ_COUNTER8, CM_DELQ_COUNTER9, CM_CURR_DUE, CM_PAST_DUE, CM_30DAYS_DELQ, CM_60DAYS_DELQ, CM_90DAYS_DELQ, CM_120DAYS_DELQ, CM_150DAYS_DELQ, CM_180DAYS_DELQ, CM_210DAYS_DELQ, CM_RESTRUCTURE_FLAG, CM_DTE_RESTRUCTURE, CM_DTE_LST_PYMT, CM_STATUS_DESC, CM_LST_PYMT_AMNT, CM_PAID_PRICIPAL, CM_PAID_INTEREST, CM_PAID_CHARGE, CM_SOURCE_CODE, CR_ACCT_NBR, AGENT_ID, CM_BUCKET, CR_NAME_1
 					  FROM cpcrd_new_upload_temp
 					  WHERE file_upload_id = ?";
+			$this->db->query($query, [$uploadId]);
+			
+			$query = "INSERT INTO cms_predictive_address (CM_CARD_NMBR,CR_NAME_1,ADDRESS_TYPE,CM_PROVINCE,CM_CITY,CM_KEC,CM_KEL,ADDRESS,ZIP_CODE,LATITUDE,LONGITUDE,PRIORITY)
+						SELECT CM_CARD_NMBR,CR_NAME_1,ADDRESS_TYPE,CM_PROVINCE,CM_CITY,CM_KEC,CM_KEL,ADDRESS,ZIP_CODE,LATITUDE,LONGITUDE,PRIORITY FROM cms_predictive_address_upload_tmp
+						WHERE file_upload_id = ?";
+			$this->db->query($query, [$uploadId]);
+			
+			$query = "INSERT INTO cms_predictive_phone (CM_CARD_NMBR,PHONE_TYPE,CONTENT,PRIORITY,PERCENTAGE)
+						SELECT CM_CARD_NMBR,PHONE_TYPE,CONTENT,PRIORITY,PERCENTAGE 
+						FROM cms_predictive_phone_upload_tmp
+						WHERE file_upload_id = ?";
+			$this->db->query($query, [$uploadId]);
+			
+			$query = "replace INTO cms_account_last_status (account_no,assigned_agent,assignment_start_date,assignment_end_date)
+						SELECT account_no,assigned_agent,assignment_start_date,assignment_end_date
+						FROM cms_account_last_status_upload_tmp
+						WHERE file_upload_id = ?";
 			$this->db->query($query, [$uploadId]);
 
 			$this->db->table('upload_account_data')
@@ -240,6 +332,8 @@ class UploadAccountData extends \App\Controllers\BaseController
 
 		$fileRow = $this->db->table('upload_account_data')->select('fullPath')->where('id', $uploadId)->get()->getRow();
 		$filePath = $fileRow ? $fileRow->fullPath : null;
+		$delete = $this->db->table('cms_predictive_phone_upload_tmp')->where('file_upload_id', $uploadId)->delete();
+		$delete = $this->db->table('cms_predictive_address_upload_tmp')->where('file_upload_id', $uploadId)->delete();
 		$delete = $this->db->table('cpcrd_new_upload_temp')->where('file_upload_id', $uploadId)->delete();
 		$delete= $this->db->table('upload_account_data')->where('id', $uploadId)->delete();
 		if ($delete) {

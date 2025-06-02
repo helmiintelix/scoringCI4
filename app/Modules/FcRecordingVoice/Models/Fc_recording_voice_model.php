@@ -12,10 +12,10 @@ Class Fc_recording_voice_model Extends Model
 				return session()->get('ecx8_access_token');
 			}
 		}
-        $url = "https://ecx8demo.ecentrix.net/ecentrix/auth/supervisor.php"; 
-		$clientId = "ecx8demo";
-		$authKey = "AFCD32C15ADAB0819EB48F820BC832DABD09170986BC2CA42E379D24F57CE467";
-		$spvId = "spv_oub01";
+        $url = "https://sbmobcoll.ecentrix.net/ecentrix/auth/supervisor.php"; 
+		$clientId = "sbmobcoll";
+		$authKey = "2E311779771FB8F724EB91FF83B5CE6546E89871AFA42D0C395411511551B8B0";
+		$spvId = "admin";
 			
 		$param = array(
 			"client_id" => $clientId ,
@@ -64,25 +64,25 @@ Class Fc_recording_voice_model Extends Model
 		return $json1['access_token'];
 	}
 	function get_recording_list(){
-		$this->builder = $this->db->table("ecentrix.ecentrix_recording as a");
+		$this->builder = $this->db->table("ecentrix.recording as a");
         $select = array(
 			' "-" action',
            	'id',
-			'b.contract_number',
-			'customer_name',
-			'agent_id',
+			'IFNULL(SUBSTRING_INDEX(SUBSTRING_INDEX(customer_Data, \'~~\', 2), \'~~\', -1), \'\')  contract_number',
+			'IFNULL(SUBSTRING_INDEX(SUBSTRING_INDEX(customer_Data, \'~~\', 4), \'~~\', -1), \'\') customer_name',
+			'IFNULL(SUBSTRING_INDEX(SUBSTRING_INDEX(customer_Data, \'~~\', 1), \'~~\', -1), \'\') agent_id',
 			'a.extension_id',
-			'a_number number',
+			'phone_number as  number',
 			'TIME(a.start_time) start_time',
 			'TIME(a.end_time) end_time',
 			'SEC_TO_TIME(ROUND(a.duration/1000)) duration',
 			'file_path',
 			'customer_data',
-			'created_time'
+			'create_time'
         );
         $this->builder->select( str_replace(' , ', ' ', implode(', ', $select)), false);
-		$this->builder->join('acs_contract_aging b','b.contract_number = a.contract_number','left');
-		$this->builder->join('acs_customer_profile c','b.customer_id = c.customer_id','left');
+		// $this->builder->join('acs_contract_aging b','b.contract_number = a.contract_number','left');
+		// $this->builder->join('acs_customer_profile c','b.customer_id = c.customer_id','left');
         // $this->builder->orderBy('a.create_time', 'DESC');
         $rResult = $this->builder->get();
         $return = $rResult->getResultArray();

@@ -35,9 +35,10 @@ Class SetupPassword_model Extends Model
 		//log_message('debug',__METHOD__);
 		$this->builder = $this->db->table('aav_configuration_tmp');
 
-		$this->builder->where('parameter', "SYSTEM");
+		$this->builder->where('parameter', $param_data["parameter"]);
 		$this->builder->where('id', $param_data["id"]);
 		$return = $this->builder->update($param_data);
+		
 
 		return $return;
 	}
@@ -46,7 +47,7 @@ Class SetupPassword_model Extends Model
         $this->builder = $this->db->table('aav_configuration_tmp a');
        
         $select = array(
-            'a.id', 'a.name', 'a.value', 'concat(b.id," - ",b.name) created_by', 'date_format(a.created_time,"%d %b %Y")created_time'
+            'a.parameter','a.id', 'a.name', 'a.value', 'concat(b.id," - ",b.name) created_by', 'date_format(a.created_time,"%d %b %Y")created_time'
         );
         $this->builder->join('cc_user b', 'a.created_by=b.id');
         $this->builder->where("a.id !=", "ALERT_ANGSURAN");
@@ -73,11 +74,11 @@ Class SetupPassword_model Extends Model
 	function approve_system_setting($param_data)
 	{
 		//log_message('debug',__METHOD__);
-		$this->db->query("replace into aav_configuration select * from aav_configuration_tmp where parameter ='SYSTEM' and add_field1 = 'APPROVAL' and id='" . $param_data["id"] . "'");
+		$this->db->query("replace into aav_configuration select * from aav_configuration_tmp where parameter ='" . $param_data["parameter"] . "' and add_field1 = 'APPROVAL' and id='" . $param_data["id"] . "'");
 		
 		$this->builder = $this->db->table('aav_configuration_tmp');
 
-		$this->builder->where('parameter', "SYSTEM");
+		$this->builder->where('parameter', $param_data["parameter"]);
 		$this->builder->where('id', $param_data["id"]);
 		$return = $this->builder->update($param_data);
 	
@@ -88,7 +89,7 @@ Class SetupPassword_model Extends Model
 	{
 		$this->builder = $this->db->table('aav_configuration_tmp');
 
-		$this->builder->where('parameter', "SYSTEM");
+		$this->builder->where('parameter', $param_data["parameter"]);
 		$this->builder->where('id', $param_data["id"]);
 		$return = $this->builder->update($param_data);
 

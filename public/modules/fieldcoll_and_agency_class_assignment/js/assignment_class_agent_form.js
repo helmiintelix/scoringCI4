@@ -246,7 +246,36 @@ $("#opt-ac-agent").on("change", function () {
   }
 });
 $("#opt-ac-agent").change();
+
+function renderListTable(data) {
+  try {
+    count_agent++;
+    var markup =
+      '<tr id="tr_' +
+      data.id +
+      '"><td>' +
+      count_agent +
+      "</td><td class='agent_id_assigned' >" +
+      data.id +
+      "</td><td>" +
+      data.name +
+      "</td><td>" +
+      data.group_id +
+      "</td><td style='display:none'><input type='number' min='0' max='100' class='ass_weight' value='0'/>" +
+      "</td><td><button onclick=\"agentDelete('" +
+      data.id +
+      '\')" class="btn btn-danger btn-sm"> delete</button></td></tr>';
+    $("#agent_table_body").append(markup);
+  } catch (e) {
+    console.log(e);
+  }
+}
 function first_load() {
+  // console.log(agent_list);
+
+  agent_list.map((data) => {
+    renderListTable(data);
+  });
   $(".chosen-select").chosen({
     width: "100%",
   });

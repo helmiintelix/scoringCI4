@@ -148,17 +148,18 @@ Class User_management_approval_model Extends Model
             $this->builder->where('id', $user_data["id"]);
             $user_get = $this->builder->get();
             $user = $user_get->getRowArray();
+            $user['password'] = hash('sha256', $user['password']);
             
             // $user = $user_get->result_array();
             $this->builder = $this->db->table("cc_user");
             $this->builder->insert($user);
 
-            $user['status'] = $status;
-            $user['insert_by'] = session()->get('USER_ID');
-            $user['insert_time'] = date('Y-m-d H:i:s');
-            // $user[0] = $user[0] + array('status'=>$status , 'insert_by'=>session()->get('USER_ID'),'insert_time'=>date('Y-m-d H:i:s'));
-            $this->builder = $this->db->table("cc_user_tmp_history");
-            $this->builder->insert($user);
+            // // $user['status'] = $status;
+            // $user['insert_by'] = session()->get('USER_ID');
+            // $user['insert_time'] = date('Y-m-d H:i:s');
+            // // $user[0] = $user[0] + array('status'=>$status , 'insert_by'=>session()->get('USER_ID'),'insert_time'=>date('Y-m-d H:i:s'));
+            // $this->builder = $this->db->table("cc_user_tmp_history");
+            // $this->builder->insert($user);
 
             $this->builder = $this->db->table("cc_user_tmp");
             $this->builder->where('id', $user_data["id"]);

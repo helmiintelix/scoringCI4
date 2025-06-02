@@ -22,7 +22,7 @@
 
 <script type="text/javascript">
     var classification = '<?= $classification ?>';
-    let ecx8_url = '<?=getenv('ECX8_URL');?>'
+    var ecx8_url = '<?=getenv('ECX8_URL');?>'
 </script>
 <script src="<?= base_url(); ?>modules/fc_recording_voice/js/fc_recording_voice.js?v=<?= rand() ?>">
 </script>

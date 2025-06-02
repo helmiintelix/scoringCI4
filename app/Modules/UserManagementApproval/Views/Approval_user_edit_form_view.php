@@ -131,7 +131,7 @@
 						?>
 					</div>
 					
-					<div class="mb-3" id="div_token">
+					<div class="mb-3" id="div_token" hidden>
 						<label for="form-field-select-2" class="fs-6 text-capitalize">Token</label>
 						<div class="input-group has-validation" style="cursor:pointer">
 							<input type="text" name="token" class="form-control form-control-sm " id="txt-token" required value="<?=$before['token']?>">
@@ -278,7 +278,7 @@
 						?>
 					</div>
 					
-					<div class="mb-3" id="div_token2">
+					<div class="mb-3" id="div_token2" hidden>
 						<label for="form-field-select-2" class="fs-6 text-capitalize">Token</label>
 						<div class="input-group has-validation" style="cursor:pointer">
 							<input type="text" name="txt-token" class="form-control form-control-sm " id="token" required value="<?=$after['token']?>">

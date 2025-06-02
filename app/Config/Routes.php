@@ -57,7 +57,7 @@ $routes->add('user_and_group/user_management', '\App\Modules\UserAndGroup\Contro
 #UserManagementApproval
 $routes->add('user_and_group/user_management_temp', '\App\Modules\UserManagementApproval\Controllers\User_management_approval::index',['filter' => 'authfilter']);
 #InputVisitRadius
-$routes->add('input_visit_radius/visit_radius_all', '\App\Modules\InputVisitRadius\Controllers\Input_visit_radius::visit_radius_all',['filter' => 'authfilter']);
+$routes->add('visit_radius/visit_radius_all', '\App\Modules\InputVisitRadius\Controllers\Input_visit_radius::visit_radius_all',['filter' => 'authfilter']);
 #SetupAreaBranch
 $routes->add('setup_area_branch/branch', '\App\Modules\SetupAreaBranch\Controllers\Setup_area_branch::branch',['filter' => 'authfilter']);
 #SetupAreaBranchtemp
@@ -309,6 +309,12 @@ $routes->add('settings/upload_account_data', '\App\Modules\UploadAccountData\Con
 $routes->add('whatsappConversation/conversationWaView', '\App\Modules\WhatsappConversation\Controllers\WhatsappConversation::conversationWaView',['filter' => 'authfilter']);
 $routes->add('whatsappConversation/wa2wayListView', '\App\Modules\WhatsappConversation\Controllers\WhatsappConversation::wa2wayListView',['filter' => 'authfilter']);
 
+#Chat modules
+$routes->add('Chat/conversationChatView', '\App\Modules\Chat\Controllers\Chat::conversationChatView',['filter' => 'authfilter']);
+$routes->add('Chat/chatListView', '\App\Modules\Chat\Controllers\Chat::chatListView',['filter' => 'authfilter']);
+$routes->add('Chat/sendMessage', '\App\Modules\Chat\Controllers\Chat::sendMessage',['filter' => 'authfilter']);
+$routes->add('Chat/updateSeenAt', '\App\Modules\Chat\Controllers\Chat::updateSeenAt',['filter' => 'authfilter']);
+
 #untuk module
 if($uri->getTotalSegments() > 2){
     $function = $uri->getSegment(3);
@@ -375,7 +381,7 @@ if($uri->getTotalSegments() > 2){
     $routes->add('settings/letter_template_temp/'.$function, '\App\Modules\SuratPeringatanSPTemplate\Controllers\Surat_peringatan_sp_template_temp::'.$function,['filter' => 'authfilter']);
     
     #SetupListOfValue
-    $routes->add('setup_list_of_value/setup_list_of_value/'.$function, '\App\Modules\SetupListOfValue\Controllers\setup_list_of_value::'.$function,['filter' => 'authfilter']);
+    $routes->add('setup_list_of_value/setup_list_of_value/'.$function, '\App\Modules\SetupListOfValue\Controllers\Setup_list_of_value::'.$function,['filter' => 'authfilter']);
 
     #ChecklistAsset
     $routes->add('checklist_asset/checklist_asset/'.$function, '\App\Modules\ChecklistAsset\Controllers\checklist_asset::'.$function,['filter' => 'authfilter']);
