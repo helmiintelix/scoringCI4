@@ -6,6 +6,10 @@ menggunakan CI versi 4.6.0 - source per 20 januari 2025 , bisa menggunakan php s
 -php spark serve
 -support untuk php 8.3(tested) dan 8.4
 
+# How to Implement Chat Module
+
+Jika project belum memiliki chat module, silahkan ikuli langkah yang ada pada file `CHATMODULE.md` untuk mengimplementasikan chat module.
+
 ## Getting started
 
 To make it easy for you to get started with GitLab, here's a list of recommended next steps.
