@@ -158,7 +158,6 @@ var updateTimeChat = () => {
   });
 };
 
-getFirst();
 setTimeout(() => {
   setInterval(() => {
     updateTimeChat();
