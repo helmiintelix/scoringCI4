@@ -28,40 +28,48 @@ Class ChatModel Extends Model
         $level_group = $this->Common_model->get_record_value("level_group", "cc_user_group", "id=?", [session()->get('USER_GROUP')]);
         $userId = session()->get('USER_ID');
         // var_dump("level_group: ", session()->get('USER_GROUP'), $level_group, $this->db->getLastQuery());
-        
-        if($level_group == 'TELECOLL'){
-            $builder = $this->db->table('cms_team t');
-            $builder->select('t.team_leader');
-            $builder->like('t.agent_list', session()->get('USER_ID'));
-            $query = $builder->get();
-            $result = $query->getResultArray();
-            $whereUser = array_column($result, 'team_leader');
-        } else {
-            $builder = $this->db->table('cms_team t');
-            $builder->select('t.agent_list');
-            $builder->where('t.team_leader', session()->get('USER_ID'));
-            $query = $builder->get();
-            $result = $query->getResultArray();
+        switch ($level_group) {
+            case 'TEAM_LEADER':    
+                $builder = $this->db->table('cms_team t');
+                $builder->select('t.agent_list');
+                $builder->where('t.team_leader', session()->get('USER_ID'));
+                $query = $builder->get();
+                $result = $query->getResultArray();
 
-            $agentLists = array_column($result, 'agent_list');
-            $userIds = [];
+                $agentLists = array_column($result, 'agent_list');
+                $userIds = [];
 
-            foreach ($agentLists as $list) {
-                // Pisahkan berdasarkan '|'
-                $ids = explode('|', $list);
-                foreach ($ids as $id) {
-                    $id = trim($id);
-                    if ($id !== '') {
-                        $userIds[] = $id;
+                foreach ($agentLists as $list) {
+                    // Pisahkan berdasarkan '|'
+                    $ids = explode('|', $list);
+                    foreach ($ids as $id) {
+                        $id = trim($id);
+                        if ($id !== '') {
+                            $userIds[] = $id;
+                        }
                     }
                 }
-            }
-            // var_dump("userIds: ", $userIds, $this->db->getLastQuery());
+                // var_dump("userIds: ", $userIds, $this->db->getLastQuery());
 
-            // Hilangkan duplikat
-            $userIds = array_unique($userIds);
-            $whereUser = $userIds;
+                // Hilangkan duplikat
+                $userIds = array_unique($userIds);
+                $whereUser = $userIds;
+                break;
+
+            case 'TELECOLL':
+                $builder = $this->db->table('cms_team t');
+                $builder->select('t.team_leader');
+                $builder->like('t.agent_list', session()->get('USER_ID'));
+                $query = $builder->get();
+                $result = $query->getResultArray();
+                $whereUser = array_column($result, 'team_leader');
+                break;
+
+            default:
+                $whereUser = [''];
+                break;
         }
+        
         // var_dump("whereUser: ", $whereUser);
         // Subquery: pesan terakhir antara TL dan masing-masing agent di bawahnya
         $subQuery = $this->db->table('cms_chat_conversation')

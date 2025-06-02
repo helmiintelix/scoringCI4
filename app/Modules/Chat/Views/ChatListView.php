@@ -90,7 +90,9 @@
     $(document).ready(()=>{
         console.log("first load chat list", <?= json_encode($chatList ?? []) ?>);
         dataListChat = <?= json_encode($chatList ?? []) ?>;
-        generateListChat(dataListChat);
+        if (dataListChat.length > 0) {
+            generateListChat(dataListChat);
+        } 
         checkSeenAt()
 
         // console.log('WA2WAYREADY!');
