@@ -459,7 +459,7 @@
   <script src="<?= base_url(); ?>assets/nice_admin/js/jquery.form.min.js"></script>
   <script src="<?= base_url(); ?>assets/bootbox/bootbox.js"></script>
   <script src="<?= base_url(); ?>assets/push_notification/socket.io.js"></script>
-  <script src="<?= base_url(); ?>assets/push_notification/cms_notification.js"></script>
+  <script src="<?= base_url(); ?>assets/push_notification/cms_notification.js?v=<?= rand(); ?>"></script>
   <script src="<?= base_url(); ?>assets/fusejs/dist/fuse.js"></script>
   <script src="<?= base_url(); ?>assets/bs5treeview-main/src/js/bstreeview.js"></script>
   <script src="<?= base_url(); ?>assets/chosen_v1.8.7/chosen.jquery.min.js"></script>
