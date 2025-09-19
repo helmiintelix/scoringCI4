@@ -94,12 +94,12 @@
               <div class="shadow-lg col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center rounded-start-2 background-div">
                 <img src="<?= base_url(); ?>assets/Logo_ecentrix.svg" class="img-fluid py-5" alt="Page Not Found" style="height: 300px;">
               </div>
-              <div class=" shadow-lg col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center p-4 rounded-end-2" style="background-color: white;">
+              <div class=" shadow-lg col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center p-4 rounded-end-2" style="background-color: white;height: 400px;">
             
 
                     <div class="pt-4 pb-2">
-                      <a href="#" class="logo d-flex align-items-center w-auto p-1">
-                        <span class="d-none d-sm-block">Collection Managament System</span>
+                      <a href="#" class="logo d-flex align-items-center w-auto p-1 justify-content-center">
+                        <span class="d-none d-sm-block">Scoring</span>
                       </a>
                       <p class="text-center small">Enter your username & password to login</p>
                     </div>
