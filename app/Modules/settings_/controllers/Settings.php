@@ -18,6 +18,13 @@ class Settings extends Xcentrix_Controller
 		echo "sdasda";
 	}
 
+	function get_system_configuration(){
+ 		$result = $this->settings_model->get_system_configuration(); 
+		$response = array("success" => true, "message" => "get data berhasil", "data" => $result);
+		
+		echo json_encode($response);
+	}
+	
 	function setting_pemasukan()
 	{
 

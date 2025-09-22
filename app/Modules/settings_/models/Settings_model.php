@@ -6988,7 +6988,7 @@ class Settings_model extends CI_model
 
 	function get_system_configuration()
 	{
-		$this->db->from('aav_configuration');
+		$this->db->from('cc_app_configuration');
 		$this->db->select('id, value', false);
 
 		$result = $this->db->get();
