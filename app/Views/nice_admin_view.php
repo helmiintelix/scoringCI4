@@ -123,29 +123,7 @@
     <nav class="header-nav ms-auto">
       <ul class="d-flex align-items-center">
       
-          <span class="text-secondary" style="margin-right: 10px;font-size: 20px;cursor: context-menu;" >|</span>
-          <!-- <a style="margin-right: 20px;" class="nav-link nav-icon text-white" href="#" data-bs-toggle="offcanvas" data-bs-target="#" aria-controls="">
-            <i class="bi bi-robot text-white" style="font-size: 15px" data-bs-toggle="tooltip" data-bs-placement="bottom" title="AI"></i>
-          </a> -->
-          <!-- <a style="margin-right: 20px;" class="nav-link nav-icon text-white" href="#" data-bs-toggle="offcanvas" data-bs-target="#staticBackdropAccountHandling" aria-controls="staticBackdrop">
-            <i class="bi bi-card-checklist text-white" style="font-size: 15px" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Account Handling"></i>
-          </a> -->
-        
-          <a style="margin-right: 20px;" class="nav-link nav-icon text-white position-relative" href="#" data-bs-toggle="offcanvas" data-bs-target="#staticBackdropWa2way" aria-controls="staticBackdrop" >
-            <i class="bi bi-whatsapp text-white" style="font-size: 15px" data-bs-toggle="tooltip" data-bs-placement="bottom" title="whatsapp"></i>
-            <span id="iconNotifNewWa" style="width: 11px;height: 11px;top: 11px;" class="position-absolute start-100 translate-middle bg-danger border border-light rounded-circle">
-              <span class="visually-hidden" style="width: 5px;">New alerts</span>
-            </span>
-          </a>
-
-          <!-- #Chat modules -->
-          <a style="margin-right: 20px;" class="nav-link nav-icon text-white position-relative" href="#" data-bs-toggle="offcanvas" data-bs-target="#staticBackdropChat" aria-controls="staticBackdrop" >
-            <i class="bi bi-chat text-white" style="font-size: 15px" data-bs-toggle="tooltip" data-bs-placement="bottom" title="chat"></i>
-            <span id="iconNotifNewChat" style="width: 11px;height: 11px;top: 11px; display:none;" class="position-absolute start-100 translate-middle bg-danger border border-light rounded-circle">
-              <span class="visually-hidden" style="width: 5px;">New alerts</span>
-            </span>
-          </a>
-          <!-- #Chat modules -->
+        <span class="text-secondary" style="margin-right: 10px;font-size: 20px;cursor: context-menu;" >|</span>
 
         <li class="nav-item dropdown">
           <a class="nav-link nav-icon text-white" href="#" data-bs-toggle="dropdown" >
@@ -210,22 +188,7 @@
               <hr class="dropdown-divider">
             </li>
 
-            <!-- <li>
-              <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
-                <i class="bi bi-gear"></i>
-                <span>Account Settings</span>
-              </a>
-            </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li>
-              <a class="dropdown-item d-flex align-items-center" href="pages-faq.html">
-                <i class="bi bi-question-circle"></i>
-                <span>Need Help?</span>
-              </a>
-            </li> -->
+           
             <li>
               <hr class="dropdown-divider">
             </li>
@@ -359,31 +322,7 @@
       </div>
     </div>
   </div>
-
-  <div class="offcanvas offcanvas-end" tabindex="-1" data-bs-scroll="true" id="staticBackdropWa2way" aria-labelledby="staticBackdropLabel">
-      <div class="offcanvas-header bg-success text-white">
-        <a href="#" class="link-light" id="canvasLinkBackWa"><i class="bi bi-arrow-left"></i></a>
-        <i class="bi bi-whatsapp" id="canvasIconWa"></i>
-        <h5 class="offcanvas-title" id="staticBackdropLabel">Whatsapp</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-      </div>
-      <div class="offcanvas-body" id="wa2wayCanvas">
-    
-      </div>
-  </div>
-  <!-- #Chat modules -->
-  <div class="offcanvas offcanvas-end" tabindex="-1" data-bs-scroll="true" id="staticBackdropChat" aria-labelledby="staticBackdropLabel">
-      <div class="offcanvas-header bg-warning text-white">
-        <a href="#" class="link-light" id="canvasLinkBackChat"><i class="bi bi-arrow-left"></i></a>
-        <i class="bi bi-chat" id="canvasIconChat"></i>
-        <h5 class="offcanvas-title" id="staticBackdropLabel">Chat</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-      </div>
-      <div class="offcanvas-body" id="chatCanvas">
-    
-      </div>
-  </div>
-  <!-- #Chat modules -->
+ 
 
 
   <!-- ======= Footer ======= -->
@@ -1370,15 +1309,7 @@
   <script src="<?= base_url(); ?>private/js/main.js?v=<?= rand(); ?>"></script>
   <script src="<?= base_url(); ?>private/js/admin_main.js?v=<?= rand(); ?>"></script>
 
-  <!-- #Chat modules -->
-  <script>
-    var HOST_SOCKET_SERVER = "<?= env('HOST_SOCKET_SERVER') ?>";
-    var PORT_SOCKET_SERVER = <?= env('PORT_SOCKET_SERVER') ?>; // Ganti dengan port yang sesuai jika berbeda
-  </script>
-  <script src="<?= base_url(); ?>assets/socket/socket.io.min.js?v=<?= rand(); ?>"></script>
-  <script src="<?= base_url(); ?>private/js/chat.js?v=<?= rand(); ?>"></script>
-  <script src="<?= base_url(); ?>private/js/socket.js?v=<?= rand(); ?>"></script>
-  <!-- #Chat modules -->
+
 
   <script src="<?= base_url(); ?>assets/datetimepicker/moment.min.js"></script>
   <script src="<?= base_url(); ?>assets/datetimepicker/daterangepicker.js"></script>

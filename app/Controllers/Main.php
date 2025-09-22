@@ -10,13 +10,21 @@ class Main extends BaseController
     {
 
         log_message('info', session()->get('USER_ID').' LOGIN');
-      
-        $data["session_expire"] = $this->Common_model->get_record_value('value', 'aav_configuration', "parameter='SYSTEM' AND id='FORCED_EXIT'");
-        
-        $builder = $this->db->table('cc_menu');
+		$data["session_expire"] = $this->Common_model->get_record_value('value', 'cc_app_configuration', "parameter='SYSTEM' AND id='FORCED_EXIT'");
+		$data['menus'] = explode(";", $this->Common_model->get_record_value('authority AS menu_list', 'cc_user_group', 'id="'.session()->get('GROUP_ID').'"'));
+        $data['group'] = '';//$this->common_model->get_record_value('group_concat(a.channel_module)', 'cc_user_group_detail a', 'a.group_id="'.session()->get('GROUP_ID').'" group by a.group_id');
+		$data['running_text'] = $this->Common_model->get_running_text();
 
-       
-        $data['broadcastMsg']	= $this->Common_model->get_record_value("value", "aav_configuration", "parameter = 'BROADCAST' and id='BROADCAST' ");
+        $data["password_status"] = $this->Common_model->get_record_value('password_status', 'cc_user', "id='".session()->get('USER_ID')."'");
+		session()->set("password_status", $data["password_status"]);
+		$data["password_age"] = $this->Common_model->get_record_value('DATEDIFF(CURDATE(), DATE(password_date))', 'cc_user', "id='".session()->get('USER_ID')."'");
+		session()->set("password_age", $data["password_age"]);
+		$data["session_expire"] = $this->Common_model->get_record_value('value', 'cc_app_configuration', "parameter='SYSTEM' AND id='FORCED_EXIT'");
+		$data["max_failed_attempts"] = $this->Common_model->get_record_value('value', 'cc_app_configuration', "parameter='SYSTEM' AND id='PASSWORD_MAX_FAILED_ATTEMPS'");
+		session()->set("max_failed_attempts", $data["max_failed_attempts"]);
+		
+		$data["authorities"] = explode("|", $this->Common_model->get_record_value('authority', 'cc_user', "id='".session()->get('USER_ID')."'"));
+
         $data['csrf_hash'] = csrf_hash();
         $data['csrf_token'] = csrf_token();
         
@@ -48,14 +56,14 @@ class Main extends BaseController
         } else {
             // Ambil menu_list dari cc_user_group berdasarkan USER_GROUP selain ROOT
             $user_group_builder = $this->db->table('cc_user_group');
-            $menu_list_query = $user_group_builder->select('menu_list')
+            $menu_list_query = $user_group_builder->select('authority')
                                                   ->where('id', session()->get('USER_GROUP'))
                                                   ->get();
         
             $row = $menu_list_query->getRow();
             if ($row) {
                 // Format ulang menu_list yang dipisahkan oleh '|'
-                $menu_list = explode('|', $row->menu_list);
+                $menu_list = explode('|', $row->authority);
         
                 // Query untuk mendapatkan menu yang ada dalam menu_list
                 $main_menu = $builder->select('menu_id, menu_desc, parent_id, order_num, url, icon')

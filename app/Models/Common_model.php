@@ -5,6 +5,45 @@ use CodeIgniter\Model;
 Class Common_model Extends Model
 {
 
+	function get_running_text(): string
+	{
+
+		$builder = $this->db->table('cc_running_text');
+		$builder->select('message')
+				->where('start_date <=', date('Y-m-d H:i:s'))
+				->where('end_date >=', date('Y-m-d H:i:s'))
+				->where('is_active', '1')
+				->orderBy('start_date, created_time, updated_time', 'ASC');
+
+		$query   = $builder->get();
+		$message = "";
+		$jumlah  = $query->getNumRows();
+
+		if ($jumlah > 0) {
+			foreach ($query->getResult() as $row) {
+				if ($jumlah % 2 == 0) {
+					if (!empty($message)) {
+						$message .= " <img src='" . base_url('assets/images/navigate_left2.png') . "'> 
+									<span style='color:orange'>" . $row->message . '</span>';
+					} else {
+						$message .= "<span style='color:white'>" . $row->message . '</span>';
+					}
+				} else {
+					if (!empty($message)) {
+						$message .= " <img src='" . base_url('assets/images/navigate_left2.png') . "'> 
+									<span style='color:yellow'>" . $row->message . '</span>';
+					} else {
+						$message .= "<span style='color:yellow'>" . $row->message . '</span>';
+					}
+				}
+				$jumlah--;
+			}
+		} else {
+			$message = 'Welcome To Helpdesk Contact Center.';
+		}
+
+		return $message;
+	}
 	
 	function get_record_value($fieldName, $tableName, $criteria, $param = array())
 	{
