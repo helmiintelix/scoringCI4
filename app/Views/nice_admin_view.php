@@ -313,10 +313,9 @@
     }
   </script>
 
-  <script src="<?= base_url(); ?>assets/telephony/cms_ecentrix8.js"></script>
   <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
-
+ 
   <!-- Vendor JS Files -->
   <script>
     var GLOBAL_SESSION_VARS = new Array();
@@ -1145,16 +1144,6 @@
   <script language='JavaScript'>
     $(document).ready(function() {
     
-      if (LEVEL_GROUP == 'TELECOLL') {
-          getCallCenterConfiguration('AGENT');
-
-      } else {
-          getCallCenterConfiguration('SUPERVISOR');
-      }
-      setTimeout(() => {
-          login();
-
-      }, 3000);
       if(getWithExpiry('GLOBAL_THEME_MODE')){
         GLOBAL_THEME_MODE = getWithExpiry('GLOBAL_THEME_MODE');
         changeTheme(GLOBAL_THEME_MODE);

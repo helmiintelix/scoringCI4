@@ -45,7 +45,7 @@ $routes->get('/Ecentrix8/getCallCenterConfiguration','Ecentrix8::getCallCenterCo
 $routes->post('/Ecentrix8/updateAccountCodeSessionLog','Ecentrix8::updateAccountCodeSessionLog');
 
 
-$routes->add('settings/get_system_configuration/', '\App\Modules\settings\Controllers\Settings::get_system_configuration',['filter' => 'authfilter']);
+$routes->add('settings/get_system_configuration/', '\App\Modules\Settings\Controllers\Settings::get_system_configuration',['filter' => 'authfilter']);
 $routes->add('scoring/scheduler', '\App\Modules\Scoring\Controllers\Scoring::scheduler',['filter' => 'authfilter']);
 
 if($uri->getTotalSegments() > 2){
