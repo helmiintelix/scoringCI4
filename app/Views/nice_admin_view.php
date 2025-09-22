@@ -30,7 +30,7 @@
 
 
   <link rel="stylesheet" href="<?= base_url(); ?>assets/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css">
-  <link rel="stylesheet" href="<?= base_url(); ?>assets/bootstrap-select/dist/css/bootstrap-select.min.css">
+  <!-- <link rel="stylesheet" href="<?= base_url(); ?>assets/bootstrap-select/dist/css/bootstrap-select.min.css"> -->
   <!-- <link rel="stylesheet" href="<?= base_url(); ?>assets/bootstrap-tooltip/css/bootstrap.min.css"> -->
   <link rel="stylesheet" href="<?= base_url(); ?>assets/runningText/runningText.css">
   <link rel="stylesheet" href="<?= base_url(); ?>assets/bs5treeview-main/src/css/bstreeview.css">
@@ -1127,7 +1127,7 @@
 
   <!-- kebutuhan library query builder terbaru -->
   <script src="<?= base_url(); ?>assets/Interact/dist/interact.min.js"></script>
-  <script src="<?= base_url(); ?>assets/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
+  <!-- <script src="<?= base_url(); ?>assets/bootstrap-select/dist/js/bootstrap-select.min.js"></script> -->
   <script src="<?= base_url(); ?>assets/bootstrap-tooltip/js/bootstrap.min.js"></script>
 
   <!-- ini query builder terbaru masih belum berjalan -->

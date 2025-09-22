@@ -165,7 +165,7 @@
           <small>now</small>
         </div>
         <div class="toast-body" id="toast-body">
-
+          <input type="captcha" hidden>
         </div>
       </div>
     </div>
@@ -219,7 +219,6 @@
   <script src="<?= base_url(); ?>assets/nice_admin/vendor/quill/quill.min.js"></script>
   <script src="<?= base_url(); ?>assets/nice_admin/vendor/simple-datatables/simple-datatables.js"></script>
   <script src="<?= base_url(); ?>assets/nice_admin/vendor/php-email-form/validate.js"></script>
-  <script src="<?= base_url(); ?>private/js/main.js"></script>
 </body>
 
 </html>
