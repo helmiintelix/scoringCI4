@@ -11,7 +11,7 @@ var validate = function (formData, jqForm, options) {
     } else {
       $(this).removeClass("mandatory_invalid");
 
-      $("#sign_in", $(jqForm)).each(function () { });
+      $("#sign_in", $(jqForm)).each(function () {});
     }
   });
   if (USING_CAPTCHA) {
@@ -60,7 +60,7 @@ var showFormResponse = function (msg) {
     createCaptcha();
   }
   setTimeout(() => {
-    $("#sign_in").attr('disabled', false).show();
+    $("#sign_in").attr("disabled", false).show();
     $("#sign_in_progress").hide();
   }, 1000);
 };
@@ -117,7 +117,7 @@ var login = async function () {
   });
   const datakey = key;
   const encryptedData = await encryptData(data, datakey);
-  $("#sign_in").attr('disabled', true).hide();
+  $("#sign_in").attr("disabled", true).hide();
   $("#sign_in_progress").show();
   $.ajax({
     url: "login/post_login",
@@ -131,7 +131,7 @@ var login = async function () {
     error: function (err) {
       alert("error");
       setTimeout(() => {
-        $("#sign_in").attr('disabled', false).show();
+        $("#sign_in").attr("disabled", false).show();
         $("#sign_in_progress").hide();
       }, 1000);
     },
@@ -180,7 +180,6 @@ function validateCaptcha() {
 $(document).ready(function () {
   $("#card-login").show();
   if (!GLOBAL_MAIN_VARS["CAPTCHA"]) {
-    $("#div_captcha").hide();
     $("#cpatchaTextBox").removeAttr("required");
     $("#cpatchaTextBox").removeClass("mandatory");
   } else {
@@ -201,6 +200,4 @@ $(document).ready(function () {
     }
     return false;
   });
-
-
 });

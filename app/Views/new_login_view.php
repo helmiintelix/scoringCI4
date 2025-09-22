@@ -123,22 +123,7 @@
                           <div class="invalid-feedback">Please enter your password.</div>
                         </div>
                       </div>
-                      <div class="col-12" id="div_captcha">
-                        <div style="display:flex; gap:10px;">
-                          <div class="fullwidth" style="width:100%;background-color: white; border-radius: 10px; background-image: url('./assets/images/1.jpeg');justify-content: center;align-items: center;display: flex;" id="captcha">
-                          </div>
-                          <div class="item" style="margin:auto">
-                            <button type="button" style="background-color: #f4f4f4; border-radius:10px; font-size:10px;" onclick="createCaptcha();"><img src="./assets/images/refresh-page-option.png" width="13px"></button>
-                          </div>
-                        </div>
-                        <label class="block clearfix" id="idDiv_PWD_PasswordTb" style="margin-top: 20px;">
-                          <span class="block input-icon input-icon-right">
-                            <input type="text" class="form-control mandatory" placeholder="Type the captcha" id="cpatchaTextBox" name="recaptcha" required />
-                            <div class="invalid-feedback">Please enter your capcha.</div>
-                            <i class="icon-lock"></i>
-                          </span>
-                        </label>
-                      </div>
+                      
                       <!-- <div class="col-12">
                         <div class="form-check">
                           <input class="form-check-input" type="checkbox" name="remember" value="true" id="rememberMe">
@@ -208,6 +193,7 @@
     var GLOBAL_MAIN_VARS = new Array();
     var site_url = "<?= site_url(); ?>";
     GLOBAL_MAIN_VARS["BASE_URL"] = "<?= base_url(); ?>";
+    GLOBAL_MAIN_VARS["SITE_URL"] = "<?= base_url(); ?>";
     GLOBAL_MAIN_VARS["CAPTCHA"] = <?=$_ENV['CAPTCHA'];?>;
 
     function showPass() {
@@ -232,7 +218,6 @@
   <script src="<?= base_url(); ?>assets/nice_admin/vendor/echarts/echarts.min.js"></script>
   <script src="<?= base_url(); ?>assets/nice_admin/vendor/quill/quill.min.js"></script>
   <script src="<?= base_url(); ?>assets/nice_admin/vendor/simple-datatables/simple-datatables.js"></script>
-  <script src="<?= base_url(); ?>assets/nice_admin/vendor/tinymce/tinymce.min.js"></script>
   <script src="<?= base_url(); ?>assets/nice_admin/vendor/php-email-form/validate.js"></script>
   <script src="<?= base_url(); ?>private/js/main.js"></script>
 </body>
