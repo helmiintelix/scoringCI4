@@ -6,7 +6,7 @@
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
   <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
 
-  <title>CMS</title>
+  <title>SCORING</title>
   <link rel="icon" href="<?= base_url(); ?>assets/Logo_ecentrix.svg">
   <!-- <meta content="" name="description">
   <meta content="" name="keywords"> -->
@@ -106,51 +106,24 @@
     <div class="d-flex align-items-center justify-content-between">
       <a href="#" class="logo d-flex align-items-center text-white">
         <img src="<?= base_url(); ?>assets/Logo_ecentrix.svg" alt="">
-        <span class="d-none d-lg-block text-white">CMS</span>
+        <span class="d-none d-lg-block text-white">SCORING</span>
       </a>
       <i class="bi bi-list toggle-sidebar-btn text-white"></i>
     </div><!-- End Logo -->
 
     <!-- tambahkan class notificationDynamicisland untuk notif kelap kelip ijo-->
-    <div class="m-3 d-flex align-items-center justify-content-between " style="width: 100%;" data-animation="stop">
+    <!-- <div class="m-3 d-flex align-items-center justify-content-between " style="width: 100%;" data-animation="stop">
       <div id="scroll-container">
         <div id="scroll-text"><?=@$broadcastMsg?></div>
       </div>
-    </div>
+    </div> -->
 
 
 
     <nav class="header-nav ms-auto">
       <ul class="d-flex align-items-center">
       
-        <span class="text-secondary" style="margin-right: 10px;font-size: 20px;cursor: context-menu;" >|</span>
-
-        <li class="nav-item dropdown">
-          <a class="nav-link nav-icon text-white" href="#" data-bs-toggle="dropdown" >
-            <i class="bi bi-bell text-white" style="font-size: 15px"></i>
-            <span class="badge bg-danger badge-number" id="notif_new_total_1" style="display:none">0</span>
-          </a><!-- End Notification Icon -->
-
-          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications" style="width:400px">
-            <div style="overflow-x: hidden;overflow-y: scroll;height: 400px;">
-              <li class="dropdown-header">
-                You have <span id="notif_new_total_2">0</span> new notifications
-                <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
-              </li>
-              <li>
-                <hr class="dropdown-divider">
-              </li>
-              <div id="listNotification">
-              </div>
-              <div>
-                <li class="dropdown-footer">
-                  <a href="#">Show all notifications</a>
-                </li>
-          </ul><!-- End Notification Dropdown Items -->
-
-        </li><!-- End Notification Nav -->
-
-    
+        <!-- <span class="text-secondary" style="margin-right: 10px;font-size: 20px;cursor: context-menu;" >|</span> -->
 
         <li class="nav-item dropdown pe-3 badge rounded-pill bg-secondary">
 
@@ -212,22 +185,6 @@
 
   <!-- ======= Sidebar ======= -->
   <aside id="sidebar" class="sidebar shadow-effect">
-    <div class="card text-dark bg-warning mb-3 shadow-effect"  style="height: 110px;">
-      <div class="card-body ">
-        <div style="font-size: 25px;">
-          <i id="TELEPHONY_NETWORK_STATE" class="bi bi-bar-chart-fill float-end"></i>
-        </div>
-        <h6 class="card-subtitle mb-1 text-white" id="TELEPHONY_LEVEL" style="font-size: 13px;font-weight: bold;"><i>loading...</i></h6>
-        <h6 class="card-subtitle mb-0 text-white" style="font-style: italic;font-size: 10px;">extension</h6>
-        <div style="height: 35px;">
-          <h5 class="card-title text-white" style="font-size: 30px;font-weight: 900;" id="TELEPHONY_EXTENSION"><i>loading...</i></h5>
-        </div>
-        <span class="badge" style="margin-right: -4px;"><i class="bi bi-telephone" style="color: black;"></i></span>
-        <span class="badge rounded-pill bg-light text-warning" id="TELEPHONY_CURRENT_STATUS" style="font-size: 10px;"><i>loading...</i></span>  <span class="text-white">  </span> <span class="badge rounded-pill bg-light text-warning" id="TELEPHONY_CURRENT_STATUS_REASON" style="display:none"></span><br>
-        <span class="text-white" style="font-size: 11px;"></span>
-      </div>
-    </div>
-    <hr>
     <div class="input-group input-group-sm flex-nowrap">
       <span class="input-group-text" id="addon-wrapping"><i class="bi bi-search"></i></span>
       <input type="text" class="form-control" placeholder="search"  onkeyup="cari_menu(this)">
@@ -274,7 +231,7 @@
     <div class="modal-dialog  modal-xl" id="modalForm">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="header-modal">CMS</h5>
+          <h5 class="modal-title" id="header-modal">SCORING</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body" id="modal-body">
@@ -291,7 +248,7 @@
     <div class="modal-dialog modal-fullscreen" id="modalFormFull">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="header-modal-full">CMS</h5>
+          <h5 class="modal-title" id="header-modal-full">SCORING</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body" id="modal-body-full">
@@ -397,8 +354,8 @@
   <script src="<?= base_url(); ?>assets/nice_admin/vendor/php-email-form/validate.js"></script>
   <script src="<?= base_url(); ?>assets/nice_admin/js/jquery.form.min.js"></script>
   <script src="<?= base_url(); ?>assets/bootbox/bootbox.js"></script>
-  <script src="<?= base_url(); ?>assets/push_notification/socket.io.js"></script>
-  <script src="<?= base_url(); ?>assets/push_notification/cms_notification.js?v=<?= rand(); ?>"></script>
+  <!-- <script src="<?= base_url(); ?>assets/push_notification/socket.io.js"></script> -->
+  <!-- <script src="<?= base_url(); ?>assets/push_notification/cms_notification.js?v=<?= rand(); ?>"></script> -->
   <script src="<?= base_url(); ?>assets/fusejs/dist/fuse.js"></script>
   <script src="<?= base_url(); ?>assets/bs5treeview-main/src/js/bstreeview.js"></script>
   <script src="<?= base_url(); ?>assets/chosen_v1.8.7/chosen.jquery.min.js"></script>
@@ -452,7 +409,6 @@
     };
 
     var daftar_filter = [
-      //	{ id:'', label :'', type : 'integer'},
       {
         id: 'fin_account',
         label: 'Account Number',
@@ -461,7 +417,6 @@
         search_url: GLOBAL_MAIN_VARS["SITE_URL"] +
           "classification_detail/get_parameter_list?param=fin_account&type=select&table_name=cpcrd_new"
       },
-      // { id:'BILL_BAL', label :'Bill Balance', type : 'integer'},
       {
         id: 'CM_STATUS',
         label: 'Status Rekening',
@@ -471,7 +426,6 @@
         search_url: GLOBAL_MAIN_VARS["SITE_URL"] +
           "classification_detail/get_parameter_list?param=CM_STATUS&type=select"
       },
-      // { id:'CM_DOMICILE_BRANCH', label :'Branch',  type : 'string',operators: ['equal', 'not_equal', 'in', 'not_in'],search : true, search_url : GLOBAL_MAIN_VARS["SITE_URL"] + "classification_detail/get_parameter_list?param=BRANCH_ID_NAME&type=select"},
       {
         id: 'a.ACCOUNT_TAGGING',
         label: 'Account Tagging',
@@ -506,7 +460,6 @@
         search_url: GLOBAL_MAIN_VARS["SITE_URL"] +
           "classification_detail/get_parameter_list?param=CM_CARD_NMBR&type=select&table_name=cpcrd_new"
       },
-      // { id:'CM_DTE_PYMT_DUE_DAY', label :'Due Date (DAYS)', type : 'integer'},
       {
         id: 'CM_DTE_PYMT_DUE',
         label: 'Due Date',
@@ -557,7 +510,6 @@
         label: 'N Times Not Contact',
         type: 'integer'
       },
-      // { id:'CM_CARD_EXPIR_DTE_YEAR', label :'Original Maturity Date (YEARS)', type : 'integer'},
       {
         id: 'CM_CARD_EXPIR_DTE',
         label: 'Original Maturity Date',
@@ -574,7 +526,6 @@
           autoclose: true
         }
       },
-      // { id:'CM_DTE_LST_STMT_DAY', label :'Last Billed Date (DAYS)', type : 'integer'},
       {
         id: 'CM_DTE_LST_STMT',
         label: 'Last Billed Date',
@@ -591,7 +542,6 @@
           autoclose: true
         }
       },
-      // { id:'CM_DTE_LST_PYMT_DAY', label :'Last payment Date (DAYS)', type : 'integer'},
       {
         id: 'CM_DTE_LST_PYMT',
         label: 'Last Payment Date',
@@ -608,7 +558,6 @@
           autoclose: true
         }
       },
-      // { id:'CM_DTE_OPENED_YEAR', label :'Open Date (YEARS)', type : 'integer'},
       {
         id: 'CM_DTE_OPENED',
         label: 'Open date',
@@ -625,7 +574,6 @@
           autoclose: true
         }
       },
-      // { id:'CM_TOT_BALANCE', label :'Baki Debet', type : 'integer'},
       {
         id: 'CM_CYCLE',
         label: 'Cycle',
@@ -656,20 +604,6 @@
         search_url: GLOBAL_MAIN_VARS["SITE_URL"] +
           "classification_detail/get_parameter_list?param=PRODUCTSUBCATEGORY&type=select"
       },
-      // { id:'DPD_REMINDER', label :'DPD Reminder', type : 'string'},
-      // { id:'PTP_REMINDER', label :'PTP Reminder', type : 'string'},
-      // { id:'NEW_TO_M1_FLAG', label :'New To M1 Flag', type : 'string',search : true, search_url : GLOBAL_MAIN_VARS["SITE_URL"] + "classification_detail/get_parameter_list?param=NEW_TO_M1_FLAG&type=select"},
-      // { id:'CM_NEW_TO_M1FLAG', label :'New To M1 Flag', type : 'string',
-      // input: 'select',
-      // vertical: true,
-      // operators: ['equal', 'not_equal'],
-      // //        optgroup: 'core',
-      // placeholder: 'Select Flag M1',
-      // values: {
-      // 'Y' : 'Y',
-      // 'N' : 'N'
-      // },
-      // },
       {
         id: 'CM_DTE_CHGOFF_STAT_CHANGE_MONTH',
         label: 'Charge Of Month',
@@ -683,7 +617,6 @@
         search_url: GLOBAL_MAIN_VARS["SITE_URL"] +
           "classification_detail/get_parameter_list?param=PRODUCTTYPE&type=select"
       },
-      // { id:'CM_APP_ORG', label :'Origination ID', type : 'string',search : true, search_url : GLOBAL_MAIN_VARS["SITE_URL"] + "classification_detail/get_parameter_list?param=ORIGINATION&type=select"},
       {
         id: 'CM_APPLICATION_TYPE',
         label: 'Application Type',
@@ -700,7 +633,6 @@
         search_url: GLOBAL_MAIN_VARS["SITE_URL"] +
           "classification_detail/get_parameter_list?param=TRANSACTIONTYPE&type=select"
       },
-      // { id:'CM_TYPE', label :'Product Code', type : 'string'},
       {
         id: 'CM_CRLIMIT',
         label: 'Limit',
@@ -721,9 +653,6 @@
         label: 'Installment Amount',
         type: 'integer'
       },
-      // { id:'CM_TOT_BALANCE', label :'Baki Debet', type : 'string'},
-      // { id:'CM_TOT_BALANCE', label :'Baki Debet IDR', type : 'string'},
-      // { id:'CM_DTE_PYMT_DUE', label :'Due Date', type : 'string'},
       {
         id: 'CM_DTE_PK',
         label: 'Tanggal PK',
@@ -791,15 +720,11 @@
         label: 'Total Outstanding AR',
         type: 'integer'
       },
-      // { id:'DPD', label :'DPD', type : 'string'},
       {
         id: 'CM_COLLECTIBILITY',
         label: 'Collectability',
         type: 'string'
       },
-      // { id:'CM_DTE_LST_PYMT', label :'Last Payment Date', type : 'string'},
-      // { id:'CM_STATUS', label :'Status Rekening', type : 'string'},
-      // { id:'CM_CARD_EXPIR_DTE', label :'Original Maturity Date', type : 'string'},
       {
         id: 'CM_CHGOFF_STATUS_FLAG',
         label: 'Charge Off Status',
@@ -850,8 +775,6 @@
         label: 'Minimum Payment',
         type: 'string'
       },
-      // { id:'CM_DTE_OPENED', label :'Open Date', type : 'string'},
-      // { id:'MOB', label :'MoB (Month)', type : 'integer'},
       {
         id: 'CM_PRDK_CTG',
         label: 'Product Category',
@@ -860,7 +783,6 @@
         search_url: GLOBAL_MAIN_VARS["SITE_URL"] +
           "classification_detail/get_parameter_list?param=CM_PRODUCT_TYPE&type=select&table_name=cpcrd_new"
       },
-      // { id:'CM_PRODUCT_TYPE', label :'Product Type', type : 'string'},
       {
         id: 'CM_PRODUCT_GROUP',
         label: 'Product Group',
@@ -869,7 +791,6 @@
         search_url: GLOBAL_MAIN_VARS["SITE_URL"] +
           "classification_detail/get_parameter_list?param=CM_PRODUCT_GROUP&type=select&table_name=cpcrd_new"
       },
-      // { id:'CM_BLOCK_CODE', label :'Block Code', type : 'string'},
       {
         id: 'CM_DTE_BLOCK_CODE',
         label: 'Block Code Date',
@@ -902,7 +823,6 @@
         search_url: GLOBAL_MAIN_VARS["SITE_URL"] +
           "classification_detail/get_parameter_list?param=CM_CREDIT_SEGMEN&type=select&table_name=cpcrd_new"
       },
-      // { id:'CM_CYCLE', label :'Cycle', type : 'string'},
       {
         id: 'CM_CHGOFF_PRICIPLE',
         label: 'Principle Charge-Off',
@@ -927,9 +847,6 @@
         search_url: GLOBAL_MAIN_VARS["SITE_URL"] +
           "classification_detail/get_parameter_list?param=CR_MARITAL_STATUS&type=select&table_name=cpcrd_new"
       },
-      // { id:'CR_EU_SEX', label :'Gender', type : 'string'},
-      // { id:'CR_DTE_BIRTH_DAY', label :'Birth Date (DAYS)', type : 'integer'},
-      // { id:'CR_DTE_BIRTH_MONTH', label :'Birth Date (MONTHS)', type : 'integer'},
       {
         id: 'CR_DTE_BIRTH',
         label: 'Birth Date',
@@ -946,7 +863,6 @@
           autoclose: true
         }
       },
-      // { id:'CR_ID_TYPE', label :'ID Type', type : 'string',search : true, search_url : GLOBAL_MAIN_VARS["SITE_URL"] + "classification_detail/get_parameter_list?param=CR_ID_TYPE&type=select&table_name=cpcrd_new"},
       {
         id: 'CR_OCCUPATION',
         label: 'Occupation',
@@ -955,9 +871,6 @@
         search_url: GLOBAL_MAIN_VARS["SITE_URL"] +
           "classification_detail/get_parameter_list?param=CR_OCCUPATION&type=select&table_name=cpcrd_new"
       },
-      // { id:'position', label :'Position', type : 'string'},
-      // { id:'CR_INCOME_BRACKET', label :'Income Bracket', type : 'integer'},
-      // { id:'CR_NET_INCOME', label :'Gross Income', type : 'integer'},
       {
         id: 'CM_VIP_FLAG',
         label: 'VIP Flag',
@@ -977,7 +890,6 @@
         "label": "CIF",
         "type": "string"
       },
-      // { id:'CR_ZIP_CODE', label :'Cust Address Zipcode', type : 'string'},
       {
         id: 'CR_COMPANY_ZIP_CODE',
         label: 'Company zipcode',
@@ -986,7 +898,6 @@
         search_url: GLOBAL_MAIN_VARS["SITE_URL"] +
           "classification_detail/get_parameter_list?param=CM_ADDRESS_ZIPCODE&type=select&table_name=cpcrd_ext_address&where=work"
       },
-      // { id:'employee_zipcode', label :'Cust. Employee Zipcode', type : 'integer'},
       {
         id: 'CR_MAILING_ZIPCODE',
         label: 'Correspondence Zipcode',
@@ -1011,7 +922,6 @@
         search_url: GLOBAL_MAIN_VARS["SITE_URL"] +
           "classification_detail/get_parameter_list?param=CM_DOMICILE_BRANCH&type=select"
       },
-      // { id:'CM_DOMICILE_BRANCH', label :'Customer Branch ID', type : 'string',search : true, search_url : GLOBAL_MAIN_VARS["SITE_URL"] + "classification_detail/get_parameter_list?param=CM_DOMICILE_BRANCH&type=select&table_name=cpcrd_new"},
       {
         id: 'CM_BRANCH_OFFICE',
         label: 'Customer Branch',
@@ -1020,12 +930,7 @@
         search_url: GLOBAL_MAIN_VARS["SITE_URL"] +
           "classification_detail/get_parameter_list?param=BRANCH_CODE&type=select"
       },
-      // { id:'branch_kode', label :'Customer Main Branch', type : 'integer'},
-      // { id:'Kode_Produk', label :'Kode Produk', type : 'string',search : true, search_url : GLOBAL_MAIN_VARS["SITE_URL"] + "classification_detail/get_parameter_list?param=PRODUK_KODE_NAMA&type=select"},
-      // { id:'CM_TYPE', label :'Nama Produk', type : 'string',search : true, search_url : GLOBAL_MAIN_VARS["SITE_URL"] + "classification_detail/get_parameter_list?param=PRODUK_KODE_NAMA&type=select"},
-      // { id:'KODE_KATEGORI', label :'Kode Kategori', type : 'string',search : true, search_url : GLOBAL_MAIN_VARS["SITE_URL"] + "classification_detail/get_parameter_list?param=KATEGORI_KODE_NAMA&type=select"},
-      // { id:'NAMA_KATEGORI', label :'Nama Kategori', type : 'string',search : true, search_url : GLOBAL_MAIN_VARS["SITE_URL"] + "classification_detail/get_parameter_list?param=KATEGORI_KODE_NAMA&type=select"},
-      // { id:'bucket_id', label :'Bucket', type : 'string'},
+      
       {
         id: 'area_id',
         label: 'Branch Area',
@@ -1034,39 +939,7 @@
         search_url: GLOBAL_MAIN_VARS["SITE_URL"] +
           "classification_detail/get_parameter_list?param=AREA_ID_NAME&type=select"
       },
-      // { id:'n_times_broken_ptp', label :'N times of Broken PTP', type : 'string',
-      // input: 'select',
-      // vertical: true,
-      // operators: ['equal', 'not_equal'],
-      // //        optgroup: 'core',
-      // placeholder: 'Select N Times Broken PTP',
-      // values: {
-      // 'YES' : 'YES',
-      // 'NO' : 'NO'
-      // },
-      // },
-      // { id:'n_times_call_result', label :'n times of call result', type : 'string',
-      // input: 'select',
-      // vertical: true,
-      // operators: ['equal', 'not_equal'],
-      // //        optgroup: 'core',
-      // placeholder: 'Select N Times Call Result',
-      // values: {
-      // 'YES' : 'YES',
-      // 'NO' : 'NO'
-      // },
-      // },
-      // { id:'n_times_visit_result', label :'n times of visit result', type : 'string',
-      // input: 'select',
-      // vertical: true,
-      // operators: ['equal', 'not_equal'],
-      // //        optgroup: 'core',
-      // placeholder: 'Select N Times Visit Result',
-      // values: {
-      // 'YES' : 'YES',
-      // 'NO' : 'NO'
-      // },
-      // },
+      
       {
         id: 'area_tagih_id',
         label: 'Area Tagih',
@@ -1075,19 +948,7 @@
         search_url: GLOBAL_MAIN_VARS["SITE_URL"] +
           "classification_detail/get_parameter_list?param=AREATAGIH_ID_NAME&type=select"
       },
-      // {
-      //     id: 'category_name',
-      //     label: 'Category LOV',
-      //     type: 'string',
-      //     search: true,
-      //     search_url: GLOBAL_MAIN_VARS["SITE_URL"] +
-      //         "classification_detail/get_parameter_list?param=CATEGORY_LOV&type=select"
-      // },
-      // { id:'tiering_label', label :'Tiering Label Scoring', type : 'string',search : true, search_url : GLOBAL_MAIN_VARS["SITE_URL"] + "classification_detail/get_parameter_list?param=TIERING_LABEL&type=select"},
-      // { id:'score_value', label :'Score Scoring', type : 'integer',search : true, search_url : GLOBAL_MAIN_VARS["SITE_URL"] + "classification_detail/get_parameter_list?param=score&type=select"},
-      // { id:'tiering_id', label :'Tiering ID Scoring', type : 'string',search : true, search_url : GLOBAL_MAIN_VARS["SITE_URL"] + "classification_detail/get_parameter_list?param=TIERING_ID&type=select"},
-      // { id:'call_result', label :'Call Result', type : 'string',search : true, search_url : GLOBAL_MAIN_VARS["SITE_URL"] + "classification_detail/get_parameter_list?param=CALL_VISIT_RESULT&type=select"},
-      // { id:'call_date_day', label :'Call Date (DAYS)', type : 'integer'},
+     
       {
         id: 'call_date',
         label: 'Call Date',
@@ -1104,7 +965,6 @@
           autoclose: true
         }
       },
-      // { id:'visit_date_day', label :'Visit Date (DAYS)', type : 'integer'},
       {
         id: 'visit_date',
         label: 'Visit Date',
@@ -1121,7 +981,6 @@
           autoclose: true
         }
       },
-      // { id:'ptp_date_day', label :'PTP Date (DAYS)', type : 'integer'},
       {
         id: 'ptp_date',
         label: 'PTP Date',
@@ -1178,52 +1037,6 @@
           autoclose: true
         }
       },
-
-      // {
-      //     id: 'n_times_broken_ptp',
-      //     label: 'N times of Broken PTP',
-      //     type: 'string',
-      //     search: true,
-      //     search_url: GLOBAL_MAIN_VARS["SITE_URL"] +
-      //         "classification_detail/get_parameter_list?param=n_times_broken_ptp&type=select&table_name=cms_bucket_history_parameter"
-      // },
-      // {
-      //     id: 'n_times_call_result',
-      //     label: 'n times call result',
-      //     type: 'string',
-      //     search: true,
-      //     search_url: GLOBAL_MAIN_VARS["SITE_URL"] +
-      //         "classification_detail/get_parameter_list_khusus_lov?param=lov3_category&type=select&table_name=cms_lov_relation&where=telecoll"
-      // },
-      // {
-      //     id: 'n_times_visit_result',
-      //     label: 'n times of visit result',
-      //     type: 'string',
-      //     search: true,
-      //     search_url: GLOBAL_MAIN_VARS["SITE_URL"] +
-      //         "classification_detail/get_parameter_list_khusus_lov?param=lov3_category&type=select&table_name=cms_lov_relation&where=fieldcoll"
-      // },
-      // { id:'flag_reschedule', label :'Flag Reschedule', type : 'string',search : true, search_url : GLOBAL_MAIN_VARS["SITE_URL"] + "classification_detail/get_parameter_list?param=FLAG_RESTRUCTURE_DISKON&type=select"},
-      // { id:'reschedule_app_date', label :'Reschedule Approve Date', type : 'date',validation: {format: 'YYYY/MM/DD'},plugin: 'datepicker',placeholder: 'yyyy-mm-dd',
-      // plugin_config: {
-      // format: 'yyyy-mm-dd',
-      // todayBtn: 'linked',
-      // todayHighlight: true,
-      // autoclose: true
-      // }},
-      // { id:'flag_diskon', label :'Flag Diskon', type : 'string',search : true, search_url : GLOBAL_MAIN_VARS["SITE_URL"] + "classification_detail/get_parameter_list?param=FLAG_RESTRUCTURE_DISKON&type=select"},
-      // { id:'diskon_app_date', label :'Diskon Approve Date', type : 'date',validation: {format: 'YYYY/MM/DD'},plugin: 'datepicker',placeholder: 'yyyy-mm-dd',
-      // plugin_config: {
-      // format: 'yyyy-mm-dd',
-      // todayBtn: 'linked',
-      // todayHighlight: true,
-      // autoclose: true
-      // }},
-      // { id:'total_amount_diskon', label :'Total Amount Diskon', type : 'integer'},
-      // { id:'sisa_pokok_pinjaman', label :'Sisa Pokok Pinjaman Baru', type : 'integer'},
-      // { id:'flag_keep_ptp', label :'Flag Keep PTP', type : 'string',search : true, search_url : GLOBAL_MAIN_VARS["SITE_URL"] + "classification_detail/get_parameter_list?param=PAYMENT_STATUS&type=select"},
-      // { id:'flag_broken_ptp', label :'Flag Broken PTP', type : 'string',search : true, search_url : GLOBAL_MAIN_VARS["SITE_URL"] + "classification_detail/get_parameter_list?param=PAYMENT_STATUS&type=select"},
-      // { id:'payment_flag', label :'Payment Flag', type : 'string',search : true, search_url : GLOBAL_MAIN_VARS["SITE_URL"] + "classification_detail/get_parameter_list?param=PAYMENT_STATUS&type=select"},
     ];
 
     var daftar_restructure_parameter = [{
@@ -1238,8 +1051,6 @@
                 type: 'integer',
                 operators: ['greater', 'less', 'greater_or_equal', 'less_or_equal', 'between']
             },
-            // { id:"CM_BUCKET", label :"BUCKET", type : 'string',operators: ['equal', 'not_equal', 'in', 'not_in'],search : true, search_url : GLOBAL_MAIN_VARS["SITE_URL"] + "classification_detail/get_parameter_list?param=BUCKET&type=select"},
-            // { id:"PRODUCT_ID", label :"PRODUCT", type : 'string',operators: ['equal', 'not_equal', 'in', 'not_in'],search : true, search_url : GLOBAL_MAIN_VARS["SITE_URL"] + "classification_detail/get_parameter_list?param=PRODUCT&type=select"},
             {
                 id: 'CM_BLOCK_CODE',
                 label: 'Block Code',

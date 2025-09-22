@@ -288,12 +288,6 @@ class Login_model extends Model
 	{
 
 		$this->Common_model = new Common_model();
-		$builder = $this->db->table('acs_agent_monitoring_as_of_today');
-
-		$builder->set('last_logout', '13:45:30');
-		$builder->where('agent_id', $user_id);
-		$builder->update();
-		// echo $this->db->getLastQuery();
 
 		$data = array(
 			'login_status' => '0'
@@ -309,13 +303,7 @@ class Login_model extends Model
 
 
 		session()->set('logged_in', FALSE);
-		/*		session()->unset('AGENT_ID');	
-		session()->unset('USER_ID');
-		session()->unset('USER_NAME');
-		session()->unset('USER_GROUP');
-		session()->unset('GROUP_ID');
-		session()->unset('USER_PASSWORD');		
-*/
+		
 		session_destroy();
 		return true;
 	}

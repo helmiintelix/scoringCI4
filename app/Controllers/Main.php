@@ -32,15 +32,64 @@ class Main extends BaseController
         return view('nice_admin_view',$data); 
     }
 
+    public function CreateCcMenu()
+    {
 
+        if (! $this->db->tableExists('cc_menu')) {
+            // return "GAADA";
 
-    function setMenu(){
-        $cache = session()->get('USER_GROUP');
-
-        if($this->cache->get($cache)){
-            $rs = json_decode($this->cache->get($cache));
-            return $this->response->setStatusCode(200)->setJSON($rs);
+            $this->db->query("
+                CREATE TABLE cc_menu (
+                    menu_id VARCHAR(36) PRIMARY KEY,
+                    menu_desc VARCHAR(128) NOT NULL,
+                    parent_id VARCHAR(36) NULL,
+                    order_num INT NULL,
+                    url VARCHAR(255) NULL,
+                    icon VARCHAR(64) NULL,
+                    menu_type VARCHAR(32) NULL,
+                    menu_group VARCHAR(32) NULL
+                )
+            ");
         }
+        // return "ADA";
+        $count = $this->db->table('cc_menu')->countAllResults();
+        if ($count == 0) {
+            $data = [
+                ['menu_id' => '1', 'menu_desc' => 'scoring', 'parent_id' => null, 'order_num' => 1],
+                ['menu_id' => '2', 'menu_desc' => 'scoring result', 'parent_id' => null, 'order_num' => 2],
+                ['menu_id' => '3', 'menu_desc' => 'history upload', 'parent_id' => null, 'order_num' => 3],
+                ['menu_id' => '4', 'menu_desc' => 'auditor', 'parent_id' => null, 'order_num' => 4],
+                ['menu_id' => '5', 'menu_desc' => 'settings', 'parent_id' => null, 'order_num' => 5],
+                ['menu_id' => '6', 'menu_desc' => 'user and group', 'parent_id' => null, 'order_num' => 6],
+                ['menu_id' => '10', 'menu_desc' => 'scheduler', 'parent_id' => '1', 'order_num' => 1],
+                ['menu_id' => '11', 'menu_desc' => 'parameters', 'parent_id' => '1', 'order_num' => 2],
+                ['menu_id' => '12', 'menu_desc' => 'settings', 'parent_id' => '1', 'order_num' => 3],
+                ['menu_id' => '13', 'menu_desc' => 'preview', 'parent_id' => '1', 'order_num' => 4],
+                ['menu_id' => '14', 'menu_desc' => 'setting cycle', 'parent_id' => '1', 'order_num' => 5],
+                ['menu_id' => '15', 'menu_desc' => 'tiering', 'parent_id' => '1', 'order_num' => 6],
+                ['menu_id' => '16', 'menu_desc' => 'tiering preview', 'parent_id' => '1', 'order_num' => 7],
+                ['menu_id' => '20', 'menu_desc' => 'detail data', 'parent_id' => '2', 'order_num' => 1],
+                ['menu_id' => '21', 'menu_desc' => 'summary data', 'parent_id' => '2', 'order_num' => 2],
+                ['menu_id' => '50', 'menu_desc' => 'general settings', 'parent_id' => '5', 'order_num' => 1],
+                ['menu_id' => '60', 'menu_desc' => 'user management', 'parent_id' => '6', 'order_num' => 1],
+            ];
+
+            $this->db->table('cc_menu')->insertBatch($data);
+            return "cc_menu berhasil dibuat & data default dimasukkan.";
+        }
+
+        return "cc_menu sudah ada.";
+    }
+
+    function setMenu(){ 
+        $cache = session()->get('USER_GROUP');
+ 
+        $create  = $this->CreateCcMenu();
+
+        // if($this->cache->get($cache)){
+        //     $rs = json_decode($this->cache->get($cache));
+        //     return $this->response->setStatusCode(200)->setJSON($rs);
+        // }
 
         $builder = $this->db->table('cc_menu');
         $i = 0;
@@ -61,6 +110,7 @@ class Main extends BaseController
                                                   ->get();
         
             $row = $menu_list_query->getRow();
+
             if ($row) {
                 // Format ulang menu_list yang dipisahkan oleh '|'
                 $menu_list = explode('|', $row->authority);
@@ -74,7 +124,7 @@ class Main extends BaseController
                                      ->get();
             }
         }
-    
+
         foreach ($main_menu->getResultArray() as $aRow) {
             $menu_arr[$i] = $aRow;
             $href = preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '', $aRow["menu_desc"]));
@@ -96,7 +146,6 @@ class Main extends BaseController
                 ->orderBy('order_num')
                 ->get();
             }
-           
     
             if ($sub_menu->getNumRows() > 0) {
                 $ii = 0;
@@ -134,6 +183,7 @@ class Main extends BaseController
             }
             $i++;
         }
+
 
         $JSON_MENU = $builder->select('a.menu_id, c.menu_desc AS menu_1, b.menu_desc AS menu_2, a.menu_desc AS menu_3')
                 ->from('cc_menu a')  // Alias untuk tabel utama
