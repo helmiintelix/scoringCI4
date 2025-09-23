@@ -10,9 +10,14 @@
         outline: 0;
         box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
     }
+
+    .table th {
+        background-color: #004085 !important;
+        color: #fff !important;
+    }
 </style>
 
-<h4 class="blue mb-4">Scoring Purple</h4>
+<h4 class="mb-4" style="font-weight: bold;">Scoring Purple</h4>
 
 <table class="table table-striped">
     <thead class="table-dark">
