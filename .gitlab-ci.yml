@@ -8,7 +8,7 @@ deploy_local:
   variables:
     GIT_STRATEGY: none
   script:
-    - echo "Deploy langsung di server (tanpa SSH).s.."
+    - echo "Deploy langsung di server (tanpa SSH)..."
     - cd /var/www/democoll84/scoring_ci4_v1/
     - git fetch --all
     - git reset --hard origin/main
