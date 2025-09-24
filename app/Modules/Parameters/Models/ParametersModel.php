@@ -29,4 +29,25 @@ class ParametersModel extends Model
 
         return $arr_data;
     }
+
+    public function update_parameter($param_data)
+    {
+        $builder = $this->db->table('sc_scoring_parameter_tmp');
+
+        $data = [$param_data["column"] => $param_data["value"]];
+
+        $builder->where('parameter', $param_data["param"]);
+        $builder->where('id', $param_data["param_id"]);
+        $return = $builder->update($data);
+
+        return $return;
+    }
+
+    public function update_parameter_commit()
+    {
+        $sql = "REPLACE INTO sc_scoring_parameter SELECT * FROM sc_scoring_parameter_tmp";
+        $return = $this->db->query($sql);
+
+        return $return;
+    }
 }

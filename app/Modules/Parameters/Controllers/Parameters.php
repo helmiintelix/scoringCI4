@@ -64,4 +64,37 @@ class Parameters extends \App\Controllers\BaseController
 
         return view('App\Modules\Parameters\Views\ParametersView', $data);
     }
+
+    public function update_parameter()
+    {
+        $param_data = [
+            "param"   => $this->request->getPost('param'),
+            "param_id" => $this->request->getPost('param_id'),
+            "column"  => $this->request->getPost('column'),
+            "value"   => $this->request->getPost('value')
+        ];
+
+        $return = $this->ParametersModel->update_parameter($param_data);
+
+        if ($return) {
+            $data = ["success" => true, "message" => "Success"];
+        } else {
+            $data = ["success" => false, "message" => "Failed"];
+        }
+
+        return $this->response->setJSON($data);
+    }
+
+    public function update_parameter_commit()
+    {
+        $return = $this->ParametersModel->update_parameter_commit();
+
+        if ($return) {
+            $data = ["success" => true, "message" => "Success"];
+        } else {
+            $data = ["success" => false, "message" => "Failed"];
+        }
+
+        return $this->response->setJSON($data);
+    }
 }
