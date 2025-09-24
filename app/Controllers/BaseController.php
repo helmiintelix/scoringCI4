@@ -70,7 +70,7 @@ abstract class BaseController extends Controller
         $DB = \Config\Database::connect();
         $this->db = db_connect();
         $this->cti = db_connect('cti');
-        $this->cmsMysql = db_connect('cmsMysql');
+        $this->crm = db_connect('crm');
         $this->DBDRIVER = $this->db->DBDriver;
         
         $this->Common_model = new Common_model();

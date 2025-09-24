@@ -80,6 +80,27 @@ Class Common_model Extends Model
 		return null;
 	}
 
+	function get_record_value_crm($fieldName, $tableName, $criteria, $param = array())
+	{
+	 	$this->crm  = db_connect('crm');
+		$sql = "SELECT $fieldName FROM $tableName WHERE $criteria";
+
+		if(is_null($param)){
+			$query = $this->crm->query($sql);
+			
+		}else{
+			$query =$this->crm->query($sql, $param);
+		}
+
+		if ($query->getNumRows() > 0) {
+			$data = $query->getRowArray();
+			return array_pop($data);
+		}
+
+
+		return null;
+	}
+
 	function data_logging($module, $action, $result, $description)
 	{
 		

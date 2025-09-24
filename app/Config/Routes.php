@@ -47,6 +47,7 @@ $routes->post('/Ecentrix8/updateAccountCodeSessionLog','Ecentrix8::updateAccount
 
 $routes->add('settings/get_system_configuration/', '\App\Modules\Settings\Controllers\Settings::get_system_configuration',['filter' => 'authfilter']);
 $routes->add('scoring/scheduler', '\App\Modules\Scoring\Controllers\Scoring::scheduler',['filter' => 'authfilter']);
+$routes->add('scoring/tieringPreview', '\App\Modules\TieringPreview\Controllers\TieringPreview::TieringPreview',['filter' => 'authfilter']);
 
 if($uri->getTotalSegments() > 2){
     $function = $uri->getSegment(3);
