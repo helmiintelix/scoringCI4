@@ -1,23 +1,27 @@
-<?php 
+<?php
+
 namespace App\Modules\Scoring\Controllers;
+
 use App\Modules\Scoring\Models\ScoringModel;
 
 class Scoring extends \App\Controllers\BaseController
 {
-    protected $ScoringModel;
+	protected $ScoringModel;
 
 	function __construct()
 	{
 		$this->ScoringModel = new ScoringModel();
 	}
 
-    function scheduler(){
-        $data["scheduler_setting"] = $this->ScoringModel->getSchedulerSetting();
+	function scheduler()
+	{
+		$data["scheduler_setting"] = $this->ScoringModel->getSchedulerSetting();
 		return view('App\Modules\Scoring\Views\SchedulerView', $data);
-    }
+	}
 
-    function updateSystemSetting(){
-        $param_data["id"]			= strtoupper($this->input->getPost('id'));
+	function updateSystemSetting()
+	{
+		$param_data["id"]			= strtoupper($this->input->getPost('id'));
 		$param_data["value"]	= $this->input->getPost("value");
 		$param_data["parameter"]	= $this->input->getPost("parameter");
 		$param_data["created_by"] = session()->get('USER_ID');
@@ -35,5 +39,5 @@ class Scoring extends \App\Controllers\BaseController
 		}
 
 		echo json_encode($data);
-    }
+	}
 }
