@@ -71,9 +71,9 @@ class Database extends Config
         'port'         => 3306,
         'numberNative' => false,
     ];
-    public array $cmsMysql = [
+    public array $crm = [
         'DSN'          => '',
-        'hostname'     => '',
+        'hostname'     => 'localhost',
         'username'     => '',
         'password'     => '',
         'database'     => '',

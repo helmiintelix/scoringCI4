@@ -352,19 +352,7 @@ Class Common_model Extends Model
 		return $arrData;	
 	}
 	
-	function get_record_value($fieldName, $tableName, $criteria)
-	{	
-		$sql = "SELECT $fieldName FROM $tableName WHERE $criteria";
-		$query = $this->db->query($sql);
-		
-		if ($query->num_rows() > 0)
-		{
-			$data=$query->row_array();
-			return array_pop($data);
-		}
-	  
-	  return null;
-	}
+	
 	function get_record_value_cti($fieldName, $tableName, $criteria)
 	{	
 		$this->cti = $this->load->database('cti',true);
@@ -379,6 +367,20 @@ Class Common_model Extends Model
 	  
 	  return null;
 	}
+
+	public function get_record_value_crm($fieldName, $tableName, $criteria)
+    {
+        $sql = "SELECT $fieldName FROM $tableName WHERE $criteria";
+		$query = $this->crm->query($sql);
+		
+		if ($query->num_rows() > 0)
+		{
+			$data=$query->row_array();
+			return array_pop($data);
+		}
+	  
+	  	return null;
+    }
 	
 	function update_record_value($arrData, $tableName, $criteria)
 	{	
