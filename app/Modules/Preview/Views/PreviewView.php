@@ -1,9 +1,4 @@
 <style>
-    .table th {
-        background-color: #004085 !important;
-        color: #fff !important;
-    }
-
     .table thead th {
         position: sticky;
         top: 0;
@@ -14,18 +9,14 @@
 
     .scheme-separator {
         height: 10px;
-        padding: 0px;
+        padding: 0;
         background-color: #e6e6e6;
     }
 
     .btn-minier {
         font-size: 11px;
         padding: 2px 6px;
-        line-height: 1.2;
-    }
-
-    .align-center {
-        text-align: center;
+        line-height: 1.5;
     }
 
     .table-container {
@@ -48,7 +39,7 @@
                         <th scope="col" class="px-4 align-middle">Parameter Selected</th>
                         <th scope="col" class="px-4 align-middle">Function</th>
                         <th scope="col" class="px-4 align-middle">Parameter Value</th>
-                        <th scope="col" class="py-4 align-middle" colspan="2">Action</th>
+                        <th scope="col" class="px-4 align-middle" colspan="2">Action</th>
                     </tr>
                 </thead>
 
@@ -61,10 +52,7 @@
                                 $scheme_name = $row['scheme_name'];
                     ?>
                                 <tr>
-                                    <td colspan="10" class="scheme-separator"></td>
-                                </tr>
-                                <tr>
-                                    <td class="px-4 py-100" nowrap><strong><?= htmlspecialchars($row['scheme_name']) ?></strong></td>
+                                    <td class="px-4" nowrap><strong><?= htmlspecialchars($row['scheme_name']) ?></strong></td>
                                     <td nowrap>
                                         <span class="badge bg-success"><?= htmlspecialchars($row['score_value']) ?></span>
                                     </td>
@@ -82,18 +70,16 @@
                                     <td class="px-4" nowrap>
                                         <small><?= htmlspecialchars($row['parameter_value']) ?></small>
                                     </td>
-                                    <td class="align-center" style="padding-top: 6px; padding-bottom: 0px;" nowrap>
-                                        <button class="btn btn-info btn-minier" type="button"
+                                    <td class="text-center" nowrap>
+                                        <button class="btn btn-warning btn-minier" type="button"
                                             onClick="loadScoreSettingEditForm2('<?= htmlspecialchars($row['scheme_id']) ?>','<?= htmlspecialchars($row['parameter_group']) ?>','<?= htmlspecialchars($row['parameter_selected']) ?>')">
-                                            <i class="fas fa-edit"></i>
-                                            Edit
+                                            <i class="fas fa-edit"></i> Edit
                                         </button>
                                     </td>
-                                    <td class="align-center" style="padding-top: 6px; padding-bottom: 0px;" nowrap>
+                                    <td class="text-center" nowrap>
                                         <button class="btn btn-danger btn-minier" type="button"
                                             onClick="loadScoreSettingDeleteForm('<?= htmlspecialchars($row['scheme_id']) ?>','<?= htmlspecialchars($row['scheme_name']) ?>')">
-                                            <i class="fas fa-trash"></i>
-                                            Delete
+                                            <i class="fas fa-trash"></i> Delete
                                         </button>
                                     </td>
                                 </tr>
@@ -108,10 +94,10 @@
                                 }
                             ?>
                                 <tr>
-                                    <td class="px-4">&nbsp;</td>
-                                    <td>&nbsp;</td>
-                                    <td>&nbsp;</td>
-                                    <td class="px-4">&nbsp;</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
                                     <td class="px-4" nowrap>
                                         <span class="badge bg-light text-dark"><?= htmlspecialchars($row['parameter_group']) ?></span>
                                     </td>
@@ -122,8 +108,8 @@
                                     <td class="px-4" nowrap>
                                         <small><?= htmlspecialchars($parameter_value) ?></small>
                                     </td>
-                                    <td>&nbsp;</td>
-                                    <td>&nbsp;</td>
+                                    <td></td>
+                                    <td></td>
                                 </tr>
                         <?php
                             }
@@ -145,20 +131,48 @@
 </div>
 <div class="vspace-xs-4"></div>
 
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">Delete Confirmation</h5>
+            </div>
+            <div class="modal-body">
+                <p id="deleteConfirmMessage">Are you sure you want to delete this scheme?</p>
+                <input type="hidden" id="deleteSchemeId">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script type="text/javascript">
-    function loadScoreSettingEditForm2(schemeId, paramGroup, paramSelected) {
-        console.log('Edit:', schemeId, paramGroup, paramSelected);
-        alert('Edit function called for Scheme: ' + schemeId);
-    }
+    function loadScoreSettingEditForm2(schemeId, paramGroup, paramSelected) {}
 
     function loadScoreSettingDeleteForm(schemeId, schemeName) {
-        console.log('Delete:', schemeId, schemeName);
-        if (confirm('Are you sure you want to delete scheme: ' + schemeName + '?')) {
-            alert('Delete function called for: ' + schemeName);
-        }
+        $("#deleteConfirmMessage").text("Are you sure you want to delete scheme " + schemeName + "?");
+        $("#deleteSchemeId").val(schemeId);
+        $("#deleteConfirmModal").modal("show");
     }
 
-    jQuery(function($) {
-        console.log('Preview scheme list initialized');
+    $("#confirmDeleteBtn").on("click", function() {
+        var schemeId = $("#deleteSchemeId").val();
+
+        $.post(GLOBAL_MAIN_VARS["SITE_URL"] + "scoring/preview/delete_scheme", {
+            scheme_id: schemeId
+        }, function(responseText) {
+            if (responseText.success) {
+                showInfo("Scheme deleted successfully");
+                $("button[onClick*='" + schemeId + "']").closest("tr").remove();
+                $("#deleteConfirmModal").modal("hide");
+            } else {
+                showWarning("Failed to delete scheme: " + responseText.message);
+            }
+        }, "json").fail(function() {
+            showWarning("An error occurred while deleting scheme");
+        });
     });
 </script>

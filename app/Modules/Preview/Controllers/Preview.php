@@ -21,4 +21,19 @@ class Preview extends \App\Controllers\BaseController
         // echo "</pre>";
         return view('App\Modules\Preview\Views\PreviewView', $data);
     }
+
+    public function delete_scheme()
+    {
+        $scheme_id = $this->request->getPost('scheme_id');
+
+        $return = $this->PreviewModel->delete_scheme($scheme_id);
+
+        if ($return) {
+            $data = ["success" => true, "message" => "Success"];
+        } else {
+            $data = ["success" => false, "message" => "Failed"];
+        }
+
+        return $this->response->setJSON($data);
+    }
 }

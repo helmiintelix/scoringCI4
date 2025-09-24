@@ -49,4 +49,47 @@ class PreviewModel extends Model
 
         return $arr_data;
     }
+
+    public function delete_scheme($scheme_id)
+    {
+        $builder = $this->db->table('sc_scoring_scheme_setup a');
+        $builder->select('a.*');
+        $builder->where('a.id', $scheme_id);
+        $scheme_before = $builder->get()->getResultArray();
+
+        $builder = $this->db->table('sc_scoring_scheme a');
+        $builder->select('a.*');
+        $builder->where('a.id', $scheme_id);
+        $scheme = $builder->get()->getResultArray();
+
+        if (empty($scheme)) {
+            return false;
+        }
+
+        $arr = [
+            'id'                   => uuid(false),
+            'id_scheme'            => $scheme[0]['id'],
+            'id_upload'            => $scheme[0]['upload_id'],
+            'name_scheme'          => $scheme[0]['name'],
+            'score_value'          => $scheme[0]['score_value'],
+            'score_value2'         => $scheme[0]['score_value2'],
+            'scheme_detail_before' => json_encode($scheme_before),
+            'scheme_detail_after'  => null,
+            'action'               => 'DELETE',
+            'created_by'           => session()->get('USER_ID'),
+            'created_time'         => date('Y-m-d H:i:s')
+        ];
+
+        $this->db->table('sc_scoring_log')->insert($arr);
+
+        $this->db->table('sc_scoring_scheme_setup')
+            ->where('id', $scheme_id)
+            ->delete();
+
+        $return = $this->db->table('sc_scoring_scheme')
+            ->where('id', $scheme_id)
+            ->delete();
+
+        return $return;
+    }
 }
