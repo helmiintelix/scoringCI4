@@ -200,7 +200,6 @@
     <!-- Bootstrap Datepicker JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.10.0/js/bootstrap-datepicker.min.js"></script>
 
-    <!-- Form script -->
     <script>
         jQuery(function($) {
             $('.date-picker').datepicker({
@@ -230,7 +229,6 @@
                 });
             });
 
-
             function validateForm() {
                 if ($("#score_label").val().trim() === "") {
                     showWarning("Label/Title harus diisi!");
@@ -238,8 +236,105 @@
                 }
                 return true;
             }
+
+            $("#uploadForm").click(function(e) {
+                e.preventDefault();
+
+                $.ajax({
+                    type: "GET",
+                    url: GLOBAL_MAIN_VARS["SITE_URL"] + "scoring/setting/upload_file_form/",
+                    success: function(response) {
+                        if ($('#uploadModal').length === 0) {
+                            $('body').append(`
+                            <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body" id="uploadModalBody">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `);
+                        }
+
+                        $('#uploadModalBody').html(response);
+
+                        $('#uploadModal').modal('show');
+                    },
+                    error: function(xhr, status, error) {
+                        showWarning("Gagal memuat form upload: " + error);
+                    }
+                });
+            });
+
+            window.isUploading = false;
+            window.uploadFormBound = window.uploadFormBound || false;
+
+            if (!window.uploadFormBound) {
+                $(document).on('submit', '#frm_upload', function(e) {
+                    e.preventDefault();
+
+                    if (window.isUploading) {
+                        showInfo("Upload sedang dalam proses, mohon tunggu...");
+                        return;
+                    }
+
+                    let fileInput = $("#userfile")[0]?.files[0];
+                    if (!fileInput) {
+                        showInfo("Silakan pilih file yang mau diupload!");
+                        return;
+                    }
+
+                    window.isUploading = true;
+
+                    const submitBtn = $(this).find('button[type="submit"]');
+                    const originalText = submitBtn.html();
+                    submitBtn.prop('disabled', true).html('<i class="bi bi-spinner bi-spin"></i> Uploading...');
+
+                    let formData = new FormData(this);
+
+                    $.ajax({
+                        type: "POST",
+                        url: GLOBAL_MAIN_VARS["SITE_URL"] + "scoring/setting/save_file/",
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        dataType: "json",
+                        success: function(msg) {
+                            if (msg.success === true) {
+                                showInfo("File berhasil diupload.");
+                                $('#uploadModal').modal('hide');
+                                // loadMenu("preview", "scoring/preview/preview");
+                            } else {
+                                showWarning(msg.message || "Terjadi kesalahan saat upload.");
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            showWarning("Request gagal: " + error);
+                        },
+                        complete: function() {
+                            window.isUploading = false;
+                            submitBtn.prop('disabled', false).html(originalText);
+                        }
+                    });
+                });
+
+                window.uploadFormBound = true;
+            }
+
+            $(document).off('hidden.bs.modal', '#uploadModal').on('hidden.bs.modal', '#uploadModal', function() {
+                $('#frm_upload')[0]?.reset();
+                window.isUploading = false;
+                const submitBtn = $('#frm_upload').find('button[type="submit"]');
+                submitBtn.prop('disabled', false).html('<i class="bi bi-upload"></i> Upload');
+            });
         });
     </script>
+
+
     </body>
 
 </html>

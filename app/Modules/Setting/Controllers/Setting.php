@@ -1052,4 +1052,73 @@ class Setting extends \App\Controllers\BaseController
 
         return $this->response->setJSON($response);
     }
+
+    public function upload_file_form()
+    {
+        $data["BUCKET_SC"] = $this->Common_model->get_ref_master_crm(
+            "value AS value, concat(value,' - ',description) AS item",
+            "cms_reference",
+            "status='1' and reference='BUCKET_SC'",
+            "description",
+            false
+        );
+
+        $data["LOB_CODE"] = $this->Common_model->get_ref_master_crm(
+            "value AS value, concat(value,' - ',description) AS item",
+            "cms_reference",
+            "status='1' and reference='LOB_CODE'",
+            "value",
+            false
+        );
+
+        return view('App\Modules\Setting\Views\UploadFileFormView', $data);
+    }
+
+    public function save_file()
+    {
+        $file = $this->request->getFile('userfile');
+
+        if (!$file || !$file->isValid()) {
+            $data = ["error" => $file ? $file->getErrorString() : "No file uploaded"];
+            return $this->response->setJSON($data);
+        }
+
+        $uploadPath = FCPATH . 'file_upload/setting_upload_file/';
+        if (!is_dir($uploadPath)) {
+            mkdir($uploadPath, 0777, true);
+        }
+
+        $fileName = $file->getName();
+        $file->move($uploadPath, $fileName, true);
+
+        $upload_data = [
+            "file_name" => $fileName,
+            "full_path" => $uploadPath . $fileName
+        ];
+
+        if (empty($upload_data['file_name'])) {
+            $data = ["success" => false, "message" => "Failed"];
+            return $this->response->setJSON($data);
+        }
+
+        $scorring_file = [
+            "id"          => UUID(false),
+            "file_name"   => $upload_data['file_name'],
+            "full_path"   => $upload_data["full_path"],
+            "lob"         => $this->request->getPost('opt_lob'),
+            "bucket"      => $this->request->getPost('opt_bucket'),
+            "upload_time" => date('Y-m-d H:i:s'),
+            "upload_by"   => session()->get('USER_ID')
+        ];
+
+        $return = $this->SettingModel->upload_file($scorring_file);
+
+        if ($return) {
+            $response = ["success" => true, "message" => "Upload berhasil."];
+        } else {
+            $response = ["success" => false, "message" => "Upload gagal."];
+        }
+
+        return $this->response->setJSON($response);
+    }
 }
