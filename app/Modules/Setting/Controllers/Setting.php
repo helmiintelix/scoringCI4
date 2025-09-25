@@ -862,16 +862,31 @@ class Setting extends \App\Controllers\BaseController
                         case "DAY":
                         case "MONTH":
                         case "YEAR":
-                            if (!empty($post['par_SCORING_PURPLE_' . $row['id']])) {
+                            // Check if the value exists and is an array, not a string
+                            if (
+                                !empty($post['par_SCORING_PURPLE_' . $row['id']]) &&
+                                is_array($post['par_SCORING_PURPLE_' . $row['id']])
+                            ) {
                                 foreach ($post['par_SCORING_PURPLE_' . $row['id']] as $selected) {
                                     $tmp_value[] = $selected;
                                 }
+                            } elseif (
+                                !empty($post['par_SCORING_PURPLE_' . $row['id']]) &&
+                                $post['par_SCORING_PURPLE_' . $row['id']] !== '[]'
+                            ) {
+                                // If it's a single value that's not an empty array string
+                                $tmp_value[] = $post['par_SCORING_PURPLE_' . $row['id']];
                             }
                             break;
                         case "SINGLE_VALUE":
                         case "TEXT":
                         case "NUMBER":
-                            $tmp_value[] = $post['par_SCORING_PURPLE_' . $row['id']];
+                            if (
+                                !empty($post['par_SCORING_PURPLE_' . $row['id']]) &&
+                                $post['par_SCORING_PURPLE_' . $row['id']] !== '[]'
+                            ) {
+                                $tmp_value[] = $post['par_SCORING_PURPLE_' . $row['id']];
+                            }
                             break;
                         case "NUMBER_RANGE":
                             $tmp_value = [
@@ -880,10 +895,18 @@ class Setting extends \App\Controllers\BaseController
                             ];
                             break;
                         case "DATE":
-                            $tmp_value[] = date("Y-m-d", strtotime($post['par_SCORING_PURPLE_' . $row['id']]));
+                            if (
+                                !empty($post['par_SCORING_PURPLE_' . $row['id']]) &&
+                                $post['par_SCORING_PURPLE_' . $row['id']] !== '[]'
+                            ) {
+                                $tmp_value[] = date("Y-m-d", strtotime($post['par_SCORING_PURPLE_' . $row['id']]));
+                            }
                             break;
                         case "DATE_RANGE":
-                            if (!empty($post['par_SCORING_PURPLE_' . $row['id'] . '_start']) && $post['par_SCORING_PURPLE_' . $row['id'] . '_start'] !== "--") {
+                            if (
+                                !empty($post['par_SCORING_PURPLE_' . $row['id'] . '_start']) &&
+                                $post['par_SCORING_PURPLE_' . $row['id'] . '_start'] !== "--"
+                            ) {
                                 $arr_dateStart = date("Y-m-d", strtotime($post['par_SCORING_PURPLE_' . $row['id'] . '_start']));
                                 $arr_dateEnd   = date("Y-m-d", strtotime($post['par_SCORING_PURPLE_' . $row['id'] . '_end']));
                                 $tmp_value     = [$arr_dateStart, $arr_dateEnd];
@@ -893,33 +916,36 @@ class Setting extends \App\Controllers\BaseController
                             break;
                     }
 
-                    $parameter_value = str_replace("\/", "/", json_encode($tmp_value));
+                    // Only add to setting_data if we actually have a value to process
+                    if (!empty($tmp_value) || $row['value_content'] === "DATE_RANGE") {
+                        $parameter_value = str_replace("\/", "/", json_encode($tmp_value));
 
-                    if ($method === "METHOD1") {
-                        $score_value  = $post['txt_score_value_' . $row['id']];
-                        $score_value2 = $post['txt_score_value_' . $row['id']];
-                    } else {
-                        $score_value  = "";
-                        $score_value2 = "";
+                        if ($method === "METHOD1") {
+                            $score_value  = $post['txt_score_value_' . $row['id']] ?? "";
+                            $score_value2 = $post['txt_score_value_' . $row['id']] ?? "";
+                        } else {
+                            $score_value  = "";
+                            $score_value2 = "";
+                        }
+
+                        $setting_data[] = [
+                            "id"                        => $scheme_data["id"],
+                            "parameter"                 => "SCORING_PURPLE",
+                            "parameter_id"              => $row['id'],
+                            "parameter_function"        => $post['opt_function1_SCORING_PURPLE_' . $row['id']] ?? null,
+                            "parameter_value"           => $parameter_value,
+                            "parameter_function_month"  => "",
+                            "parameter_value_month"     => "",
+                            "parameter_value_month_tmp" => "",
+                            "mapping_reference"         => "",
+                            "mapping_parameter_function" => "",
+                            "mapping_parameter_value"   => "",
+                            "score_value"               => $post['score_value_all'],
+                            "score_value2"              => $post['score_value_all2'],
+                            "created_time"              => date('Y-m-d H:i:s'),
+                            "created_by"                => session()->get('USER_ID')
+                        ];
                     }
-
-                    $setting_data[] = [
-                        "id"                        => $scheme_data["id"],
-                        "parameter"                 => "SCORING_PURPLE",
-                        "parameter_id"              => $row['id'],
-                        "parameter_function"        => $post['opt_function1_SCORING_PURPLE_' . $row['id']] ?? null,
-                        "parameter_value"           => $parameter_value,
-                        "parameter_function_month"  => "",
-                        "parameter_value_month"     => "",
-                        "parameter_value_month_tmp" => "",
-                        "mapping_reference"         => "",
-                        "mapping_parameter_function" => "",
-                        "mapping_parameter_value"   => "",
-                        "score_value"               => $post['score_value_all'],
-                        "score_value2"              => $post['score_value_all2'],
-                        "created_time"              => date('Y-m-d H:i:s'),
-                        "created_by"                => session()->get('USER_ID')
-                    ];
                 }
             }
 
