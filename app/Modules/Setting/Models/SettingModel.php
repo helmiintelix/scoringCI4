@@ -127,4 +127,124 @@ class SettingModel extends Model
 
         return $return;
     }
+
+    public function upload_file($scorring_file)
+    {
+        $this->db->table('sc_setting_upload_activity')->insert($scorring_file);
+
+        $dbConfig = config('Database');
+        $db_group = $dbConfig->defaultGroup ?? 'default';
+        $db_array = $dbConfig->{$db_group};
+        $db_host  = $db_array['hostname'];
+        $db_user  = $db_array['username'];
+        $db_pass  = $db_array['password'];
+        $db_name  = $db_array['database'];
+
+        $this->db->query("TRUNCATE sc_scoring_scheme_setup_temp");
+        $this->db->query("TRUNCATE sc_scoring_scheme_upload");
+        $this->db->query("TRUNCATE sc_scoring_scheme_temp");
+
+        $db = mysqli_connect($db_host, $db_user, $db_pass, $db_name);
+        if (!$db) {
+            throw new \Exception("MySQL Connect Error: " . mysqli_connect_error());
+        }
+        mysqli_options($db, MYSQLI_OPT_LOCAL_INFILE, true);
+
+        $filePath = str_replace("\\", "/", $scorring_file['full_path']);
+
+        $sql = "LOAD DATA LOCAL INFILE '" . addslashes($filePath) . "' 
+        INTO TABLE sc_scoring_scheme_upload
+        CHARACTER SET utf8mb4
+        FIELDS TERMINATED BY '\t'
+        ENCLOSED BY '\"'
+        LINES TERMINATED BY '\n'
+        IGNORE 1 LINES
+        (@col1,@col2,@col3,@col4,@col5,@col6)
+        SET id=UUID(),
+            sequence_no=@col1,
+            parameter='SCORING_PURPLE',
+            parameter_id=@col2,
+            parameter_function='IN',
+            parameter_value=@col3,
+            score=CAST(REPLACE(@col4,',','.') AS DECIMAL(18,8)),
+            score2=CAST(REPLACE(@col5,',','.') AS DECIMAL(18,8)),
+            created_by = '" . $scorring_file['upload_by'] . "',
+            created_time = DATE('" . $scorring_file['upload_time'] . "')";
+
+        $tmp_arr_data = $this->db->table('sc_scoring_scheme_upload')->get()->getResultArray();
+
+        $request   = \Config\Services::request();
+        $lob_code  = $request->getPost('opt_lob');
+        $bucket    = $request->getPost('opt_bucket');
+        $is_active = $request->getPost('is_active');
+
+        $user_id = session()->get('USER_ID');
+        $now     = date('Y-m-d H:i:s');
+
+        foreach ($tmp_arr_data as $aRow) {
+            $auto_name = $aRow['sequence_no'] . "_" . $lob_code . "_" . str_replace(" ", "_", $bucket) . "_" . $aRow['parameter_id'];
+            $id_all    = uuid(false);
+
+            $data_schme = [
+                'id'          => $id_all,
+                'name'        => $auto_name,
+                'score_value' => $aRow['score'],
+                'score_value2' => $aRow['score2'],
+                'method'      => 'METHOD2',
+                'group_by'    => 'CM_CARD_NMBR',
+                'client_id'   => 'BAF',
+                'relate_id'   => $auto_name,
+                'upload_id'   => $scorring_file['id'],
+                'is_active'   => $is_active,
+                'created_by'  => $user_id,
+                'created_time' => $now
+            ];
+            $this->db->table('sc_scoring_scheme_temp')->insert($data_schme);
+
+            $data_schme_setup1 = [
+                'id'                => $id_all,
+                'parameter'         => $aRow['parameter'],
+                'parameter_id'      => $aRow['parameter_id'],
+                'parameter_function' => $aRow['parameter_function'],
+                'parameter_value'   => json_encode([$aRow['parameter_value']]),
+                'score_value'       => $aRow['score'],
+                'score_value2'      => $aRow['score2'],
+                'client_id'         => 'BAF',
+                'created_by'        => $user_id,
+                'created_time'      => $now
+            ];
+            $this->db->table('sc_scoring_scheme_setup_temp')->insert($data_schme_setup1);
+
+            $data_schme_setup2 = $data_schme_setup1;
+            $data_schme_setup2['parameter_id']    = 'LOBCODE';
+            $data_schme_setup2['parameter_value'] = json_encode([$lob_code]);
+            $this->db->table('sc_scoring_scheme_setup_temp')->insert($data_schme_setup2);
+
+            $data_schme_setup3 = $data_schme_setup1;
+            $data_schme_setup3['parameter_id']    = 'BUCKET';
+            $data_schme_setup3['parameter_value'] = json_encode([$bucket]);
+            $this->db->table('sc_scoring_scheme_setup_temp')->insert($data_schme_setup3);
+
+            $setting_data = [$data_schme_setup1, $data_schme_setup2, $data_schme_setup3];
+            $log_data = [
+                'id'                  => uuid(false),
+                'id_scheme'           => $data_schme['id'],
+                'id_upload'           => $scorring_file['id'],
+                'name_scheme'         => $data_schme['name'],
+                'score_value'         => $data_schme['score_value'],
+                'score_value2'        => $data_schme['score_value2'],
+                'scheme_detail_before' => null,
+                'scheme_detail_after' => json_encode($setting_data),
+                'action'              => 'UPLOAD',
+                'created_by'          => $user_id,
+                'created_time'        => $now
+            ];
+            $this->db->table('sc_scoring_log')->insert($log_data);
+        }
+
+        $this->db->query("INSERT INTO sc_scoring_scheme SELECT * FROM sc_scoring_scheme_temp");
+        $this->db->query("INSERT INTO sc_scoring_scheme_setup SELECT * FROM sc_scoring_scheme_setup_temp");
+
+        return true;
+    }
 }
