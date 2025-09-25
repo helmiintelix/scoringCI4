@@ -246,18 +246,18 @@
                     success: function(response) {
                         if ($('#uploadModal').length === 0) {
                             $('body').append(`
-                            <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-lg">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body" id="uploadModalBody">
-                                        </div>
-                                    </div>
+                            <div class="modal fade" id="uploadModal" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Upload File Form</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body" id="uploadModalBody"></div>
                                 </div>
                             </div>
-                        `);
+                            </div>
+                            `);
                         }
 
                         $('#uploadModalBody').html(response);
