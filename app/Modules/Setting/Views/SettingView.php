@@ -307,7 +307,7 @@
                             if (msg.success === true) {
                                 showInfo("File berhasil diupload.");
                                 $('#uploadModal').modal('hide');
-                                // loadMenu("preview", "scoring/preview/preview");
+                                loadMenu("preview", "scoring/preview/preview");
                             } else {
                                 showWarning(msg.message || "Terjadi kesalahan saat upload.");
                             }
