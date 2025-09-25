@@ -43,19 +43,21 @@ $routes->get('/Ecentrix8/getCallCenterConfiguration', 'Ecentrix8::getCallCenterC
 $routes->post('/Ecentrix8/updateAccountCodeSessionLog', 'Ecentrix8::updateAccountCodeSessionLog');
 
 
-$routes->add('settings/get_system_configuration/', '\App\Modules\Settings\Controllers\Settings::get_system_configuration',['filter' => 'authfilter']);
-$routes->add('scoring/scheduler', '\App\Modules\Scoring\Controllers\Scoring::scheduler',['filter' => 'authfilter']);
-$routes->add('scoring/tieringPreview', '\App\Modules\TieringPreview\Controllers\TieringPreview::TieringPreview',['filter' => 'authfilter']);
-$routes->add('scoring/scoringDataDetail', '\App\Modules\ScoringDataDetail\Controllers\ScoringDataDetail::ScoringDataDetail',['filter' => 'authfilter']);
+$routes->add('settings/get_system_configuration/', '\App\Modules\Settings\Controllers\Settings::get_system_configuration', ['filter' => 'authfilter']);
+$routes->add('scoring/scheduler', '\App\Modules\Scoring\Controllers\Scoring::scheduler', ['filter' => 'authfilter']);
+$routes->add('scoring/tieringPreview', '\App\Modules\TieringPreview\Controllers\TieringPreview::TieringPreview', ['filter' => 'authfilter']);
+$routes->add('scoring/scoringDataDetail', '\App\Modules\ScoringDataDetail\Controllers\ScoringDataDetail::ScoringDataDetail', ['filter' => 'authfilter']);
 $routes->add('scoring/parameters', '\App\Modules\Parameters\Controllers\Parameters::get_parameters_list', ['filter' => 'authfilter']);
 $routes->add('scoring/preview', '\App\Modules\Preview\Controllers\Preview::preview', ['filter' => 'authfilter']);
+$routes->add('scoring/setting', '\App\Modules\Setting\Controllers\Setting::setting', ['filter' => 'authfilter']);
 
 if ($uri->getTotalSegments() > 2) {
     $function = $uri->getSegment(3);
 
-    $routes->add('scoring/scheduler/'.$function, '\App\Modules\Scoring\Controllers\Scoring::'.$function,['filter' => 'authfilter']);
-    $routes->add('scoring/scoringDataDetail/'.$function, '\App\Modules\ScoringDataDetail\Controllers\ScoringDataDetail::'.$function,['filter' => 'authfilter']);
+    $routes->add('scoring/scheduler/' . $function, '\App\Modules\Scoring\Controllers\Scoring::' . $function, ['filter' => 'authfilter']);
+    $routes->add('scoring/scoringDataDetail/' . $function, '\App\Modules\ScoringDataDetail\Controllers\ScoringDataDetail::' . $function, ['filter' => 'authfilter']);
 
     $routes->add('scoring/parameters/' . $function, '\App\Modules\Parameters\Controllers\Parameters::' . $function, ['filter' => 'authfilter']);
     $routes->add('scoring/preview/' . $function, '\App\Modules\Preview\Controllers\Preview::' . $function, ['filter' => 'authfilter']);
+    $routes->add('scoring/setting/' . $function, '\App\Modules\Setting\Controllers\Setting::' . $function, ['filter' => 'authfilter']);
 }
