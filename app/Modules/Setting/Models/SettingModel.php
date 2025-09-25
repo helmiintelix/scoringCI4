@@ -51,4 +51,80 @@ class SettingModel extends Model
         $query = $builder->get();
         return $query->getResultArray();
     }
+
+    public function get_included_parameter($parameter)
+    {
+        $builder = $this->db->table('sc_scoring_parameter');
+        $builder->select('id, name, is_include, is_primary, is_sum, is_monthly, value_content, map_reference', false);
+        $builder->where('parameter', $parameter);
+        $builder->where('is_active', 'Y');
+        $builder->where('name <>', '');
+        $builder->where('is_include', 'YES');
+        $builder->orderBy('order_num', 'ASC');
+
+        $query = $builder->get();
+        return $query->getResultArray();
+    }
+
+    public function set_setting($form_mode, $scheme_data, $setting_data)
+    {
+        $user_id = session()->get('USER_ID');
+        $created_time = date('Y-m-d H:i:s');
+
+        $builder_scheme = $this->db->table('sc_scoring_scheme');
+        $builder_setup  = $this->db->table('sc_scoring_scheme_setup');
+        $builder_log    = $this->db->table('sc_scoring_log');
+
+        if ($form_mode == "ADD") {
+            // Hapus dulu jika ada
+            $builder_scheme->where('id', $scheme_data['id'])->delete();
+            // Insert scheme baru
+            $builder_scheme->insert($scheme_data);
+
+            // Insert log
+            $arr = [
+                'id' => uuid(false),
+                'id_scheme' => $scheme_data['id'],
+                'id_upload' => null,
+                'name_scheme' => $scheme_data['name'],
+                'score_value' => $scheme_data['score_value'],
+                'score_value2' => $scheme_data['score_value2'],
+                'scheme_detail_before' => null,
+                'scheme_detail_after' => json_encode($setting_data),
+                'action' => 'ADD',
+                'created_by' => $user_id,
+                'created_time' => $created_time
+            ];
+            $builder_log->insert($arr);
+        } else {
+            // Ambil data sebelum update
+            $scheme_before = $this->db->table('sc_scoring_scheme_setup')
+                ->where('id', $scheme_data['id'])
+                ->get()
+                ->getResultArray();
+
+            // Insert log
+            $arr = [
+                'id' => uuid(false),
+                'id_scheme' => $scheme_data['id'],
+                'id_upload' => $scheme_data['upload_id'] ?? null,
+                'name_scheme' => $scheme_data['name'],
+                'score_value' => $scheme_data['score_value'],
+                'score_value2' => $scheme_data['score_value2'],
+                'scheme_detail_before' => json_encode($scheme_before),
+                'scheme_detail_after' => json_encode($setting_data),
+                'action' => 'EDIT',
+                'created_by' => $user_id,
+                'created_time' => $created_time
+            ];
+            $builder_log->insert($arr);
+
+            $builder_scheme->where('id', $scheme_data['id'])->update($scheme_data);
+        }
+
+        $builder_setup->where('id', $scheme_data['id'])->delete();
+        $return = $builder_setup->insertBatch($setting_data);
+
+        return $return;
+    }
 }

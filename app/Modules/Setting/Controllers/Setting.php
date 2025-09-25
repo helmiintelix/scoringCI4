@@ -742,4 +742,288 @@ class Setting extends \App\Controllers\BaseController
 
         return view('App\Modules\Setting\Views\SettingView', $data);
     }
+
+    public function save_setting()
+    {
+        $post = [];
+        foreach ($this->request->getPost() as $key => $value) {
+            if ($this->request->getPost($key) !== '' && $this->request->getPost($key) !== "--") {
+                $post[$key] = $this->request->getPost($key);
+            }
+        }
+
+        try {
+            $form_mode = $post['form_mode'];
+            $method    = $post['opt_method'];
+            $group_by  = $post['opt_group_by'];
+
+            $scheme_data = [
+                "id"           => $post['score_scheme_id'],
+                "name"         => $post['score_label'],
+                "score_value"  => $post['score_value_all'],
+                "score_value2" => $post['score_value_all2'],
+                "method"       => $method,
+                "group_by"     => $group_by,
+                "created_by"   => session()->get('USER_ID'),
+                "created_time" => date('Y-m-d H:i:s')
+            ];
+
+            $setting_data = [];
+
+            // === CONTRACT_AGING ===
+            $included_parameter = $this->SettingModel->get_included_parameter("CONTRACT_AGING");
+            foreach ($included_parameter as $row) {
+                if (
+                    array_key_exists('par_CONTRACT_AGING_' . $row['id'], $post)
+                    || (array_key_exists('par_CONTRACT_AGING_' . $row['id'] . '_start', $post)
+                        && array_key_exists('par_CONTRACT_AGING_' . $row['id'] . '_end', $post))
+                    || array_key_exists('par_CONTRACT_AGING_' . $row['id'] . '[]', $post)
+                ) {
+                    $tmp_value = [];
+                    switch ($row['value_content']) {
+                        case "MULTIPLE_VALUE":
+                        case "DAY":
+                        case "MONTH":
+                        case "YEAR":
+                            if (!empty($post['par_CONTRACT_AGING_' . $row['id']])) {
+                                foreach ($post['par_CONTRACT_AGING_' . $row['id']] as $selected) {
+                                    $tmp_value[] = $selected;
+                                }
+                            }
+                            break;
+                        case "SINGLE_VALUE":
+                        case "TEXT":
+                        case "NUMBER":
+                            $tmp_value[] = $post['par_CONTRACT_AGING_' . $row['id']];
+                            break;
+                        case "NUMBER_RANGE":
+                            $tmp_value = [
+                                $post['par_CONTRACT_AGING_' . $row['id'] . '_start'],
+                                $post['par_CONTRACT_AGING_' . $row['id'] . '_end']
+                            ];
+                            break;
+                        case "DATE":
+                            $tmp_value[] = date("Y-m-d", strtotime($post['par_CONTRACT_AGING_' . $row['id']]));
+                            break;
+                        case "DATE_RANGE":
+                            if (!empty($post['par_CONTRACT_AGING_' . $row['id'] . '_start']) && $post['par_CONTRACT_AGING_' . $row['id'] . '_start'] !== "--") {
+                                $tmp_value = [
+                                    date("Y-m-d", strtotime($post['par_CONTRACT_AGING_' . $row['id'] . '_start'])),
+                                    date("Y-m-d", strtotime($post['par_CONTRACT_AGING_' . $row['id'] . '_end']))
+                                ];
+                            } else {
+                                $tmp_value = ['', ''];
+                            }
+                            break;
+                    }
+
+                    $parameter_value = json_encode($tmp_value);
+
+                    if ($method === "METHOD1") {
+                        $score_value  = $post['txt_score_value_' . $row['id']];
+                        $score_value2 = $post['txt_score_value_' . $row['id']];
+                    } else {
+                        $score_value  = "";
+                        $score_value2 = "";
+                    }
+
+                    $setting_data[] = [
+                        "id"                        => $scheme_data["id"],
+                        "parameter"                 => "CONTRACT_AGING",
+                        "parameter_id"              => $row['id'],
+                        "parameter_function"        => $post['opt_function1_CONTRACT_AGING_' . $row['id']] ?? null,
+                        "parameter_value"           => $parameter_value,
+                        "parameter_function_month"  => "",
+                        "parameter_value_month"     => "",
+                        "parameter_value_month_tmp" => "",
+                        "mapping_reference"         => "",
+                        "mapping_parameter_function" => "",
+                        "mapping_parameter_value"   => "",
+                        "score_value"               => $score_value,
+                        "score_value2"              => $score_value2,
+                        "created_time"              => date('Y-m-d H:i:s'),
+                        "created_by"                => session()->get('USER_ID')
+                    ];
+                }
+            }
+
+            // === SCORING_PURPLE ===
+            $included_parameter = $this->SettingModel->get_included_parameter("SCORING_PURPLE");
+            foreach ($included_parameter as $row) {
+                if (
+                    array_key_exists('par_SCORING_PURPLE_' . $row['id'], $post)
+                    || (array_key_exists('par_SCORING_PURPLE_' . $row['id'] . '_start', $post)
+                        && array_key_exists('par_SCORING_PURPLE_' . $row['id'] . '_end', $post))
+                    || array_key_exists('par_SCORING_PURPLE_' . $row['id'] . '[]', $post)
+                ) {
+                    $tmp_value = [];
+                    switch ($row['value_content']) {
+                        case "MULTIPLE_VALUE":
+                        case "DAY":
+                        case "MONTH":
+                        case "YEAR":
+                            if (!empty($post['par_SCORING_PURPLE_' . $row['id']])) {
+                                foreach ($post['par_SCORING_PURPLE_' . $row['id']] as $selected) {
+                                    $tmp_value[] = $selected;
+                                }
+                            }
+                            break;
+                        case "SINGLE_VALUE":
+                        case "TEXT":
+                        case "NUMBER":
+                            $tmp_value[] = $post['par_SCORING_PURPLE_' . $row['id']];
+                            break;
+                        case "NUMBER_RANGE":
+                            $tmp_value = [
+                                $post['par_SCORING_PURPLE_' . $row['id'] . '_start'],
+                                $post['par_SCORING_PURPLE_' . $row['id'] . '_end']
+                            ];
+                            break;
+                        case "DATE":
+                            $tmp_value[] = date("Y-m-d", strtotime($post['par_SCORING_PURPLE_' . $row['id']]));
+                            break;
+                        case "DATE_RANGE":
+                            if (!empty($post['par_SCORING_PURPLE_' . $row['id'] . '_start']) && $post['par_SCORING_PURPLE_' . $row['id'] . '_start'] !== "--") {
+                                $arr_dateStart = date("Y-m-d", strtotime($post['par_SCORING_PURPLE_' . $row['id'] . '_start']));
+                                $arr_dateEnd   = date("Y-m-d", strtotime($post['par_SCORING_PURPLE_' . $row['id'] . '_end']));
+                                $tmp_value     = [$arr_dateStart, $arr_dateEnd];
+                            } else {
+                                $tmp_value = ['', ''];
+                            }
+                            break;
+                    }
+
+                    $parameter_value = str_replace("\/", "/", json_encode($tmp_value));
+
+                    if ($method === "METHOD1") {
+                        $score_value  = $post['txt_score_value_' . $row['id']];
+                        $score_value2 = $post['txt_score_value_' . $row['id']];
+                    } else {
+                        $score_value  = "";
+                        $score_value2 = "";
+                    }
+
+                    $setting_data[] = [
+                        "id"                        => $scheme_data["id"],
+                        "parameter"                 => "SCORING_PURPLE",
+                        "parameter_id"              => $row['id'],
+                        "parameter_function"        => $post['opt_function1_SCORING_PURPLE_' . $row['id']] ?? null,
+                        "parameter_value"           => $parameter_value,
+                        "parameter_function_month"  => "",
+                        "parameter_value_month"     => "",
+                        "parameter_value_month_tmp" => "",
+                        "mapping_reference"         => "",
+                        "mapping_parameter_function" => "",
+                        "mapping_parameter_value"   => "",
+                        "score_value"               => $post['score_value_all'],
+                        "score_value2"              => $post['score_value_all2'],
+                        "created_time"              => date('Y-m-d H:i:s'),
+                        "created_by"                => session()->get('USER_ID')
+                    ];
+                }
+            }
+
+            // === HISTORICAL PARAM ===
+            $arr_historical_param = ["CALL_HISTORY", "VISIT_HISTORY", "PAYMENT_HISTORY", "BUCKET_DPD_HISTORY"];
+            foreach ($arr_historical_param as $historical_param) {
+                $included_parameter = $this->SettingModel->get_included_parameter($historical_param);
+                foreach ($included_parameter as $row) {
+                    if (
+                        array_key_exists('par_' . $historical_param . '_' . $row['id'], $post)
+                        || array_key_exists('par_' . $historical_param . '_' . $row['id'] . '_start', $post)
+                        || array_key_exists('par_' . $historical_param . '_' . $row['id'] . '[]', $post)
+                    ) {
+                        $tmp_value = [];
+                        switch ($row['value_content']) {
+                            case "MULTIPLE_VALUE":
+                            case "DAY":
+                                foreach ($post['par_' . $historical_param . '_' . $row['id']] as $selected) {
+                                    $tmp_value[] = $selected;
+                                }
+                                break;
+                            case "SINGLE_VALUE":
+                            case "TEXT":
+                            case "NUMBER":
+                            case "MAPPING":
+                                $tmp_value[] = $post['par_' . $historical_param . '_' . $row['id']];
+                                break;
+                            case "NUMBER_RANGE":
+                            case "DATE_RANGE":
+                                $tmp_value = [
+                                    $post['par_' . $historical_param . '_' . $row['id'] . '_start'],
+                                    $post['par_' . $historical_param . '_' . $row['id'] . '_end']
+                                ];
+                                break;
+                        }
+
+                        $parameter_value = json_encode($tmp_value);
+
+                        if ($method === "METHOD1") {
+                            $score_value = $post['txt_score_value_' . $row['id']];
+                        } else {
+                            $score_value = "";
+                        }
+                        $score_value2 = "";
+
+                        if (!empty($post['opt_month_' . $historical_param . '_' . $row['id']])) {
+                            $parameter_value_month = [];
+                            foreach ($post['opt_month_' . $historical_param . '_' . $row['id']] as $month_ke) {
+                                $parameter_value_month[] = date('m', strtotime("-" . $month_ke . " month"));
+                            }
+
+                            if ($row['value_content'] === "MAPPING") {
+                                $setting_data[] = [
+                                    "id"                        => $post['score_scheme_id'],
+                                    "parameter"                 => $historical_param,
+                                    "parameter_id"              => $row['id'],
+                                    "parameter_function"        => "",
+                                    "parameter_value"           => "",
+                                    "parameter_function_month"  => "",
+                                    "parameter_value_month"     => "",
+                                    "parameter_value_month_tmp" => json_encode($post['opt_month_' . $historical_param . '_' . $row['id']]),
+                                    "mapping_reference"         => $parameter_value,
+                                    "mapping_parameter_function" => $post['opt_function2_' . $historical_param . '_' . $row['id']] ?? null,
+                                    "mapping_parameter_value"   => json_encode($parameter_value_month),
+                                    "score_value"               => $score_value,
+                                    "score_value2"              => $score_value2,
+                                    "created_time"              => date('Y-m-d H:i:s'),
+                                    "created_by"                => session()->get('USER_ID')
+                                ];
+                            } else {
+                                $setting_data[] = [
+                                    "id"                        => $post['score_scheme_id'],
+                                    "parameter"                 => $historical_param,
+                                    "parameter_id"              => $row['id'],
+                                    "parameter_function"        => $post['opt_function1_' . $historical_param . '_' . $row['id']] ?? null,
+                                    "parameter_value"           => $parameter_value,
+                                    "parameter_function_month"  => $post['opt_function2_' . $historical_param . '_' . $row['id']] ?? null,
+                                    "parameter_value_month"     => json_encode($parameter_value_month),
+                                    "parameter_value_month_tmp" => json_encode($post['opt_month_' . $historical_param . '_' . $row['id']]),
+                                    "mapping_reference"         => "",
+                                    "mapping_parameter_function" => "",
+                                    "mapping_parameter_value"   => "",
+                                    "score_value"               => $score_value,
+                                    "score_value2"              => $score_value2,
+                                    "created_time"              => date('Y-m-d H:i:s'),
+                                    "created_by"                => session()->get('USER_ID')
+                                ];
+                            }
+                        }
+                    }
+                }
+            }
+
+            $return = $this->SettingModel->set_setting($form_mode, $scheme_data, $setting_data);
+
+            if ($return) {
+                $response = ["success" => true, "message" => "Save berhasil."];
+            } else {
+                $response = ["success" => false, "message" => "Save gagal."];
+            }
+        } catch (\Exception $e) {
+            $response = ["success" => false, "message" => "Save Gagal", "error" => $e->getMessage()];
+        }
+
+        return $this->response->setJSON($response);
+    }
 }
