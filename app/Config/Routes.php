@@ -54,6 +54,7 @@ $routes->add('scoring/setting/upload_file_form', '\App\Modules\Setting\Controlle
 $routes->add('scoring/setting/save_file', '\App\Modules\Setting\Controllers\Setting::save_file', ['filter' => 'authfilter']);
 $routes->post('scoring/setting/save_setting', '\App\Modules\Setting\Controllers\Setting::save_setting', ['filter' => 'authfilter']);
 $routes->add('scoring/setting/(:segment)', '\App\Modules\Setting\Controllers\Setting::setting/$1', ['filter' => 'authfilter']);
+$routes->add('setting/general/', '\App\Modules\GeneralSetting\Controllers\GeneralSetting::GeneralSetting', ['filter' => 'authfilter']);
 
 if ($uri->getTotalSegments() > 2) {
     $function = $uri->getSegment(3);
@@ -64,4 +65,6 @@ if ($uri->getTotalSegments() > 2) {
     $routes->add('scoring/parameters/' . $function, '\App\Modules\Parameters\Controllers\Parameters::' . $function, ['filter' => 'authfilter']);
     $routes->add('scoring/preview/' . $function, '\App\Modules\Preview\Controllers\Preview::' . $function, ['filter' => 'authfilter']);
     $routes->add('scoring/setting/' . $function, '\App\Modules\Setting\Controllers\Setting::' . $function, ['filter' => 'authfilter']);
+    $routes->add('setting/general/'. $function, '\App\Modules\GeneralSetting\Controllers\GeneralSetting::' . $function, ['filter' => 'authfilter']);
+
 }

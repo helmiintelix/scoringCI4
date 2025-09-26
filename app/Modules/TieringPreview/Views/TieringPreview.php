@@ -57,8 +57,8 @@
 								<td><?=$row['lob']?></td>
 								<td align="right"><?=$row['total_data']?></td>
 								<td>
-									<button class="btn btn-minier btn-info" style="padding-top: 0px;" type="button" onClick="loadScoreTieringEditForm('<?=$row['tiering_id']?>')">
-										<i class="icon-edit bigger-110"></i>
+									<button type="button" class="btn btn-sm btn-primary d-inline-flex align-items-center" onclick="loadScoreTieringEditForm('<?=$row['tiering_id']?>')">
+										<i class="icon-edit bigger-110 me-1" aria-hidden="true"></i>
 										Edit
 									</button>
 								</td>
