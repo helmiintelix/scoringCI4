@@ -19,17 +19,17 @@ var loadMenu = function (title, link, menu_id) {
       '<li class="breadcrumb-item"><a href="#"><i class="bi bi-house-door-fill"></i></a></li>'
     );
     let menu = JSON_MENU[menu_id];
-    if (menu.menu_1 != null) {
+    if (menu && menu.menu_1 != null) {
       $(this).append(
         '<li class="breadcrumb-item"><a href="#">' + menu.menu_1 + "</a></li>"
       );
     }
-    if (menu.menu_2 != null) {
+    if (menu && menu.menu_2 != null) {
       $(this).append(
         '<li class="breadcrumb-item"><a href="#">' + menu.menu_2 + "</a></li>"
       );
     }
-    if (menu.menu_3 != null) {
+    if (menu && menu.menu_3 != null) {
       $(this).append(
         '<li class="breadcrumb-item"><a href="#">' + menu.menu_3 + "</a></li>"
       );
