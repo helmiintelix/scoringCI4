@@ -98,26 +98,53 @@
                                     <?php
                                     $input_name = "par_SCORING_PURPLE_" . $row['param_id'];
                                     $input_value = $row['parameter_value'] ?? '';
+
+                                    $decoded_value = '';
+                                    if (!empty($input_value) && $input_value !== '[]') {
+                                        $decoded_array = json_decode($input_value, true);
+                                        if (json_last_error() === JSON_ERROR_NONE && is_array($decoded_array)) {
+                                            if (count($decoded_array) === 1) {
+                                                $decoded_value = $decoded_array[0];
+                                            } else {
+                                                $decoded_value = $decoded_array;
+                                            }
+                                        } else {
+                                            $decoded_value = $input_value;
+                                        }
+                                    }
                                     switch ($row['value_content']) {
                                         case 'TEXT':
-                                            echo '<input type="text" name="' . $input_name . '" value="' . esc($input_value) . '" class="form-control" />';
+                                            echo '<input type="text" name="' . $input_name . '" value="' . esc($decoded_value) . '" class="form-control" />';
                                             break;
                                         case 'NUMBER':
-                                            echo '<input type="number" name="' . $input_name . '" value="' . esc($input_value) . '" class="form-control" />';
+                                            echo '<input type="number" name="' . $input_name . '" value="' . esc($decoded_value) . '" class="form-control" />';
                                             break;
                                         case 'DATE':
-                                            echo '<input type="text" name="' . $input_name . '" value="' . esc($input_value) . '" class="form-control date-picker" />';
+                                            echo '<input type="text" name="' . $input_name . '" value="' . esc($decoded_value) . '" class="form-control date-picker" />';
                                             break;
                                         case 'MULTIPLE_VALUE':
                                             if (isset($ref_list[$row['parameter_reference']])) {
+                                                $selected_values = is_array($decoded_value) ? $decoded_value : [];
                                                 echo form_dropdown(
                                                     $input_name . '[]',
                                                     $ref_list[$row['parameter_reference']],
-                                                    json_decode($input_value, true),
+                                                    $selected_values,
                                                     'class="form-control" multiple'
                                                 );
                                             } else {
                                                 echo '<input type="text" name="' . $input_name . '" value="' . esc($input_value) . '" class="form-control" />';
+                                            }
+                                            break;
+                                        case 'SINGLE_VALUE':
+                                            if (isset($ref_list[$row['parameter_reference']])) {
+                                                echo form_dropdown(
+                                                    $input_name,
+                                                    $ref_list[$row['parameter_reference']],
+                                                    $decoded_value,
+                                                    'class="form-control"'
+                                                );
+                                            } else {
+                                                echo '<input type="text" name="' . $input_name . '" value="' . esc($decoded_value) . '" class="form-control" placeholder="Enter text value" />';
                                             }
                                             break;
                                         default:
@@ -125,11 +152,11 @@
                                                 echo form_dropdown(
                                                     $input_name,
                                                     $ref_list[$row['parameter_reference']],
-                                                    $input_value,
+                                                    $decoded_value,
                                                     'class="form-control"'
                                                 );
                                             } else {
-                                                echo '<input type="text" name="' . $input_name . '" value="' . esc($input_value) . '" class="form-control" />';
+                                                echo '<input type="text" name="' . $input_name . '" value="' . esc($decoded_value) . '" class="form-control" />';
                                             }
                                             break;
                                     }
@@ -216,18 +243,19 @@
             $.ajax({
                 type: "POST",
                 url: GLOBAL_MAIN_VARS["SITE_URL"] + "scoring/setting/save_setting/",
-                dataType: "json",
                 data: $("#frmScoringSettings").serialize(),
+                dataType: "json",
                 success: function(msg) {
-                    if (msg.success === true) {
+                    if (msg.success) {
                         showInfo("Data berhasil disimpan.");
                         loadMenu('preview', 'scoring/preview/preview');
                     } else {
                         showWarning(msg.message || "Terjadi kesalahan saat menyimpan.");
                     }
                 },
-                error: function(xhr, status, error) {
-                    showWarning("Request gagal: " + error);
+                error: function(xhr) {
+                    console.error("Raw response:", xhr.responseText);
+                    showWarning("Server error: " + xhr.status);
                 }
             });
         });

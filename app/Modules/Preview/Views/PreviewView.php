@@ -150,7 +150,22 @@
 </div>
 
 <script type="text/javascript">
-    function loadScoreSettingEditForm2(schemeId, paramGroup, paramSelected) {}
+    function loadScoreSettingEditForm2(schemeId, paramGroup, paramSelected) {
+        $.post(GLOBAL_MAIN_VARS["SITE_URL"] + "scoring/preview/active_parameter", {
+            scheme_id: schemeId,
+            parameter: paramGroup,
+            id_parameter: paramSelected
+        }, function(response) {
+            if (response.success) {
+                loadMenu("setting", "scoring/setting/" + schemeId);
+            } else {
+                showWarning("Gagal mengaktifkan parameter: " + response.message);
+            }
+        }, "json").fail(function() {
+            showWarning("Terjadi error saat memproses data");
+        });
+    }
+
 
     function loadScoreSettingDeleteForm(schemeId, schemeName) {
         $("#deleteConfirmMessage").text("Are you sure you want to delete scheme " + schemeName + "?");

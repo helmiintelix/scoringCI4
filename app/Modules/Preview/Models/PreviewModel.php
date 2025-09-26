@@ -92,4 +92,32 @@ class PreviewModel extends Model
 
         return $return;
     }
+
+    public function active_parameter($param)
+    {
+        $builder = $this->db->table('sc_scoring_scheme_setup');
+        $builder->select('parameter, parameter_id', false);
+        $builder->where('id', $param['scheme_id']);
+        $result = $builder->get();
+        $arr_data = $result->getResultArray();
+
+        $scheme_data = [
+            'is_include' => 'YES'
+        ];
+
+        foreach ($arr_data as $key => $value) {
+            //dibuat yes
+            $this->db->table('sc_scoring_parameter')
+                ->where('id', $value['parameter_id'])
+                ->where('parameter', $value['parameter'])
+                ->update($scheme_data);
+
+            $return = $this->db->table('sc_scoring_parameter_tmp')
+                ->where('id', $value['parameter_id'])
+                ->where('parameter', $value['parameter'])
+                ->update($scheme_data);
+        }
+
+        return $return;
+    }
 }
