@@ -4,8 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Scoring Settings</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Vanilla JS Datepicker CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.3.4/dist/css/datepicker.min.css">
 
     <!-- Bootstrap Datepicker CSS -->
@@ -36,15 +39,7 @@
     <div class="col-xs-12">
         <form class="form-horizontal" role="form" id="frmScoringSettings" name="frmScoringSettings">
             <input type="hidden" id="opt_method" name="opt_method" value="METHOD2" />
-            <h4 style="margin-bottom: 20px; font-weight: bold;">
-                Scoring Settings
-                <small>
-                    <i class="ace-icon fa fa-angle-double-right"></i>
-                    <?= ($form_mode == 'EDIT') ? '→ Edit' : '→ Add New' ?> Scheme
-                </small>
-            </h4>
 
-            <!-- Group By -->
             <div class="form-section-title mb-2">
                 <strong>Data grouped by</strong> <span style="font-weight: normal;"> (Primary Key)</span>
             </div>
@@ -60,7 +55,6 @@
                 ?>
             </div>
 
-            <!-- Scoring Purple -->
             <h4 class="form-section-title mt-4 mb-2 fw-bold">Scoring Purple</h4>
             <div class="table-responsive mb-3">
                 <table id="sample-table-1" class="table table-striped table-bordered table-hover">
@@ -221,8 +215,9 @@
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
-    <!-- Bootstrap JS -->
+    <!-- Vanilla JS Datepicker -->
     <script src="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.3.4/dist/js/datepicker-full.min.js"></script>
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Bootstrap Datepicker JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.10.0/js/bootstrap-datepicker.min.js"></script>
@@ -278,17 +273,17 @@
                     if ($('#uploadModal').length === 0) {
                         $('body').append(`
                             <div class="modal fade" id="uploadModal" tabindex="-1" aria-hidden="true">
-                            <div class="modal-dialog modal-lg">
-                                <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Upload File Form</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body" id="uploadModalBody"></div>
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header bg-primary text-white">
+                                            <h5 class="modal-title">Upload File</h5>
+                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body" id="uploadModalBody"></div>
+                                    </div>
                                 </div>
                             </div>
-                            </div>
-                            `);
+                        `);
                     }
 
                     $('#uploadModalBody').html(response);
@@ -363,8 +358,6 @@
             submitBtn.prop('disabled', false).html('<i class="bi bi-upload"></i> Upload');
         });
     </script>
-
-
     </body>
 
 </html>
