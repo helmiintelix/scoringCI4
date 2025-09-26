@@ -36,4 +36,21 @@ class Preview extends \App\Controllers\BaseController
 
         return $this->response->setJSON($data);
     }
+
+    public function active_parameter()
+    {
+        $param['scheme_id'] = $this->request->getPost('scheme_id');
+        $param['parameter'] = $this->request->getPost('parameter');
+        $param['id_parameter'] = $this->request->getPost('id_parameter');
+
+        $return = $this->PreviewModel->active_parameter($param);
+
+        if ($return) {
+            $data = ["success" => true, "message" => "Success"];
+        } else {
+            $data = ["success" => false, "message" => "Failed"];
+        }
+
+        return $this->response->setJSON($data);
+    }
 }

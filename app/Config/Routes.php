@@ -52,6 +52,7 @@ $routes->add('scoring/preview', '\App\Modules\Preview\Controllers\Preview::previ
 $routes->add('scoring/setting', '\App\Modules\Setting\Controllers\Setting::setting', ['filter' => 'authfilter']);
 $routes->add('scoring/setting/upload_file_form', '\App\Modules\Setting\Controllers\Setting::upload_file_form', ['filter' => 'authfilter']);
 $routes->add('scoring/setting/save_file', '\App\Modules\Setting\Controllers\Setting::save_file', ['filter' => 'authfilter']);
+$routes->post('scoring/setting/save_setting', '\App\Modules\Setting\Controllers\Setting::save_setting', ['filter' => 'authfilter']);
 $routes->add('scoring/setting/(:segment)', '\App\Modules\Setting\Controllers\Setting::setting/$1', ['filter' => 'authfilter']);
 
 if ($uri->getTotalSegments() > 2) {
