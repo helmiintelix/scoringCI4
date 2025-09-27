@@ -45,7 +45,7 @@ $routes->post('/Ecentrix8/updateAccountCodeSessionLog', 'Ecentrix8::updateAccoun
 
 $routes->add('settings/get_system_configuration/', '\App\Modules\Settings\Controllers\Settings::get_system_configuration', ['filter' => 'authfilter']);
 $routes->add('scoring/scheduler', '\App\Modules\Scoring\Controllers\Scoring::scheduler', ['filter' => 'authfilter']);
-$routes->add('scoring/tieringPreview', '\App\Modules\TieringPreview\Controllers\TieringPreview::TieringPreview', ['filter' => 'authfilter']);
+$routes->add('scoring/tieringPreview', '\App\Modules\TieringPreview\Controllers\TieringPreview::tiering_preview', ['filter' => 'authfilter']);
 $routes->add('scoring/scoringDataDetail', '\App\Modules\ScoringDataDetail\Controllers\ScoringDataDetail::ScoringDataDetail', ['filter' => 'authfilter']);
 $routes->add('scoring/parameters', '\App\Modules\Parameters\Controllers\Parameters::get_parameters_list', ['filter' => 'authfilter']);
 $routes->add('scoring/preview', '\App\Modules\Preview\Controllers\Preview::preview', ['filter' => 'authfilter']);
@@ -55,6 +55,8 @@ $routes->add('scoring/setting/save_file', '\App\Modules\Setting\Controllers\Sett
 $routes->post('scoring/setting/save_setting', '\App\Modules\Setting\Controllers\Setting::save_setting', ['filter' => 'authfilter']);
 $routes->add('scoring/setting/(:segment)', '\App\Modules\Setting\Controllers\Setting::setting/$1', ['filter' => 'authfilter']);
 $routes->add('setting/general/', '\App\Modules\GeneralSetting\Controllers\GeneralSetting::GeneralSetting', ['filter' => 'authfilter']);
+$routes->add('scoring/setting_cycle', '\App\Modules\SettingCycle\Controllers\SettingCycle::setting_cycle', ['filter' => 'authfilter']);
+$routes->add(('scoring/tiering'), '\App\Modules\Tiering\Controllers\Tiering::tiering', ['filter' => 'authfilter']);
 
 if ($uri->getTotalSegments() > 2) {
     $function = $uri->getSegment(3);
@@ -65,6 +67,6 @@ if ($uri->getTotalSegments() > 2) {
     $routes->add('scoring/parameters/' . $function, '\App\Modules\Parameters\Controllers\Parameters::' . $function, ['filter' => 'authfilter']);
     $routes->add('scoring/preview/' . $function, '\App\Modules\Preview\Controllers\Preview::' . $function, ['filter' => 'authfilter']);
     $routes->add('scoring/setting/' . $function, '\App\Modules\Setting\Controllers\Setting::' . $function, ['filter' => 'authfilter']);
-    $routes->add('setting/general/'. $function, '\App\Modules\GeneralSetting\Controllers\GeneralSetting::' . $function, ['filter' => 'authfilter']);
-
+    $routes->add('scoring/setting_cycle/' . $function, '\App\Modules\SettingCycle\Controllers\SettingCycle::' . $function, ['filter' => 'authfilter']);
+    $routes->add('setting/general/' . $function, '\App\Modules\GeneralSetting\Controllers\GeneralSetting::' . $function, ['filter' => 'authfilter']);
 }
