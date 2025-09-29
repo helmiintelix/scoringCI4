@@ -108,4 +108,33 @@ class SettingCycleModel extends Model
             "data"            => $data
         ];
     }
+
+    public function save_cycle_add($user_data)
+    {
+        return $this->db->table('sc_scoring_cycle')->insert($user_data);
+    }
+
+    public function save_cycle_edit($user_data)
+    {
+        return $this->db->table('sc_scoring_cycle')
+            ->where('id', $user_data["id"])
+            ->update($user_data);
+    }
+
+    public function check_cycle_status($id_user)
+    {
+        $result = $this->db->query(
+            "SELECT id FROM sc_scoring_cycle WHERE id = ? AND is_active = '1'",
+            [$id_user]
+        )->getResultArray();
+
+        return count($result) > 0;
+    }
+
+    public function delete_cycle($user_data)
+    {
+        return $this->db->table('sc_scoring_cycle')
+            ->where('id', $user_data["id"])
+            ->delete();
+    }
 }

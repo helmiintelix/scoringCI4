@@ -5,10 +5,10 @@
     <meta charset="UTF-8">
     <title>Cycle Management</title>
 
-    <!-- Bootstrap -->
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- DataTables -->
+    <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
 
     <style>
@@ -35,14 +35,14 @@
             <button class="btn btn-warning" id="btn-edit">Edit</button>
             <button class="btn btn-danger" id="btn-delete">Delete</button>
         </div>
-
         <div class="col d-flex justify-content-end gap-2">
             <select id="searchBy" class="form-select" style="max-width: 150px;">
                 <option value="cycle_name">Cycle</option>
                 <option value="cycle_from">From</option>
                 <option value="cycle_to">To</option>
             </select>
-            <input type="text" id="searchValue" class="form-control" placeholder="Type your query here" style="max-width: 250px;">
+            <input type="text" id="searchValue" class="form-control" placeholder="Type your query here"
+                style="max-width: 250px;">
             <button class="btn btn-secondary" id="btnFilter">Search</button>
             <button class="btn btn-outline-secondary" id="btnReset">Reset</button>
         </div>
@@ -63,7 +63,35 @@
         <tbody></tbody>
     </table>
 
-    <!-- jQuery + Bootstrap + DataTables -->
+    <!-- Modal Add/Edit Cycle -->
+    <div class="modal fade" id="modalAddCycle" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content" id="modalAddCycleContent"></div>
+        </div>
+    </div>
+
+    <!-- Modal Delete -->
+    <div class="modal fade" id="modalDeleteCycle" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-md modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">Confirm Delete</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="deleteMessage">Are you sure to delete this cycle?</p>
+                    <input type="hidden" id="deleteCycleId">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmDelete">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery, Bootstrap JS, DataTables JS -->
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
@@ -71,11 +99,14 @@
 
     <script>
         $(document).ready(function() {
+            console.log('jQuery version:', $.fn.jquery);
+            console.log('DataTable loaded:', $.fn.DataTable ? 'yes' : 'no');
+
             var table = $('#cycleTable').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "scoring/setting_cycle/setting_cycle_list/",
+                    url: GLOBAL_MAIN_VARS["SITE_URL"] + "scoring/setting_cycle/setting_cycle_list",
                     type: "POST",
                     data: function(d) {
                         d.search_by = $('#searchBy').val();
@@ -132,34 +163,118 @@
 
             // Reset
             $('#btnReset').on('click', function() {
-                $('#searchBy').val('');
+                $('#searchBy').val('cycle_name');
                 $('#searchValue').val('');
                 table.ajax.reload();
             });
 
-            // CRUD actions
+            // Add Cycle
             $('#btn-add').click(function() {
-                alert('Add cycle form here...');
+                $('#modalAddCycle').modal('show');
+                $('#modalAddCycleContent').load(
+                    GLOBAL_MAIN_VARS["SITE_URL"] + "scoring/setting_cycle/cycle_add_form",
+                    function() {
+                        $('#form_add_cycle').submit(function(e) {
+                            e.preventDefault();
+
+                            let from = parseInt($('#txt-cycle-from').val()) || 0;
+                            let to = parseInt($('#txt-cycle-to').val()) || 0;
+
+                            if (from > to) {
+                                showWarning("Please check your input: From cannot be greater than To");
+                                return false;
+                            }
+
+                            $.ajax({
+                                url: GLOBAL_MAIN_VARS["SITE_URL"] + "scoring/setting_cycle/save_cycle_add",
+                                type: "POST",
+                                data: $(this).serialize(),
+                                dataType: "json",
+                                success: function(resp) {
+                                    if (resp.success) {
+                                        showInfo("Success add cycle");
+                                        $('#modalAddCycle').modal('hide');
+                                        table.ajax.reload();
+                                    } else {
+                                        showWarning("Failed add cycle");
+                                    }
+                                }
+                            });
+                        });
+                    }
+                );
             });
 
+            // Edit Cycle
             $('#btn-edit').click(function() {
                 var data = table.row('.selected').data();
                 if (data) {
-                    alert('Edit cycle with ID: ' + data[0]);
+                    $('#modalAddCycle').modal('show');
+                    $('#modalAddCycleContent').load(
+                        GLOBAL_MAIN_VARS["SITE_URL"] + "scoring/setting_cycle/cycle_edit_form/" + data[0],
+                        function() {
+                            $('#form_edit_cycle').submit(function(e) {
+                                e.preventDefault();
+                                $.ajax({
+                                    url: GLOBAL_MAIN_VARS["SITE_URL"] + "scoring/setting_cycle/save_cycle_edit",
+                                    type: "POST",
+                                    data: $(this).serialize(),
+                                    dataType: "json",
+                                    success: function(resp) {
+                                        if (resp.success) {
+                                            showInfo("Success update cycle");
+                                            $('#modalAddCycle').modal('hide');
+                                            table.ajax.reload();
+                                        } else {
+                                            showWarning("Failed update cycle");
+                                        }
+                                    }
+                                });
+                            });
+                        }
+                    );
                 } else {
-                    alert('Please select a row first');
+                    showWarning('Please select a row first');
                 }
             });
 
+            // Delete Cycle
             $('#btn-delete').click(function() {
                 var data = table.row('.selected').data();
                 if (data) {
-                    if (confirm('Delete cycle ID: ' + data[0] + ' ?')) {
-                        table.row('.selected').remove().draw(false);
-                    }
+                    $('#deleteCycleId').val(data[0]);
+                    $('#deleteMessage').text('Are you sure to delete this cycle "' + data[1] + '" ?');
+                    $('#modalDeleteCycle').modal('show');
                 } else {
-                    alert('Please select a row first');
+                    showWarning('Please select a row first');
                 }
+            });
+
+            // Confirm Delete
+            $('#confirmDelete').click(function() {
+                var id_user = $('#deleteCycleId').val();
+
+                $.ajax({
+                    url: GLOBAL_MAIN_VARS["SITE_URL"] + "scoring/setting_cycle/delete_cycle",
+                    type: "POST",
+                    data: {
+                        id_user: id_user
+                    },
+                    dataType: "json",
+                    success: function(resp) {
+                        if (resp.success) {
+                            showInfo("Success delete cycle");
+                            $('#modalDeleteCycle').modal('hide');
+                            table.ajax.reload();
+                        } else {
+                            $('#modalDeleteCycle').modal('hide');
+                            showWarning(resp.message || "Failed delete cycle");
+                        }
+                    },
+                    error: function() {
+                        showWarning("Error while deleting cycle");
+                    }
+                });
             });
         });
     </script>

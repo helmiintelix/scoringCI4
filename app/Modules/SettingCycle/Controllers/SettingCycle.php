@@ -28,4 +28,179 @@ class SettingCycle extends \App\Controllers\BaseController
 
         return $this->response->setJSON($data);
     }
+
+    public function cycle_add_form()
+    {
+        $data["yes_no"] = [
+            "Y" => "Yes",
+            "N" => "No"
+        ];
+
+        $data["active_status"] = [
+            "1" => "Yes",
+            "0" => "No"
+        ];
+
+        $this->Common_model->data_logging('Setting Cycle', "Load add cycle form", 'SUCCESS', '');
+
+        return view('App\Modules\SettingCycle\Views\SettingCycleAddView', $data);
+    }
+
+    public function save_cycle_add()
+    {
+        $request = $this->request;
+
+        $user_data["id"]          = UUID(false);
+        $user_data["cycle_name"]  = $request->getPost("txt-cycle-name");
+        $user_data["cycle_from"]  = $request->getPost("txt-cycle-from");
+        $user_data["cycle_to"]    = $request->getPost("txt-cycle-to");
+        $user_data["is_active"]   = $request->getPost("opt-active-flag");
+
+        $userId = session()->get("USER_ID");
+
+        $user_data["created_by"]   = $userId;
+        $user_data["created_time"] = date("Y-m-d H:i:s");
+        $user_data["updated_by"]   = $userId;
+        $user_data["updated_time"] = date("Y-m-d H:i:s");
+
+        $return = $this->SettingCycleModel->save_cycle_add($user_data);
+
+        if ($return) {
+            $this->Common_model->data_logging(
+                'Setting Cycle',
+                'Add Cycle',
+                'SUCCESS',
+                'Cycle ID: ' . $user_data["id"] . ', Name: ' . $user_data["cycle_name"]
+            );
+            $data = ["success" => true, "message" => "Success"];
+        } else {
+            $this->Common_model->data_logging(
+                'Setting Cycle',
+                'Add Cycle',
+                'FAILED',
+                'Cycle ID: ' . $user_data["id"] . ', Name: ' . $user_data["cycle_name"]
+            );
+            $data = ["success" => false, "message" => "Failed"];
+        }
+
+        return $this->response->setJSON($data);
+    }
+
+    public function cycle_edit_form($id = null)
+    {
+        if ($id === null) {
+            $uri = service('uri');
+            $id = $uri->getSegment(3);
+        }
+
+        $data["id_user"] = $id;
+        $data["user_data"] = $this->Common_model->get_record_values(
+            "*",
+            "sc_scoring_cycle",
+            "id = '" . $data["id_user"] . "'"
+        );
+
+        $data["yes_no"] = [
+            "Y" => "Yes",
+            "N" => "No"
+        ];
+
+        $data["active_status"] = [
+            "1" => "Yes",
+            "0" => "No"
+        ];
+
+        $this->Common_model->data_logging('Setting Cycle', "Load edit cycle form", 'SUCCESS', '');
+
+        return view('App\Modules\SettingCycle\Views\SettingCycleEditView', $data);
+    }
+
+    public function save_cycle_edit()
+    {
+        $user_data["id"]         = $this->request->getPost("txt-user-id");
+        $user_data["cycle_name"] = $this->request->getPost("txt-cycle-name");
+        $user_data["cycle_from"] = $this->request->getPost("txt-cycle-from");
+        $user_data["cycle_to"]   = $this->request->getPost("txt-cycle-to");
+        $user_data["is_active"]  = $this->request->getPost("opt-active-flag");
+
+        $session = session();
+        $user_data["updated_by"]   = $session->get("USER_ID");
+        $user_data["updated_time"] = date("Y-m-d H:i:s");
+
+        $return = $this->SettingCycleModel->save_cycle_edit($user_data);
+
+        if ($return) {
+            $this->Common_model->data_logging(
+                'Setting Cycle',
+                'Edit cycle',
+                'SUCCESS',
+                'Cycle ID: ' . $user_data["id"] . ', Name: ' . $user_data["cycle_name"]
+            );
+            $data = ["success" => true, "message" => "Success"];
+        } else {
+            $this->Common_model->data_logging(
+                'Setting Cycle',
+                'Edit cycle',
+                'FAILED',
+                'Cycle ID: ' . $user_data["id"] . ', Name: ' . $user_data["cycle_name"]
+            );
+            $data = ["success" => false, "message" => "Failed"];
+        }
+
+        return $this->response->setJSON($data);
+    }
+
+    public function check_cycle_status($id_user)
+    {
+        return $this->SettingCycleModel->check_cycle_status($id_user);
+    }
+
+    public function delete_cycle()
+    {
+        $id_user = $this->request->getPost('id_user');
+
+        try {
+            $is_used = $this->Common_model->get_record_value(
+                "count(*)",
+                "sc_scoring_tiering_setup",
+                "cycle = '" . $id_user . "'"
+            );
+
+            if ($this->check_cycle_status($id_user)) {
+                $data = ["success" => false, "message" => "Cycle masih aktif!"];
+            } elseif ($is_used > 0) {
+                $data = [
+                    "success" => false,
+                    "message" => "Cycle masih digunakan di tiering, mohon periksa di menu tiering preview!"
+                ];
+            } else {
+                $user_data["id"] = $id_user;
+
+                $this->SettingCycleModel->delete_cycle($user_data);
+                $this->Common_model->data_logging(
+                    'Setting Cycle',
+                    "Delete cycle",
+                    'SUCCESS',
+                    'Cycle ID: ' . $id_user
+                );
+
+                $data = ["success" => true, "message" => "Success"];
+            }
+        } catch (\Exception $e) {
+            $this->Common_model->data_logging(
+                'Setting Cycle',
+                "Delete cycle",
+                'FAILED',
+                'Cycle ID: ' . $id_user
+            );
+
+            $data = [
+                "success" => false,
+                "message" => "Failed",
+                "error"   => $e->getMessage()
+            ];
+        }
+
+        return $this->response->setJSON($data);
+    }
 }
