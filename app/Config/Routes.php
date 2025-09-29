@@ -45,7 +45,7 @@ $routes->post('/Ecentrix8/updateAccountCodeSessionLog', 'Ecentrix8::updateAccoun
 
 $routes->add('settings/get_system_configuration/', '\App\Modules\Settings\Controllers\Settings::get_system_configuration', ['filter' => 'authfilter']);
 $routes->add('scoring/scheduler', '\App\Modules\Scoring\Controllers\Scoring::scheduler', ['filter' => 'authfilter']);
-$routes->add('scoring/tieringPreview', '\App\Modules\TieringPreview\Controllers\TieringPreview::tiering_preview', ['filter' => 'authfilter']);
+$routes->add('scoring/tieringPreview', '\App\Modules\TieringPreview\Controllers\TieringPreview::TieringPreview', ['filter' => 'authfilter']);
 $routes->add('scoring/scoringDataDetail', '\App\Modules\ScoringDataDetail\Controllers\ScoringDataDetail::ScoringDataDetail', ['filter' => 'authfilter']);
 $routes->add('scoring/parameters', '\App\Modules\Parameters\Controllers\Parameters::get_parameters_list', ['filter' => 'authfilter']);
 $routes->add('scoring/preview', '\App\Modules\Preview\Controllers\Preview::preview', ['filter' => 'authfilter']);
