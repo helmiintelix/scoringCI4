@@ -98,9 +98,14 @@
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
 
     <script>
-        $(document).ready(function() {
+        function initializeDataTable() {
             console.log('jQuery version:', $.fn.jquery);
             console.log('DataTable loaded:', $.fn.DataTable ? 'yes' : 'no');
+
+            if (!$.fn.DataTable) {
+                console.error("DataTables belum loaded, mencoba lagi...");
+                return false;
+            }
 
             var table = $('#cycleTable').DataTable({
                 processing: true,
@@ -276,6 +281,32 @@
                     }
                 });
             });
+
+            return true;
+        }
+
+        // loaded retry mechanism
+        $(document).ready(function() {
+            var maxRetries = 10;
+            var retryCount = 0;
+            var retryInterval = 100;
+
+            function tryInitialize() {
+                if (initializeDataTable()) {
+                    console.log('DataTable berhasil diinisialisasi!');
+                } else {
+                    retryCount++;
+                    if (retryCount < maxRetries) {
+                        console.log('Retry ' + retryCount + ' dari ' + maxRetries);
+                        setTimeout(tryInitialize, retryInterval);
+                    } else {
+                        console.error('DataTables gagal diload setelah ' + maxRetries + ' percobaan!');
+                        alert('Error: DataTables library gagal dimuat. Silakan refresh halaman.');
+                    }
+                }
+            }
+
+            tryInitialize();
         });
     </script>
 </body>
