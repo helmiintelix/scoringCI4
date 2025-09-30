@@ -1,39 +1,27 @@
-<!DOCTYPE html>
-<html lang="en">
+<!-- CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.3.4/dist/css/datepicker.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.10.0/css/bootstrap-datepicker.min.css" />
 
-<head>
-    <meta charset="UTF-8">
-    <title>Scoring Settings</title>
+<style>
+    .no-search .select2-search {
+        display: none;
+    }
 
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    .page-header h1 {
+        font-size: 22px;
+        margin-bottom: 20px;
+    }
 
-    <!-- Vanilla JS Datepicker CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.3.4/dist/css/datepicker.min.css">
+    .table th {
+        background-color: #004085 !important;
+        color: #fff !important;
+    }
 
-    <!-- Bootstrap Datepicker CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.10.0/css/bootstrap-datepicker.min.css" />
-
-    <style>
-        .no-search .select2-search {
-            display: none;
-        }
-
-        .page-header h1 {
-            font-size: 22px;
-            margin-bottom: 20px;
-        }
-
-        .table th {
-            background-color: #004085 !important;
-            color: #fff !important;
-        }
-
-        .form-actions {
-            margin-top: 20px;
-        }
-    </style>
-</head>
+    .form-actions {
+        margin-top: 20px;
+    }
+</style>
 
 <div class="row">
     <div class="col-xs-12">
@@ -211,153 +199,12 @@
             </div>
         </form>
     </div>
+</div>
 
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<!-- JS -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.3.4/dist/js/datepicker-full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.10.0/js/bootstrap-datepicker.min.js"></script>
 
-    <!-- Vanilla JS Datepicker -->
-    <script src="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.3.4/dist/js/datepicker-full.min.js"></script>
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Bootstrap Datepicker JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.10.0/js/bootstrap-datepicker.min.js"></script>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            document.querySelectorAll(".date-picker").forEach(function(el) {
-                new Datepicker(el, {
-                    format: "yyyy-mm-dd",
-                    autohide: true
-                });
-            });
-        });
-
-        $("#saveForm").click(function() {
-            if (!validateForm()) return;
-
-            $.ajax({
-                type: "POST",
-                url: GLOBAL_MAIN_VARS["SITE_URL"] + "scoring/setting/save_setting/",
-                data: $("#frmScoringSettings").serialize(),
-                dataType: "json",
-                success: function(msg) {
-                    if (msg.success) {
-                        showInfo("Data berhasil disimpan.");
-                        loadMenu('preview', 'scoring/preview/preview');
-                    } else {
-                        showWarning(msg.message || "Terjadi kesalahan saat menyimpan.");
-                    }
-                },
-                error: function(xhr) {
-                    console.error("Raw response:", xhr.responseText);
-                    showWarning("Server error: " + xhr.status);
-                }
-            });
-        });
-
-        function validateForm() {
-            if ($("#score_label").val().trim() === "") {
-                showWarning("Label/Title harus diisi!");
-                return false;
-            }
-            return true;
-        }
-
-        $("#uploadForm").click(function(e) {
-            e.preventDefault();
-
-            $.ajax({
-                type: "GET",
-                url: GLOBAL_MAIN_VARS["SITE_URL"] + "scoring/setting/upload_file_form/",
-                success: function(response) {
-                    if ($('#uploadModal').length === 0) {
-                        $('body').append(`
-                            <div class="modal fade" id="uploadModal" tabindex="-1" aria-hidden="true">
-                                <div class="modal-dialog modal-lg">
-                                    <div class="modal-content">
-                                        <div class="modal-header bg-primary text-white">
-                                            <h5 class="modal-title">Upload File</h5>
-                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body" id="uploadModalBody"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        `);
-                    }
-
-                    $('#uploadModalBody').html(response);
-
-                    $('#uploadModal').modal('show');
-                },
-                error: function(xhr, status, error) {
-                    showWarning("Gagal memuat form upload: " + error);
-                }
-            });
-        });
-
-        window.isUploading = false;
-        window.uploadFormBound = window.uploadFormBound || false;
-
-        if (!window.uploadFormBound) {
-            $(document).on('submit', '#frm_upload', function(e) {
-                e.preventDefault();
-
-                if (window.isUploading) {
-                    showInfo("Upload sedang dalam proses, mohon tunggu...");
-                    return;
-                }
-
-                let fileInput = $("#userfile")[0]?.files[0];
-                if (!fileInput) {
-                    showInfo("Silakan pilih file yang mau diupload!");
-                    return;
-                }
-
-                window.isUploading = true;
-
-                const submitBtn = $(this).find('button[type="submit"]');
-                const originalText = submitBtn.html();
-                submitBtn.prop('disabled', true).html('<i class="bi bi-spinner bi-spin"></i> Uploading...');
-
-                let formData = new FormData(this);
-
-                $.ajax({
-                    type: "POST",
-                    url: GLOBAL_MAIN_VARS["SITE_URL"] + "scoring/setting/save_file/",
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    dataType: "json",
-                    success: function(msg) {
-                        if (msg.success === true) {
-                            showInfo("File berhasil diupload.");
-                            $('#uploadModal').modal('hide');
-                            loadMenu("preview", "scoring/preview/preview");
-                        } else {
-                            showWarning(msg.message || "Terjadi kesalahan saat upload.");
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        showWarning("Request gagal: " + error);
-                    },
-                    complete: function() {
-                        window.isUploading = false;
-                        submitBtn.prop('disabled', false).html(originalText);
-                    }
-                });
-            });
-
-            window.uploadFormBound = true;
-        }
-
-        $(document).off('hidden.bs.modal', '#uploadModal').on('hidden.bs.modal', '#uploadModal', function() {
-            $('#frm_upload')[0]?.reset();
-            window.isUploading = false;
-            const submitBtn = $('#frm_upload').find('button[type="submit"]');
-            submitBtn.prop('disabled', false).html('<i class="bi bi-upload"></i> Upload');
-        });
-    </script>
-    </body>
-
-</html>
+<script src="<?= base_url(); ?>modules/Setting/js/Setting.js?v=<?= rand() ?>"></script>
