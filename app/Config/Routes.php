@@ -66,6 +66,7 @@ $routes->add('user_and_group/user_management', '\App\Modules\UserManagement\Cont
 $routes->add('user_and_group/user_management', '\App\Modules\UserManagement\Controllers\UserController::index',['filter' => 'authfilter']);
 $routes->add('auditor/dataAuditor', '\App\Modules\Auditor\Controllers\Auditor::index',['filter' => 'authfilter']);
 $routes->add('historyUpload/historyUpload', '\App\Modules\HistoryUpload\Controllers\HistoryUpload::index',['filter' => 'authfilter']);
+$routes->add('scoring/scoringDataSummary', '\App\Modules\ScoringDataSummary\Controllers\ScoringDataSummary::ScoringDataSummary',['filter' => 'authfilter']);
 
 if($uri->getTotalSegments() > 2){
     $function = $uri->getSegment(3);
@@ -76,6 +77,7 @@ if($uri->getTotalSegments() > 2){
     $routes->add('historyUpload/historyUpload/'.$function, '\App\Modules\HistoryUpload\Controllers\HistoryUpload::'.$function,['filter' => 'authfilter']);
 
     $routes->add('scoring/scoringDataDetail/' . $function, '\App\Modules\ScoringDataDetail\Controllers\ScoringDataDetail::' . $function, ['filter' => 'authfilter']);
+    $routes->add('scoring/scoringDataSummary/' . $function, '\App\Modules\ScoringDataSummary\Controllers\ScoringDataSummary::' . $function, ['filter' => 'authfilter']);
 
     $routes->add('scoring/parameters/' . $function, '\App\Modules\Parameters\Controllers\Parameters::' . $function, ['filter' => 'authfilter']);
 
