@@ -55,23 +55,30 @@ class Main extends BaseController
         $count = $this->db->table('cc_menu')->countAllResults();
         if ($count == 0) {
             $data = [
-                ['menu_id' => '1', 'menu_desc' => 'scoring', 'parent_id' => null, 'order_num' => 1],
-                ['menu_id' => '2', 'menu_desc' => 'scoring result', 'parent_id' => null, 'order_num' => 2],
-                ['menu_id' => '3', 'menu_desc' => 'history upload', 'parent_id' => null, 'order_num' => 3],
-                ['menu_id' => '4', 'menu_desc' => 'auditor', 'parent_id' => null, 'order_num' => 4],
-                ['menu_id' => '5', 'menu_desc' => 'settings', 'parent_id' => null, 'order_num' => 5],
-                ['menu_id' => '6', 'menu_desc' => 'user and group', 'parent_id' => null, 'order_num' => 6],
-                ['menu_id' => '10', 'menu_desc' => 'scheduler', 'parent_id' => '1', 'order_num' => 1],
-                ['menu_id' => '11', 'menu_desc' => 'parameters', 'parent_id' => '1', 'order_num' => 2],
-                ['menu_id' => '12', 'menu_desc' => 'settings', 'parent_id' => '1', 'order_num' => 3],
-                ['menu_id' => '13', 'menu_desc' => 'preview', 'parent_id' => '1', 'order_num' => 4],
-                ['menu_id' => '14', 'menu_desc' => 'setting cycle', 'parent_id' => '1', 'order_num' => 5],
-                ['menu_id' => '15', 'menu_desc' => 'tiering', 'parent_id' => '1', 'order_num' => 6],
-                ['menu_id' => '16', 'menu_desc' => 'tiering preview', 'parent_id' => '1', 'order_num' => 7],
-                ['menu_id' => '20', 'menu_desc' => 'detail data', 'parent_id' => '2', 'order_num' => 1],
-                ['menu_id' => '21', 'menu_desc' => 'summary data', 'parent_id' => '2', 'order_num' => 2],
-                ['menu_id' => '50', 'menu_desc' => 'general settings', 'parent_id' => '5', 'order_num' => 1],
-                ['menu_id' => '60', 'menu_desc' => 'user management', 'parent_id' => '6', 'order_num' => 1],
+                ['menu_id' => '1',  'menu_desc' => 'scoring',         'parent_id' => null, 'order_num' => 1, 'url' => '#', 'icon' => null, 'menu_type' => 'url', 'menu_group' => null],
+                ['menu_id' => '10', 'menu_desc' => 'scheduler',       'parent_id' => '1',  'order_num' => 1, 'url' => 'scoring/scheduler', 'icon' => null, 'menu_type' => 'url', 'menu_group' => null],
+                ['menu_id' => '11', 'menu_desc' => 'parameters',      'parent_id' => '1',  'order_num' => 2, 'url' => 'scoring/parameters', 'icon' => null, 'menu_type' => 'url', 'menu_group' => null],
+                ['menu_id' => '12', 'menu_desc' => 'settings',        'parent_id' => '1',  'order_num' => 3, 'url' => 'scoring/setting',   'icon' => null, 'menu_type' => 'url', 'menu_group' => null],
+                ['menu_id' => '13', 'menu_desc' => 'preview',         'parent_id' => '1',  'order_num' => 4, 'url' => 'scoring/preview',   'icon' => null, 'menu_type' => 'url', 'menu_group' => null],
+                ['menu_id' => '14', 'menu_desc' => 'setting cycle',   'parent_id' => '1',  'order_num' => 5, 'url' => 'scoring/setting_cycle', 'icon' => null, 'menu_type' => 'url', 'menu_group' => null],
+                ['menu_id' => '15', 'menu_desc' => 'tiering',         'parent_id' => '1',  'order_num' => 6, 'url' => 'scoring/tiering',   'icon' => null, 'menu_type' => 'url', 'menu_group' => null],
+                ['menu_id' => '16', 'menu_desc' => 'tiering preview', 'parent_id' => '1',  'order_num' => 7, 'url' => 'scoring/tieringPreview', 'icon' => null, 'menu_type' => 'url', 'menu_group' => null],
+
+                ['menu_id' => '2',  'menu_desc' => 'scoring result',  'parent_id' => null, 'order_num' => 2, 'url' => '#', 'icon' => null, 'menu_type' => 'url', 'menu_group' => null],
+                ['menu_id' => '20', 'menu_desc' => 'detail data',     'parent_id' => '2',  'order_num' => 1, 'url' => 'scoring/scoringDataDetail', 'icon' => null, 'menu_type' => 'url', 'menu_group' => null],
+                ['menu_id' => '21', 'menu_desc' => 'summary data',    'parent_id' => '2',  'order_num' => 2, 'url' => 'scoring/scoringDataSummary', 'icon' => null, 'menu_type' => 'url', 'menu_group' => null],
+
+                ['menu_id' => '3',  'menu_desc' => 'history upload',  'parent_id' => null, 'order_num' => 3, 'url' => '#', 'icon' => null, 'menu_type' => 'url', 'menu_group' => null],
+                ['menu_id' => '30', 'menu_desc' => 'history upload data', 'parent_id' => '3', 'order_num' => 1, 'url' => 'historyUpload/historyUpload', 'icon' => null, 'menu_type' => 'url', 'menu_group' => null],
+
+                ['menu_id' => '4',  'menu_desc' => 'auditor',         'parent_id' => null, 'order_num' => 4, 'url' => '#', 'icon' => null, 'menu_type' => 'url', 'menu_group' => null],
+                ['menu_id' => '40', 'menu_desc' => 'auditor data',    'parent_id' => '4',  'order_num' => 1, 'url' => 'auditor/dataAuditor', 'icon' => null, 'menu_type' => 'url', 'menu_group' => null],
+
+                ['menu_id' => '5',  'menu_desc' => 'settings',        'parent_id' => null, 'order_num' => 5, 'url' => '#', 'icon' => null, 'menu_type' => 'url', 'menu_group' => null],
+                ['menu_id' => '50', 'menu_desc' => 'general settings','parent_id' => '5',  'order_num' => 1, 'url' => 'setting/general', 'icon' => null, 'menu_type' => 'url', 'menu_group' => null],
+
+                ['menu_id' => '6',  'menu_desc' => 'user and group',  'parent_id' => null, 'order_num' => 6, 'url' => '#', 'icon' => null, 'menu_type' => 'url', 'menu_group' => null],
+                ['menu_id' => '60', 'menu_desc' => 'user management', 'parent_id' => '6',  'order_num' => 1, 'url' => 'user_and_group/user_management', 'icon' => null, 'menu_type' => 'url', 'menu_group' => null],
             ];
 
             $this->db->table('cc_menu')->insertBatch($data);
