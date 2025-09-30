@@ -1,6 +1,6 @@
 function validasi_space(val, id) {
   if (val.indexOf(" ") >= 0) {
-    showWarning("Dilarang menggunakan spasi!");
+    showWarning("Spaces are not allowed!");
     document.getElementById(id).value = val.replace(/\s/g, "");
   }
 }
@@ -16,7 +16,7 @@ function initializeDataTable() {
   console.log("DataTable loaded:", $.fn.DataTable ? "yes" : "no");
 
   if (!$.fn.DataTable) {
-    console.error("DataTables belum loaded, mencoba lagi...");
+    console.error("DataTables not loaded, trying again...");
     return false;
   }
 
@@ -25,46 +25,17 @@ function initializeDataTable() {
     serverSide: false,
     data: [],
     columns: [
-      {
-        data: "no_pinjaman",
-      },
-      {
-        data: "nama_debitur",
-      },
-      {
-        data: "product",
-      },
-      {
-        data: "dpd",
-      },
-      {
-        data: "ar_balance",
-        className: "text-end",
-      },
-      {
-        data: "tunggakan_cicilan",
-        className: "text-end",
-      },
-      {
-        data: "denda",
-        className: "text-end",
-      },
-      {
-        data: "penalty",
-        className: "text-end",
-      },
-      {
-        data: "total_billing",
-        className: "text-end",
-      },
-      {
-        data: "score",
-        className: "text-end",
-      },
-      {
-        data: "score2",
-        className: "text-end",
-      },
+      { data: "no_pinjaman" },
+      { data: "nama_debitur" },
+      { data: "product" },
+      { data: "dpd" },
+      { data: "ar_balance", className: "text-end" },
+      { data: "tunggakan_cicilan", className: "text-end" },
+      { data: "denda", className: "text-end" },
+      { data: "penalty", className: "text-end" },
+      { data: "total_billing", className: "text-end" },
+      { data: "score", className: "text-end" },
+      { data: "score2", className: "text-end" },
     ],
     responsive: true,
     paging: true,
@@ -73,7 +44,7 @@ function initializeDataTable() {
     lengthMenu: [10, 25, 50, 100],
     order: [[0, "asc"]],
     drawCallback: function () {
-      let api = this.api(); // Get the DataTables API instance
+      let api = this.api();
       let totalRecords = api.rows().count();
       $("#total-data").val(totalRecords);
       $("#total-data-hidden").val(totalRecords);
@@ -92,18 +63,18 @@ $(document).ready(function () {
   function tryInitialize() {
     table = initializeDataTable();
     if (table) {
-      console.log("DataTable berhasil diinisialisasi!");
+      console.log("DataTable initialized successfully!");
     } else {
       retryCount++;
       if (retryCount < maxRetries) {
-        console.log("Retry " + retryCount + " dari " + maxRetries);
+        console.log("Retry " + retryCount + " of " + maxRetries);
         setTimeout(tryInitialize, retryInterval);
       } else {
         console.error(
-          "DataTables gagal diload setelah " + maxRetries + " percobaan!"
+          "DataTables failed to load after " + maxRetries + " attempts!"
         );
         alert(
-          "Error: DataTables library gagal dimuat. Silakan refresh halaman."
+          "Error: DataTables library failed to load. Please refresh the page."
         );
       }
     }
@@ -116,39 +87,21 @@ $(document).ready(function () {
     let end = $("#score-tiering-end").val();
 
     if (!start || !end) {
-      showWarning("Score tiering tidak boleh kosong!");
+      showWarning("Score tiering cannot be empty!");
       return false;
     }
     if (parseFloat(start) > parseFloat(end)) {
-      showWarning("Score start tidak boleh lebih besar dari end!");
+      showWarning("Score start cannot be greater than end!");
       return false;
     }
 
     const bucketMap = {
-      "CA1 & CA2": {
-        bucket: "BUCKET 1",
-        oper: "equivalent",
-      },
-      CA3: {
-        bucket: "BUCKET 2",
-        oper: "equivalent",
-      },
-      EARLY: {
-        bucket: "BUCKET 3",
-        oper: "equivalent",
-      },
-      MID: {
-        bucket: "BUCKET 4",
-        oper: "equivalent",
-      },
-      NPL: {
-        bucket: "BUCKET 5|BUCKET 6|BUCKET 7",
-        oper: "in",
-      },
-      WO: {
-        bucket: "REMEDIAL",
-        oper: "equivalent",
-      },
+      "CA1 & CA2": { bucket: "BUCKET 1", oper: "equivalent" },
+      CA3: { bucket: "BUCKET 2", oper: "equivalent" },
+      EARLY: { bucket: "BUCKET 3", oper: "equivalent" },
+      MID: { bucket: "BUCKET 4", oper: "equivalent" },
+      NPL: { bucket: "BUCKET 5|BUCKET 6|BUCKET 7", oper: "in" },
+      WO: { bucket: "REMEDIAL", oper: "equivalent" },
     };
 
     const selected = bucketMap[$("#opt_bucket").val()] || {
@@ -170,12 +123,9 @@ $(document).ready(function () {
       },
       dataType: "json",
       success: function (response) {
-        // Cek apakah response adalah error
         if (response && response.type === "DivisionByZeroError") {
           showWarning(
-            "Error: " +
-              response.message +
-              " - Tidak ada data yang sesuai dengan kriteria."
+            "Error: " + response.message + " - No data matches the criteria."
           );
           return;
         }
@@ -185,9 +135,7 @@ $(document).ready(function () {
           if (response && response.length > 0) {
             table.rows.add(response);
           } else {
-            showWarning(
-              "Tidak ada data yang ditemukan dengan kriteria tersebut."
-            );
+            showWarning("No data was found with these criteria.");
           }
           table.draw();
         }
@@ -195,7 +143,6 @@ $(document).ready(function () {
       error: function (xhr, status, error) {
         let errorMessage = "Error loading data";
 
-        // Parse error response
         try {
           let errorResponse = JSON.parse(xhr.responseText);
           if (errorResponse.message) {
@@ -220,7 +167,7 @@ $(document).ready(function () {
       if (!$(this).val()) {
         passed = false;
         let label = $(this).data("label") || $(this).attr("placeholder") || nm;
-        showWarning("Field " + label + " wajib diisi!");
+        showWarning("Field " + label + " is required!");
         $(this).focus();
         return false;
       }
@@ -235,18 +182,18 @@ $(document).ready(function () {
       dataType: "json",
       success: function (response) {
         if (response.success) {
-          showInfo(response.message || "Data berhasil disimpan.");
+          showInfo(response.message || "Data saved successfully.");
           loadMenu(
             "Preview Tiering",
             "scoring/tieringPreview",
             "tieringPreview"
           );
         } else {
-          showWarning(response.message || "Gagal menyimpan data.");
+          showWarning(response.message || "Failed to save data.");
         }
       },
       error: function (xhr, status, error) {
-        showWarning("Terjadi kesalahan: " + error);
+        showWarning("There was an error: " + error);
       },
     });
   });
