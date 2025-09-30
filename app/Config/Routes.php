@@ -51,6 +51,7 @@ $routes->add('scoring/scheduler', '\App\Modules\Scoring\Controllers\Scoring::sch
 $routes->add('user_and_group/user_management', '\App\Modules\UserManagement\Controllers\UserController::index',['filter' => 'authfilter']);
 $routes->add('user_and_group/user_management', '\App\Modules\UserManagement\Controllers\UserController::index',['filter' => 'authfilter']);
 $routes->add('auditor/dataAuditor', '\App\Modules\Auditor\Controllers\Auditor::index',['filter' => 'authfilter']);
+$routes->add('historyUpload/historyUpload', '\App\Modules\HistoryUpload\Controllers\HistoryUpload::index',['filter' => 'authfilter']);
 
 if($uri->getTotalSegments() > 2){
     $function = $uri->getSegment(3);
@@ -58,5 +59,6 @@ if($uri->getTotalSegments() > 2){
     $routes->add('scoring/scheduler/'.$function, '\App\Modules\Scoring\Controllers\Scoring::'.$function,['filter' => 'authfilter']);
     $routes->add('user_and_group/user_and_group/'.$function, '\App\Modules\UserManagement\Controllers\UserController::'.$function,['filter' => 'authfilter']);
     $routes->add('auditor/auditor/'.$function, '\App\Modules\Auditor\Controllers\Auditor::'.$function,['filter' => 'authfilter']);
+    $routes->add('historyUpload/historyUpload/'.$function, '\App\Modules\HistoryUpload\Controllers\HistoryUpload::'.$function,['filter' => 'authfilter']);
 
 }
