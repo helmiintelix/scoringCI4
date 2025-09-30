@@ -163,6 +163,38 @@ class Common_model extends Model
 		return $arrData;
 	}
 
+	function get_ref_master_df($fieldName, $tableName, $criteria, $orderBy, $header = FALSE)
+	{
+		$this->crm = db_connect();
+		$arrData = array();
+
+		if ($header) {
+			$arrData = array("" => $header);
+		} else {
+			//$arrData = array("" => "[select data]");
+		}
+		$sql = "SELECT " . $fieldName . " FROM " . $tableName;
+
+		if ($criteria) {
+			$sql .= " WHERE " . $criteria;
+		}
+
+		if ($orderBy) {
+			$sql .= " ORDER BY " . $orderBy;
+		}
+
+		$query = $this->crm->query($sql);
+
+		if ($query->getNumRows()) {
+			foreach ($query->getResult() as $row) {
+				$arrData[$row->value] = $row->item;
+			}
+		}
+
+		return $arrData;
+	}
+
+
 	function data_logging($module, $action, $result, $description)
 	{
 

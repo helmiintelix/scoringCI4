@@ -3,7 +3,6 @@
 use CodeIgniter\Router\RouteCollection;
 use Config\Services;
 
-
 $routes->setAutoRoute(false);
 $security = \Config\Services::security();
 
@@ -11,9 +10,9 @@ $security = \Config\Services::security();
  * @var RouteCollection $routes
  */
 
-$uri = current_url(true);
-$router = service('router');
-$module = $router->controllerName();
+$uri     = current_url(true);
+$router  = service('router');
+$module  = $router->controllerName();
 
 if (session()->get('logged_in') !== null) {
     if (!session()->get('logged_in')) {
@@ -42,7 +41,6 @@ $routes->get('/Ecentrix8/getCallCenterConfigurationSupervisor', 'Ecentrix8::getC
 $routes->get('/Ecentrix8/getCallCenterConfiguration', 'Ecentrix8::getCallCenterConfiguration');
 $routes->post('/Ecentrix8/updateAccountCodeSessionLog', 'Ecentrix8::updateAccountCodeSessionLog');
 
-
 $routes->add('settings/get_system_configuration/', '\App\Modules\Settings\Controllers\Settings::get_system_configuration', ['filter' => 'authfilter']);
 $routes->add('scoring/scheduler', '\App\Modules\Scoring\Controllers\Scoring::scheduler', ['filter' => 'authfilter']);
 $routes->add('scoring/tieringPreview', '\App\Modules\TieringPreview\Controllers\TieringPreview::TieringPreview', ['filter' => 'authfilter']);
@@ -56,17 +54,28 @@ $routes->post('scoring/setting/save_setting', '\App\Modules\Setting\Controllers\
 $routes->add('scoring/setting/(:segment)', '\App\Modules\Setting\Controllers\Setting::setting/$1', ['filter' => 'authfilter']);
 $routes->add('setting/general/', '\App\Modules\GeneralSetting\Controllers\GeneralSetting::GeneralSetting', ['filter' => 'authfilter']);
 $routes->add('scoring/setting_cycle', '\App\Modules\SettingCycle\Controllers\SettingCycle::setting_cycle', ['filter' => 'authfilter']);
-$routes->add(('scoring/tiering'), '\App\Modules\Tiering\Controllers\Tiering::tiering', ['filter' => 'authfilter']);
+$routes->add('scoring/tiering', '\App\Modules\Tiering\Controllers\Tiering::tiering', ['filter' => 'authfilter']);
+$routes->add('scoring/tiering/scoring_result', '\App\Modules\Tiering\Controllers\Tiering::scoring_result', ['filter' => 'authfilter']);
+$routes->add('scoring/tiering/save_tiering', '\App\Modules\Tiering\Controllers\Tiering::save_tiering', ['filter' => 'authfilter']);
+$routes->add('scoring/tiering/(:segment)', '\App\Modules\Tiering\Controllers\Tiering::tiering/$1', ['filter' => 'authfilter']);
 
 if ($uri->getTotalSegments() > 2) {
     $function = $uri->getSegment(3);
 
     $routes->add('scoring/scheduler/' . $function, '\App\Modules\Scoring\Controllers\Scoring::' . $function, ['filter' => 'authfilter']);
+
     $routes->add('scoring/scoringDataDetail/' . $function, '\App\Modules\ScoringDataDetail\Controllers\ScoringDataDetail::' . $function, ['filter' => 'authfilter']);
 
     $routes->add('scoring/parameters/' . $function, '\App\Modules\Parameters\Controllers\Parameters::' . $function, ['filter' => 'authfilter']);
+
     $routes->add('scoring/preview/' . $function, '\App\Modules\Preview\Controllers\Preview::' . $function, ['filter' => 'authfilter']);
+
     $routes->add('scoring/setting/' . $function, '\App\Modules\Setting\Controllers\Setting::' . $function, ['filter' => 'authfilter']);
+
     $routes->add('scoring/setting_cycle/' . $function, '\App\Modules\SettingCycle\Controllers\SettingCycle::' . $function, ['filter' => 'authfilter']);
+    $routes->add('scoring/setting_cycle/' . $function . '/(:segment)', '\App\Modules\SettingCycle\Controllers\SettingCycle::' . $function . '/$1', ['filter' => 'authfilter']);
+
+    $routes->add('scoring/tiering/' . $function, '\App\Modules\Tiering\Controllers\Tiering::' . $function, ['filter' => 'authfilter']);
+
     $routes->add('setting/general/' . $function, '\App\Modules\GeneralSetting\Controllers\GeneralSetting::' . $function, ['filter' => 'authfilter']);
 }
