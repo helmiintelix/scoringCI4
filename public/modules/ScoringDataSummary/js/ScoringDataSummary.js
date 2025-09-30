@@ -8,7 +8,7 @@ function getData() {
       "scoring/scoringDataSummary/getScoringDataSummary",
     type: "get",
     success: function (msg) {
-      gridOptions.api.setGridOption("columnDefs", msg.data.header);
+      //   gridOptions.api.setGridOption("columnDefs", msg.data.header);
       gridOptions.api.setGridOption("rowData", msg.data.data);
     },
     dataType: "json",
@@ -18,15 +18,65 @@ function getData() {
 // Grid Options are properties passed to the grid
 var gridOptions = {
   columnDefs: [
-    { field: "" },
-    { field: "" },
-    { field: "" },
-    { field: "" },
-    { field: "" },
-    { field: "" },
-    { field: "" },
-    { field: "" },
-    { field: "" },
+    { headerName: "Tiering ID", field: "tiering_id", width: 120 },
+    { headerName: "Tiering Name", field: "tiering_name", width: 200 },
+    {
+      headerName: "Score From",
+      field: "score_from",
+      width: 120,
+      cellClass: "ag-right-aligned",
+    },
+    {
+      headerName: "Score To",
+      field: "score_to",
+      width: 120,
+      cellClass: "ag-right-aligned",
+    },
+    {
+      headerName: "Score Type",
+      field: "score_type",
+      width: 120,
+      cellClass: "ag-right-aligned",
+    },
+    {
+      headerName: "Score From 2",
+      field: "score_from2",
+      width: 120,
+      cellClass: "ag-right-aligned",
+      hide: true,
+    },
+    {
+      headerName: "Score To 2",
+      field: "score_to2",
+      width: 120,
+      cellClass: "ag-right-aligned",
+      hide: true,
+    },
+    {
+      headerName: "Cycle",
+      field: "cycle_name",
+      width: 120,
+      cellClass: "ag-right-aligned",
+    },
+    {
+      headerName: "Bucket",
+      field: "bucket",
+      width: 120,
+      cellClass: "ag-right-aligned",
+    },
+    {
+      headerName: "LOB",
+      field: "lob",
+      width: 120,
+      cellClass: "ag-right-aligned",
+    },
+    { headerName: "Owner", field: "owner", width: 180, hide: true },
+    {
+      headerName: "Total Data",
+      field: "total_data",
+      width: 120,
+      cellClass: "ag-right-aligned",
+    },
   ],
 
   // default col def properties get applied to all columns
