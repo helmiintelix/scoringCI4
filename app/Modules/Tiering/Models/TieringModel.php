@@ -96,8 +96,8 @@ class TieringModel extends Model
         $request = service('request');
         $crm = \Config\Database::connect('crm');
 
-        $iDisplayStart   = $request->getVar('page');
-        $iDisplayLength  = $request->getVar('rows');
+        $iDisplayStart   = $request->getVar('page') ?? 1;
+        $iDisplayLength  = $request->getVar('rows') ?? 10;
         $iSortCol_0      = $request->getVar('sidx');
         $iSortingCols    = $request->getVar('sord');
         $sSearch         = $request->getVar('_search');
@@ -149,8 +149,8 @@ class TieringModel extends Model
             $builder->whereIn('a.cm_bucket', $bucket);
         }
 
-        // Paging
-        if (isset($iDisplayStart) && $iDisplayLength != '-1') {
+        // Paging - hanya jika ada parameter pagination
+        if (isset($iDisplayStart) && $iDisplayLength > 0 && $iDisplayLength != '-1') {
             $offset = ($iDisplayStart - 1) * $iDisplayLength;
             $builder->limit($iDisplayLength, $offset);
         }
@@ -169,13 +169,19 @@ class TieringModel extends Model
         $iTotal = $totalQuery->get()->getRow()->cnt;
 
         $iFilteredTotal = count($rResult);
-        $total_pages = $iTotal > 0 ? ceil($iFilteredTotal / $iDisplayLength) : 0;
+
+        // Cek $iDisplayLength sebelum pembagian    
+        $total_pages = 0;
+        if ($iDisplayLength > 0) {
+            $total_pages = ceil($iFilteredTotal / $iDisplayLength);
+        }
 
         // Format Output
         $list = [];
         foreach ($rResult as $aRow) {
             $aRow["tunggakan_cicilan"] = number_format($aRow['tunggakan_cicilan'], 0, ',', '.');
             $aRow["total_billing"] = number_format($aRow['total_billing'], 0, ',', '.');
+            $aRow["ar_balance"] = number_format($aRow['ar_balance'], 0, ',', '.'); // Format juga AR Balance
             $aRow["tiering_label"] = $this->Common_model->get_record_value('name', 'sc_scoring_tiering', 'id="' . $aRow["tiering_label"] . '"');
 
             $list[] = [

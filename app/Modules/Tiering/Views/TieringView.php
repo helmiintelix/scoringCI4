@@ -4,13 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <title>Tiering Settings</title>
+
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/themes/base/jquery-ui.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/free-jqgrid@4.15.5/css/ui.jqgrid.min.css">
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/free-jqgrid@4.15.5/js/jquery.jqgrid.min.js"></script>
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+
     <style>
         .profile-info-row {
             display: flex;
@@ -34,6 +34,20 @@
         .small-text {
             font-size: 0.8rem;
             color: red;
+        }
+
+        .dataTables_wrapper .dataTables_filter {
+            display: none !important;
+        }
+
+        .table thead th {
+            background-color: #004085;
+            color: #fff;
+            text-align: center;
+        }
+
+        tr.selected {
+            background-color: #b8daff !important;
         }
     </style>
 </head>
@@ -159,8 +173,34 @@
         </div>
     </form>
 
-    <table id="score_tiering_table" class="table table-bordered mt-4"></table>
-    <div id="score_tiering_pager"></div>
+    <table id="score_tiering_table" class="table table-striped table-bordered mt-4" style="width:100%">
+        <thead>
+            <tr>
+                <th>Agreement No</th>
+                <th>Nama Debitur</th>
+                <th>Product</th>
+                <th>DPD</th>
+                <th>AR Balance</th>
+                <th>Tnggk. Cicilan</th>
+                <th>Denda</th>
+                <th>Penalty</th>
+                <th>Total Billing</th>
+                <th>Score 1</th>
+                <th>Score 2</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
 
     <script>
         function validasi_space(val, id) {
@@ -176,101 +216,102 @@
             return charCode <= 31 || (charCode >= 48 && charCode <= 57);
         }
 
-        $(document).ready(function() {
-            if (typeof $.fn.jqGrid === 'undefined') {
-                console.error('jqGrid is not loaded!');
-                showWarning('jqGrid library failed to load. Please check your internet connection.');
-                return;
+        function initializeDataTable() {
+            console.log('jQuery version:', $.fn.jquery);
+            console.log('DataTable loaded:', $.fn.DataTable ? 'yes' : 'no');
+
+            if (!$.fn.DataTable) {
+                console.error("DataTables belum loaded, mencoba lagi...");
+                return false;
             }
 
-            $("#score_tiering_table").jqGrid({
-                datatype: 'local',
+            var table = $('#score_tiering_table').DataTable({
+                processing: true,
+                serverSide: false,
                 data: [],
-                width: 1120,
-                height: 350,
-                colNames: ['Agreement No', 'Nama Debitur', 'Product', 'DPD', 'AR Balance', 'Tnggk. Cicilan', 'Denda', 'Penalty', 'Total Billing', 'Score 1', 'Score 2'],
-                colModel: [{
-                        name: 'no_pinjaman',
-                        index: 'no_pinjaman',
-                        width: 120
+                columns: [{
+                        data: 'no_pinjaman'
                     },
                     {
-                        name: 'nama_debitur',
-                        index: 'nama_debitur',
-                        width: 200
+                        data: 'nama_debitur'
                     },
                     {
-                        name: 'product',
-                        index: 'product',
-                        width: 120
+                        data: 'product'
                     },
                     {
-                        name: 'dpd',
-                        index: 'dpd',
-                        width: 100
+                        data: 'dpd'
                     },
                     {
-                        name: 'ar_balance',
-                        index: 'ar_balance',
-                        width: 120,
-                        align: 'right'
+                        data: 'ar_balance',
+                        className: 'text-end'
                     },
                     {
-                        name: 'tunggakan_cicilan',
-                        index: 'tunggakan_cicilan',
-                        width: 150,
-                        align: 'right'
+                        data: 'tunggakan_cicilan',
+                        className: 'text-end'
                     },
                     {
-                        name: 'denda',
-                        index: 'denda',
-                        width: 100,
-                        align: 'right'
+                        data: 'denda',
+                        className: 'text-end'
                     },
                     {
-                        name: 'penalty',
-                        index: 'penalty',
-                        width: 100,
-                        align: 'right'
+                        data: 'penalty',
+                        className: 'text-end'
                     },
                     {
-                        name: 'total_billing',
-                        index: 'total_billing',
-                        width: 140,
-                        align: 'right'
+                        data: 'total_billing',
+                        className: 'text-end'
                     },
                     {
-                        name: 'score',
-                        index: 'score',
-                        width: 100,
-                        align: 'right'
+                        data: 'score',
+                        className: 'text-end'
                     },
                     {
-                        name: 'score2',
-                        index: 'score2',
-                        width: 100,
-                        align: 'right'
+                        data: 'score2',
+                        className: 'text-end'
                     }
                 ],
-                rowNum: 10,
-                pager: '#score_tiering_pager',
-                sortname: 'no_pinjaman',
-                viewrecords: true,
-                gridview: true,
-                shrinkToFit: true,
-                forceFit: true,
-                loadComplete: function() {
-                    let totalRecords = $('#score_tiering_table').getGridParam('records');
+                responsive: true,
+                paging: true,
+                ordering: true,
+                pageLength: 10,
+                lengthMenu: [10, 25, 50, 100],
+                order: [
+                    [0, 'asc']
+                ],
+                drawCallback: function() {
+                    let api = this.api(); // Get the DataTables API instance
+                    let totalRecords = api.rows().count();
                     $("#total-data").val(totalRecords);
-                    $("#total-data-hidden").val(totalRecords); // Update hidden input juga
+                    $("#total-data-hidden").val(totalRecords);
                 }
-            }).navGrid('#score_tiering_pager', {
-                edit: false,
-                add: false,
-                del: false,
-                search: false,
-                refresh: false
             });
+
+            return table;
+        }
+
+        $(document).ready(function() {
+            var maxRetries = 10;
+            var retryCount = 0;
+            var retryInterval = 100;
+            var table = null;
+
+            function tryInitialize() {
+                table = initializeDataTable();
+                if (table) {
+                    console.log('DataTable berhasil diinisialisasi!');
+                } else {
+                    retryCount++;
+                    if (retryCount < maxRetries) {
+                        console.log('Retry ' + retryCount + ' dari ' + maxRetries);
+                        setTimeout(tryInitialize, retryInterval);
+                    } else {
+                        console.error('DataTables gagal diload setelah ' + maxRetries + ' percobaan!');
+                        alert('Error: DataTables library gagal dimuat. Silakan refresh halaman.');
+                    }
+                }
+            }
+
+            tryInitialize();
 
             $("#btn-calculate").on('click', function() {
                 let start = $("#score-tiering-start").val();
@@ -317,11 +358,10 @@
                     oper: 'equivalent'
                 };
 
-                $("#score_tiering_table").setGridParam({
-                    datatype: 'json',
+                $.ajax({
                     url: GLOBAL_MAIN_VARS["SITE_URL"] + "scoring/tiering/scoring_result",
-                    mtype: 'POST',
-                    postData: {
+                    type: 'POST',
+                    data: {
                         score_start: start,
                         score_end: end,
                         score_type: $("#opt_type").val(),
@@ -329,8 +369,41 @@
                         cycle: $("#opt_cycle").val(),
                         bucket: selected.bucket,
                         operScoring: selected.oper
+                    },
+                    dataType: 'json',
+                    success: function(response) {
+                        // Cek apakah response adalah error
+                        if (response && response.type === 'DivisionByZeroError') {
+                            showWarning("Error: " + response.message + " - Tidak ada data yang sesuai dengan kriteria.");
+                            return;
+                        }
+
+                        if (table) {
+                            table.clear();
+                            if (response && response.length > 0) {
+                                table.rows.add(response);
+                            } else {
+                                showWarning("Tidak ada data yang ditemukan dengan kriteria tersebut.");
+                            }
+                            table.draw();
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        let errorMessage = "Error loading data";
+
+                        // Parse error response
+                        try {
+                            let errorResponse = JSON.parse(xhr.responseText);
+                            if (errorResponse.message) {
+                                errorMessage = errorResponse.message;
+                            }
+                        } catch (e) {
+                            errorMessage += ": " + error;
+                        }
+
+                        showWarning(errorMessage);
                     }
-                }).trigger("reloadGrid");
+                });
             });
 
             $("#btn-save-form").on('click', function(e) {
