@@ -48,9 +48,15 @@ $routes->post('/Ecentrix8/updateAccountCodeSessionLog','Ecentrix8::updateAccount
 $routes->add('settings/get_system_configuration/', '\App\Modules\Settings\Controllers\Settings::get_system_configuration',['filter' => 'authfilter']);
 $routes->add('scoring/scheduler', '\App\Modules\Scoring\Controllers\Scoring::scheduler',['filter' => 'authfilter']);
 
+$routes->add('user_and_group/user_management', '\App\Modules\UserManagement\Controllers\UserController::index',['filter' => 'authfilter']);
+$routes->add('user_and_group/user_management', '\App\Modules\UserManagement\Controllers\UserController::index',['filter' => 'authfilter']);
+$routes->add('auditor/dataAuditor', '\App\Modules\Auditor\Controllers\Auditor::index',['filter' => 'authfilter']);
+
 if($uri->getTotalSegments() > 2){
     $function = $uri->getSegment(3);
-
+    
     $routes->add('scoring/scheduler/'.$function, '\App\Modules\Scoring\Controllers\Scoring::'.$function,['filter' => 'authfilter']);
+    $routes->add('user_and_group/user_and_group/'.$function, '\App\Modules\UserManagement\Controllers\UserController::'.$function,['filter' => 'authfilter']);
+    $routes->add('auditor/auditor/'.$function, '\App\Modules\Auditor\Controllers\Auditor::'.$function,['filter' => 'authfilter']);
 
 }
