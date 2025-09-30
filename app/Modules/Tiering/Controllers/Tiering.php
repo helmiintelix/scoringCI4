@@ -24,7 +24,7 @@ class Tiering extends BaseController
 
         $data['tiering_id'] = $tiering_id;
 
-        $data['BUCKET_SC'] = $this->Common_model->get_ref_master_crm(
+        $data['BUCKET_SC'] = $this->Common_model->get_ref_master_df(
             "value AS value, concat(value,' - ',description) AS item",
             "cms_reference",
             "status='1' and reference='BUCKET_SC'",
@@ -32,7 +32,7 @@ class Tiering extends BaseController
             false
         );
 
-        $data['LOB_CODE'] = $this->Common_model->get_ref_master_crm(
+        $data['LOB_CODE'] = $this->Common_model->get_ref_master_df(
             "value AS value, concat(value,' - ',description) AS item",
             "cms_reference",
             "status='1' and reference='LOB_CODE'",
