@@ -11,8 +11,7 @@ function deselect() {
 
 function getData() {
   $.ajax({
-    url: GLOBAL_MAIN_VARS["SITE_URL"] + "user_and_group/user_and_group/user_management_list" +
-      classification,
+    url: GLOBAL_MAIN_VARS["SITE_URL"] + "user_and_group/user_and_group/user_management_list",
     type: "get",
     success: function (msg) {
       gridOptions.api.setGridOption('columnDefs', msg.data.header);
@@ -23,19 +22,6 @@ function getData() {
 }
 
 
-function getDataApproval() {
-  $.ajax({
-    url: GLOBAL_MAIN_VARS["SITE_URL"] + "user_and_group/user_and_group/user_group_management_list_temp",
-    type: "get",
-    success: function (msg) {
-
-      gridApprovalOptions.api.setGridOption('columnDefs', msg.data.header);
-      gridApprovalOptions.api.setGridOption('rowData', msg.data.data);
-    },
-    dataType: 'json',
-  });
-}
-getDataApproval(); // untuk menampilkan data di table nya	
 
 // Grid Options are properties passed to the grid
 var gridOptions = {
@@ -102,14 +88,12 @@ var eGridDiv = document.getElementById("myGrid");
 var eGridDivApproval = document.getElementById("myGridApproval");
 // new grid instance, passing in the hosting DIV and Grid Options
 new agGrid.Grid(eGridDiv, gridOptions);
-new agGrid.Grid(eGridDivApproval, gridApprovalOptions);
 
 //Button Actions
 var showFormResponse = function (responseText, statusText) {
   if (responseText.success) {
     showInfo(responseText.message);
     getData();
-    getDataApproval();
 
     if (responseText.notification_id) {
       sendNotification(responseText.notification_id);
@@ -188,9 +172,9 @@ $("#btn-add").click(function () {
 $("#btn-del").click(function () {
   if (selr) {
     console.log(selr);
-    bootbox.confirm("Are you sure you want to delete " + selected_data.name + "?", function (result) {
+    bootbox.confirm("Are you sure you want to delete `" + selected_data.name + "` ?", function (result) {
       if (result) {
-        $.post(GLOBAL_MAIN_VARS["SITE_URL"] + "user_and_group/direct_delete_user/", { id_user: selr }, function (data) {
+        $.post(GLOBAL_MAIN_VARS["SITE_URL"] + "user_and_group/user_and_group/delete_user/", { id_user: selr }, function (data) {
           if (data.success == true) {
             showInfo(data.message);
             getData();
@@ -205,6 +189,47 @@ $("#btn-del").click(function () {
     alert("Please select a row.");
   }
 });
+
+$("#btn-reset").click(()=>{
+  if (selr) {
+    console.log(selr);
+    bootbox.confirm("Are you sure you want to reset Password `" + selected_data.name + "` ?", function (result) {
+      if (result) {
+        $.post(GLOBAL_MAIN_VARS["SITE_URL"] + "user_and_group/user_and_group/reset_password/", { id_user: selr }, function (data) {
+          if (data.success == true) {
+            showInfo(data.message);
+            getData();
+          } else {
+            showInfo(data.message);
+            return false;
+          }
+        }, "json");
+      }
+    });
+  } else {
+    alert("Please select a row.");
+  }
+})
+$("#btn-force-logout").click(()=>{
+  if (selr) {
+    console.log(selr);
+    bootbox.confirm("Are you sure you want to force `" + selected_data.name + "` out ?", function (result) {
+      if (result) {
+        $.post(GLOBAL_MAIN_VARS["SITE_URL"] + "user_and_group/user_and_group/force_logout_user/", { id_user: selr }, function (data) {
+          if (data.success == true) {
+            showInfo(data.message);
+            getData();
+          } else {
+            showInfo(data.message);
+            return false;
+          }
+        }, "json");
+      }
+    });
+  } else {
+    alert("Please select a row.");
+  }
+})
 
 $("#btn-export-excel").click(function () {
   gridOptions.api.exportDataAsExcel();
