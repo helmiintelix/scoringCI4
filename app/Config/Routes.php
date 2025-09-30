@@ -55,6 +55,9 @@ $routes->add('scoring/setting/(:segment)', '\App\Modules\Setting\Controllers\Set
 $routes->add('setting/general/', '\App\Modules\GeneralSetting\Controllers\GeneralSetting::GeneralSetting', ['filter' => 'authfilter']);
 $routes->add('scoring/setting_cycle', '\App\Modules\SettingCycle\Controllers\SettingCycle::setting_cycle', ['filter' => 'authfilter']);
 $routes->add('scoring/tiering', '\App\Modules\Tiering\Controllers\Tiering::tiering', ['filter' => 'authfilter']);
+$routes->add('scoring/tiering/scoring_result', '\App\Modules\Tiering\Controllers\Tiering::scoring_result', ['filter' => 'authfilter']);
+$routes->add('scoring/tiering/save_tiering', '\App\Modules\Tiering\Controllers\Tiering::save_tiering', ['filter' => 'authfilter']);
+$routes->add('scoring/tiering/(:segment)', '\App\Modules\Tiering\Controllers\Tiering::tiering/$1', ['filter' => 'authfilter']);
 
 if ($uri->getTotalSegments() > 2) {
     $function = $uri->getSegment(3);
