@@ -160,7 +160,8 @@ class Security implements SecurityInterface
      */
     protected $samesite = Cookie::SAMESITE_LAX;
 
-    private readonly IncomingRequest $request;
+    // private readonly IncomingRequest $request;
+    private readonly \CodeIgniter\HTTP\Request $request;
 
     /**
      * CSRF Cookie Name without Prefix
