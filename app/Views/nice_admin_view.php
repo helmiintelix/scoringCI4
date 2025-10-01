@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" >
+<html lang="en">
 
 <head>
   <meta charset="utf-8">
@@ -20,10 +20,10 @@
   <link href="<?= base_url(); ?>assets/nice_admin/vendor/quill/quill.bubble.css" rel="stylesheet">
   <link href="<?= base_url(); ?>assets/nice_admin/vendor/remixicon/remixicon.css" rel="stylesheet">
   <link href="<?= base_url(); ?>assets/nice_admin/vendor/simple-datatables/style.css" rel="stylesheet">
-  
+
   <link href="<?= base_url(); ?>assets/datetimepicker/daterangepicker.css" rel="stylesheet" type="text/css" media="all">
-  
-  
+
+
 
   <!-- css query builder terbaru -->
   <link rel="stylesheet" href="<?= base_url(); ?>assets/query-builder/dist/css/query-builder.default.css" />
@@ -48,7 +48,7 @@
 
   <link href="<?= base_url(); ?>assets/chosen_v1.8.7/chosen.min.css" rel="stylesheet">
   <link href="<?= base_url(); ?>assets/select2-4.0.13/dist/css/select2.min.css" rel="stylesheet">
-  
+
   <link href="<?= base_url(); ?>assets/waModule/waModule.css" rel="stylesheet">
   <style>
     .row {
@@ -56,7 +56,6 @@
     }
   </style>
   <style>
-  
     #ecentrix {
       position: fixed;
       bottom: 0;
@@ -69,13 +68,13 @@
       overflow: hidden !important;
       /* z-index: 10000; */
     }
-    
-  @font-face {
-    font-family: 'runningText';
-    src: url('./assets/runningText/TheLedDisplaySt.ttf') format('truetype');
-  }
 
-  /* .hover-effect:hover {
+    @font-face {
+      font-family: 'runningText';
+      src: url('./assets/runningText/TheLedDisplaySt.ttf') format('truetype');
+    }
+
+    /* .hover-effect:hover {
         box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.7);
     } */
     /* .shadow-effect{
@@ -83,17 +82,21 @@
     } */
 
     @font-face {
-        font-family: 'Roboto';
-        src: url('./assets/font/Roboto/Roboto-Regular.ttf') format('truetype'); /* Ganti dengan path sesuai */
-        font-weight: 400; /* Regular */
-        font-style: normal;
+      font-family: 'Roboto';
+      src: url('./assets/font/Roboto/Roboto-Regular.ttf') format('truetype');
+      /* Ganti dengan path sesuai */
+      font-weight: 400;
+      /* Regular */
+      font-style: normal;
     }
 
     @font-face {
-        font-family: 'Roboto';
-        src: url('./assets/font/Roboto/Roboto-Bold.ttf') format('truetype'); /* Ganti dengan path sesuai */
-        font-weight: 700; /* Bold */
-        font-style: normal;
+      font-family: 'Roboto';
+      src: url('./assets/font/Roboto/Roboto-Bold.ttf') format('truetype');
+      /* Ganti dengan path sesuai */
+      font-weight: 700;
+      /* Bold */
+      font-style: normal;
     }
   </style>
 </head>
@@ -114,7 +117,7 @@
     <!-- tambahkan class notificationDynamicisland untuk notif kelap kelip ijo-->
     <!-- <div class="m-3 d-flex align-items-center justify-content-between " style="width: 100%;" data-animation="stop">
       <div id="scroll-container">
-        <div id="scroll-text"><?=@$broadcastMsg?></div>
+        <div id="scroll-text"><?= @$broadcastMsg ?></div>
       </div>
     </div> -->
 
@@ -122,14 +125,14 @@
 
     <nav class="header-nav ms-auto">
       <ul class="d-flex align-items-center">
-      
+
         <!-- <span class="text-secondary" style="margin-right: 10px;font-size: 20px;cursor: context-menu;" >|</span> -->
 
         <li class="nav-item dropdown pe-3 badge rounded-pill bg-secondary">
 
           <a class="nav-profile d-flex align-items-center pe-0 text-white" id="linkHeader" href="#" data-bs-toggle="dropdown">
             <?php
-            $urlimg = 'uploads/user/' .session()->get('fp');
+            $urlimg = 'uploads/user/' . session()->get('fp');
             if (file_exists($urlimg)) {
               echo '<img src="' . $urlimg . '" alt="Profile" class="rounded-circle" style="width: 20px;height: 20px;">';
             } else {
@@ -137,7 +140,7 @@
             }
             ?>
 
-            <span class="d-none d-md-block dropdown-toggle ps-2"><?=session()->get('USER_NAME'); ?></span>
+            <span class="d-none d-md-block dropdown-toggle ps-2"><?= session()->get('USER_NAME'); ?></span>
           </a><!-- End Profile Iamge Icon -->
 
           <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
@@ -161,7 +164,7 @@
               <hr class="dropdown-divider">
             </li>
 
-           
+
             <li>
               <hr class="dropdown-divider">
             </li>
@@ -176,7 +179,7 @@
           </ul><!-- End Profile Dropdown Items -->
         </li><!-- End Profile Nav -->
         <li class="nav-item d-block d-lg-block">
-         
+
         </li>
       </ul>
     </nav><!-- End Icons Navigation -->
@@ -187,7 +190,7 @@
   <aside id="sidebar" class="sidebar shadow-effect">
     <div class="input-group input-group-sm flex-nowrap">
       <span class="input-group-text" id="addon-wrapping"><i class="bi bi-search"></i></span>
-      <input type="text" class="form-control" placeholder="search"  onkeyup="cari_menu(this)">
+      <input type="text" class="form-control" placeholder="search" onkeyup="cari_menu(this)">
     </div>
     <ul class="sidebar-nav" id="sidebar-nav">
       <li class="nav-heading"><i>loading...</i></li>
@@ -195,18 +198,18 @@
 
   </aside><!-- End Sidebar-->
 
-  <main id="main" class="main" >
-  <nav style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='%236c757d'/%3E%3C/svg%3E&#34;);" aria-label="breadcrumb">
-    <div class="card border-0" style="margin-bottom: 10px;">
-      <div class="card-body">
-        <b><span class="breadcrumb-item" id="current-page"></span></b>
-        <ol class="breadcrumb float-end" id="page-title" style="margin: inherit;">
-          <li class="breadcrumb-item"><a href="#"><i class="bi bi-house-door-fill"></i></a></li>
-        </ol>
+  <main id="main" class="main">
+    <nav style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='%236c757d'/%3E%3C/svg%3E&#34;);" aria-label="breadcrumb">
+      <div class="card border-0" style="margin-bottom: 10px;">
+        <div class="card-body">
+          <b><span class="breadcrumb-item" id="current-page"></span></b>
+          <ol class="breadcrumb float-end" id="page-title" style="margin: inherit;">
+            <li class="breadcrumb-item"><a href="#"><i class="bi bi-house-door-fill"></i></a></li>
+          </ol>
+        </div>
       </div>
-    </div>
-   
-  </nav>
+
+    </nav>
     <div class="card border-0" style="margin-bottom: 10px;">
       <div class="card-body">
         <div class="col-sm-12" id="admin-wrapper">
@@ -279,7 +282,7 @@
       </div>
     </div>
   </div>
- 
+
 
 
   <!-- ======= Footer ======= -->
@@ -288,7 +291,7 @@
   <footer id="footer" class="footer">
 
     <div class="copyright">
-      &copy; Copyright <strong><span>PT. INTELIX GLOBAL CROSSING</span></strong>.
+      &copy; Copyright <strong><span>PT INTELIX GLOBAL CROSSING</span></strong>.
     </div>
     <div class="credits">
       <!-- All the links in the footer should remain intact. -->
@@ -299,7 +302,7 @@
     </div>
     <br>
     <br>
-    <div style="display:none;"  id="barTelephony">
+    <div style="display:none;" id="barTelephony">
     </div>
   </footer><!-- End Footer -->
 
@@ -315,11 +318,13 @@
 
   <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
- 
+
   <!-- Vendor JS Files -->
   <script>
     var GLOBAL_SESSION_VARS = new Array();
-    var CSRF = {<?=$csrf_token?> : "<?=$csrf_hash?>"};
+    var CSRF = {
+      <?= $csrf_token ?>: "<?= $csrf_hash ?>"
+    };
 
     GLOBAL_SESSION_VARS["GROUP_ID"] = "<?= session()->get('GROUP_ID'); ?>";
     GLOBAL_SESSION_VARS["LEVEL_GROUP"] = "<?= session()->get('LEVEL_GROUP'); ?>";
@@ -328,28 +333,28 @@
     GLOBAL_MAIN_VARS["BASE_URL"] = "<?= base_url(); ?>";
     GLOBAL_MAIN_VARS["SITE_URL"] = "<?= site_url(); ?>";
     GLOBAL_MAIN_VARS["SESSION_EXPIRE"] = "<?= $session_expire; ?>";
-    GLOBAL_MAIN_VARS["ACTIVE_CALL_NO"]  = "";
+    GLOBAL_MAIN_VARS["ACTIVE_CALL_NO"] = "";
 
     var GLOBAL_VARS = "<?= session()->get('USER_ID'); ?>";
     var USER_ID = "<?= session()->get('USER_ID'); ?>";
-    
+
     var GLOBAL_LEVEL = "AGENT";
     var GLOBAL_HOST = "<?= base_url(); ?>";
-    
+
     var GLOBAL_INTERVAL;
 
     var GLOBAL_THEME_MODE = 'LIGHT'; // LIGHT or DARK
   </script>
-  
-  <script src="<?= base_url(); ?>assets/bootstrap-5.3.2-dist/js/popper.min.js"></script> 
-  <script src="<?= base_url(); ?>assets/bootstrap-5.3.2-dist/js/bootstrap.bundle.min.js"></script> 
+
+  <script src="<?= base_url(); ?>assets/bootstrap-5.3.2-dist/js/popper.min.js"></script>
+  <script src="<?= base_url(); ?>assets/bootstrap-5.3.2-dist/js/bootstrap.bundle.min.js"></script>
   <!-- <script src="<?= base_url(); ?>assets/bootstrap-5.0.2/assets/dist/js/bootstrap.bundle.min.js"></script> -->
   <script src="<?= base_url(); ?>assets/nice_admin/vendor/apexcharts/apexcharts.min.js"></script>
   <script src="<?= base_url(); ?>assets/nice_admin/vendor/chart.js/chart.umd.js"></script>
   <script src="<?= base_url(); ?>assets/nice_admin/vendor/echarts/echarts.min.js"></script>
   <script src="<?= base_url(); ?>assets/nice_admin/vendor/quill/quill.min.js"></script>
   <script src="<?= base_url(); ?>assets/nice_admin/vendor/simple-datatables/simple-datatables.js"></script>
-  
+
   <script src="<?= base_url(); ?>assets/nice_admin/vendor/php-email-form/validate.js"></script>
   <script src="<?= base_url(); ?>assets/nice_admin/js/jquery.form.min.js"></script>
   <script src="<?= base_url(); ?>assets/bootbox/bootbox.js"></script>
@@ -362,7 +367,7 @@
   <script src="<?= base_url(); ?>assets/js/jquery.inputlimiter.1.3.1.min.js"></script>
   <script src="<?= base_url(); ?>assets/js/sweetalert.min.js"></script>
   <script src="<?= base_url(); ?>assets/select2-4.0.13/dist/js/select2.min.js"></script>
-  
+
 
   <!-- <script src="<?= base_url(); ?>assets/agGrid/ag-grid-community.min.noStyle.js"></script> -->
   <script src="<?= base_url(); ?>assets/agGrid/ag-grid-enterprise.min.js"></script>
@@ -407,8 +412,7 @@
       'not-group': 'not-group'
     };
 
-    var daftar_filter = [
-      {
+    var daftar_filter = [{
         id: 'fin_account',
         label: 'Account Number',
         type: 'string',
@@ -929,7 +933,7 @@
         search_url: GLOBAL_MAIN_VARS["SITE_URL"] +
           "classification_detail/get_parameter_list?param=BRANCH_CODE&type=select"
       },
-      
+
       {
         id: 'area_id',
         label: 'Branch Area',
@@ -938,7 +942,7 @@
         search_url: GLOBAL_MAIN_VARS["SITE_URL"] +
           "classification_detail/get_parameter_list?param=AREA_ID_NAME&type=select"
       },
-      
+
       {
         id: 'area_tagih_id',
         label: 'Area Tagih',
@@ -947,7 +951,7 @@
         search_url: GLOBAL_MAIN_VARS["SITE_URL"] +
           "classification_detail/get_parameter_list?param=AREATAGIH_ID_NAME&type=select"
       },
-     
+
       {
         id: 'call_date',
         label: 'Call Date',
@@ -1039,35 +1043,35 @@
     ];
 
     var daftar_restructure_parameter = [{
-                id: 'CM_AMOUNT_DUE',
-                label: 'OUTSTANDING',
-                type: 'integer',
-                operators: ['greater_or_equal']
-            },
-            {
-                id: 'MOB',
-                label: 'MOB',
-                type: 'integer',
-                operators: ['greater', 'less', 'greater_or_equal', 'less_or_equal', 'between']
-            },
-            {
-                id: 'CM_BLOCK_CODE',
-                label: 'Block Code',
-                type: 'string',
-                search: true,
-                search_url: GLOBAL_MAIN_VARS["SITE_URL"] +
-                    "classification_detail/get_parameter_list?param=CM_BLOCK_CODE&type=select&table_name=cpcrd_new"
-            },
-            {
-                id: 'CM_TYPE',
-                label: 'Product Code',
-                type: 'string',
-                search: true,
-                search_url: GLOBAL_MAIN_VARS["SITE_URL"] +
-                    "classification_detail/get_parameter_list?param=PRODUCT&type=select"
-            }
-           
-        ];
+        id: 'CM_AMOUNT_DUE',
+        label: 'OUTSTANDING',
+        type: 'integer',
+        operators: ['greater_or_equal']
+      },
+      {
+        id: 'MOB',
+        label: 'MOB',
+        type: 'integer',
+        operators: ['greater', 'less', 'greater_or_equal', 'less_or_equal', 'between']
+      },
+      {
+        id: 'CM_BLOCK_CODE',
+        label: 'Block Code',
+        type: 'string',
+        search: true,
+        search_url: GLOBAL_MAIN_VARS["SITE_URL"] +
+          "classification_detail/get_parameter_list?param=CM_BLOCK_CODE&type=select&table_name=cpcrd_new"
+      },
+      {
+        id: 'CM_TYPE',
+        label: 'Product Code',
+        type: 'string',
+        search: true,
+        search_url: GLOBAL_MAIN_VARS["SITE_URL"] +
+          "classification_detail/get_parameter_list?param=PRODUCT&type=select"
+      }
+
+    ];
 
     function QueryBuilderPushValue(search_url, name) {
       let buttons = {
@@ -1143,8 +1147,8 @@
 
   <script language='JavaScript'>
     $(document).ready(function() {
-    
-      if(getWithExpiry('GLOBAL_THEME_MODE')){
+
+      if (getWithExpiry('GLOBAL_THEME_MODE')) {
         GLOBAL_THEME_MODE = getWithExpiry('GLOBAL_THEME_MODE');
         changeTheme(GLOBAL_THEME_MODE);
       }
@@ -1152,74 +1156,74 @@
     })
 
 
-    $('.nav-link').click(function(e){
-      
-      if(typeof $(e.currentTarget).attr('onclick')==='undefined'){
+    $('.nav-link').click(function(e) {
 
-      }else{
-         
-        $.each($('.nav-link'), function(i,val){
+      if (typeof $(e.currentTarget).attr('onclick') === 'undefined') {
+
+      } else {
+
+        $.each($('.nav-link'), function(i, val) {
           $(val).removeAttr('style');
         });
 
-        $(e.currentTarget).attr('style','background:lavender;color:#4154f1');
+        $(e.currentTarget).attr('style', 'background:lavender;color:#4154f1');
       }
-      
+
     })
 
     $('#changemodetheme').change(function() {
-        if(this.checked) {
-          changeTheme('DARK');
-         
-        }else{
-          changeTheme('LIGHT');
-        }     
+      if (this.checked) {
+        changeTheme('DARK');
+
+      } else {
+        changeTheme('LIGHT');
+      }
 
     });
 
-    function changeTheme(theme){
-      if(theme=='DARK') {
-       
+    function changeTheme(theme) {
+      if (theme == 'DARK') {
 
-       GLOBAL_THEME_MODE = 'DARK';
-       setWithExpiry('GLOBAL_THEME_MODE','DARK',28800);
 
-       $('header').attr('data-bs-theme','dark').addClass('bg-dark');
-      //  $('header span, .nav-icon').addClass('text-white');
-       //  $('.toggle-sidebar-btn').addClass('text-white');
+        GLOBAL_THEME_MODE = 'DARK';
+        setWithExpiry('GLOBAL_THEME_MODE', 'DARK', 28800);
 
-       $('.modal').attr('data-bs-theme','dark');
-       $('#admin-wrapper').attr('data-bs-theme','dark')
+        $('header').attr('data-bs-theme', 'dark').addClass('bg-dark');
+        //  $('header span, .nav-icon').addClass('text-white');
+        //  $('.toggle-sidebar-btn').addClass('text-white');
 
-       $("#main, #footer").addClass('bg-dark bg-opacity-75');
+        $('.modal').attr('data-bs-theme', 'dark');
+        $('#admin-wrapper').attr('data-bs-theme', 'dark')
 
-       $("#sidebar").addClass('bg-dark'); 
-       $(".nav-link").addClass('bg-dark text-white');
-       $(".ag-theme-alpine").addClass('ag-theme-alpine-dark').removeClass('ag-theme-alpine');
-       
-       $('#changemodetheme').prop('checked', true);
-       $('*').attr('data-bs-theme', 'dark');
+        $("#main, #footer").addClass('bg-dark bg-opacity-75');
 
-       $("#linkHeader").addClass('text-white');
-     }else{
-       GLOBAL_THEME_MODE = 'LIGHT';
-       setWithExpiry('GLOBAL_THEME_MODE','LIGHT',28800);
+        $("#sidebar").addClass('bg-dark');
+        $(".nav-link").addClass('bg-dark text-white');
+        $(".ag-theme-alpine").addClass('ag-theme-alpine-dark').removeClass('ag-theme-alpine');
 
-       $('header').attr('data-bs-theme','dark').removeClass('bg-dark');
-      //  $('header span, .nav-icon').removeClass('text-white');
-      // $('.toggle-sidebar-btn').removeClass('text-white');
+        $('#changemodetheme').prop('checked', true);
+        $('*').attr('data-bs-theme', 'dark');
 
-       $('.modal').attr('data-bs-theme','light');
-       $('#admin-wrapper').attr('data-bs-theme','light')
-       $("#main, #footer").removeClass('bg-dark bg-opacity-75');
+        $("#linkHeader").addClass('text-white');
+      } else {
+        GLOBAL_THEME_MODE = 'LIGHT';
+        setWithExpiry('GLOBAL_THEME_MODE', 'LIGHT', 28800);
 
-       $("#sidebar").removeClass('bg-dark'); 
-       $(".nav-link").removeClass('bg-dark text-white');
-       $(".ag-theme-alpine-dark").addClass('ag-theme-alpine').removeClass('ag-theme-alpine-dark');
-       $('*').attr('data-bs-theme', 'light');
-       
-       $("#linkHeader").addClass('text-white');
-     }  
+        $('header').attr('data-bs-theme', 'dark').removeClass('bg-dark');
+        //  $('header span, .nav-icon').removeClass('text-white');
+        // $('.toggle-sidebar-btn').removeClass('text-white');
+
+        $('.modal').attr('data-bs-theme', 'light');
+        $('#admin-wrapper').attr('data-bs-theme', 'light')
+        $("#main, #footer").removeClass('bg-dark bg-opacity-75');
+
+        $("#sidebar").removeClass('bg-dark');
+        $(".nav-link").removeClass('bg-dark text-white');
+        $(".ag-theme-alpine-dark").addClass('ag-theme-alpine').removeClass('ag-theme-alpine-dark');
+        $('*').attr('data-bs-theme', 'light');
+
+        $("#linkHeader").addClass('text-white');
+      }
     }
   </script>
 </body>
