@@ -74,3 +74,19 @@
 </div><!-- /row -->
 
 <div class="vspace-xs-8"></div>
+
+<script>
+	var loadScoreTieringEditForm = function(scheme_id){ 
+	//$("#page").html(GLOBAL_MAIN_VARS["progress_indicator"]);
+	// load content
+	//$("#page").load(GLOBAL_MAIN_VARS["SITE_URL"] + 'scoring/tiering/' + scheme_id);
+	
+	var link = GLOBAL_MAIN_VARS["SITE_URL"] + 'scoring/tiering/' + scheme_id;
+	
+	$("#admin-wrapper").slideUp("fast", function(){
+		$("#admin-wrapper").html(GLOBAL_MAIN_VARS["SPINNER"]).load(link, function(){
+			$("#admin-wrapper").slideDown("slow");
+		})
+	})
+};
+</script>
