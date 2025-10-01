@@ -14,8 +14,8 @@
     }
 
     .btn-minier {
-        font-size: 11px;
-        padding: 2px 6px;
+        font-size: 12px;
+        padding: 6px 8px;
         line-height: 1.5;
     }
 
@@ -23,12 +23,18 @@
         max-height: 500px;
         overflow-y: auto;
     }
+
+    .table-relaxed tbody td {
+        padding: 16px;
+        vertical-align: middle;
+        line-height: 1.6;
+    }
 </style>
 
 <div class="row">
     <div class="col-12">
         <div class="table-responsive table-container">
-            <table class="table table-striped">
+            <table class="table table-striped table-relaxed">
                 <thead class="table-dark">
                     <tr>
                         <th scope="col" class="px-4 align-middle">Label</th>
@@ -39,7 +45,7 @@
                         <th scope="col" class="px-4 align-middle">Parameter Selected</th>
                         <th scope="col" class="px-4 align-middle">Function</th>
                         <th scope="col" class="px-4 align-middle">Parameter Value</th>
-                        <th scope="col" class="px-4 align-middle" colspan="2">Action</th>
+                        <th scope="col" class="px-4 align-middle">Action</th>
                     </tr>
                 </thead>
 
@@ -51,6 +57,9 @@
                             if ($scheme_name != $row['scheme_name']) {
                                 $scheme_name = $row['scheme_name'];
                     ?>
+                                <tr>
+                                    <td colspan="11" style="height: 10px; padding: 0px; background-color: #e6e6e6;"></td>
+                                </tr>
                                 <tr>
                                     <td class="px-4" nowrap><strong><?= htmlspecialchars($row['scheme_name']) ?></strong></td>
                                     <td nowrap>
@@ -71,16 +80,16 @@
                                         <small><?= htmlspecialchars($row['parameter_value']) ?></small>
                                     </td>
                                     <td class="text-center" nowrap>
-                                        <button class="btn btn-warning btn-minier" type="button"
-                                            onClick="loadScoreSettingEditForm2('<?= htmlspecialchars($row['scheme_id']) ?>','<?= htmlspecialchars($row['parameter_group']) ?>','<?= htmlspecialchars($row['parameter_selected']) ?>')">
-                                            <i class="fas fa-edit"></i> Edit
-                                        </button>
-                                    </td>
-                                    <td class="text-center" nowrap>
-                                        <button class="btn btn-danger btn-minier" type="button"
-                                            onClick="loadScoreSettingDeleteForm('<?= htmlspecialchars($row['scheme_id']) ?>','<?= htmlspecialchars($row['scheme_name']) ?>')">
-                                            <i class="fas fa-trash"></i> Delete
-                                        </button>
+                                        <div class="d-flex justify-content-center gap-2">
+                                            <button class="btn btn-warning btn-minier" type="button"
+                                                onClick="loadScoreSettingEditForm2('<?= htmlspecialchars($row['scheme_id']) ?>','<?= htmlspecialchars($row['parameter_group']) ?>','<?= htmlspecialchars($row['parameter_selected']) ?>')">
+                                                <i class="fas fa-edit"></i> Edit
+                                            </button>
+                                            <button class="btn btn-danger btn-minier" type="button"
+                                                onClick="loadScoreSettingDeleteForm('<?= htmlspecialchars($row['scheme_id']) ?>','<?= htmlspecialchars($row['scheme_name']) ?>')">
+                                                <i class="fas fa-trash"></i> Delete
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             <?php
@@ -108,7 +117,6 @@
                                     <td class="px-4" nowrap>
                                         <small><?= htmlspecialchars($parameter_value) ?></small>
                                     </td>
-                                    <td></td>
                                     <td></td>
                                 </tr>
                         <?php
