@@ -141,7 +141,7 @@
                 <input type="text" id="score-tiering-end" name="score-tiering-end"
                     class="form-control text-end me-2" onkeypress="return numbersOnly(event, true)"
                     placeholder="0" style="width: 80px;" value="<?= @$tiering_data['score_tiering_end'] ?>">
-                <span class="small-text">*desimal dengan titik (.)</span>
+                <span class="small-text">*use dot (.) for decimals</span>
             </div>
         </div>
 
