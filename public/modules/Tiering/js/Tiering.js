@@ -12,14 +12,6 @@ function numbersOnly(evt, allowDecimal = false) {
 }
 
 function initializeDataTable() {
-  console.log("jQuery version:", $.fn.jquery);
-  console.log("DataTable loaded:", $.fn.DataTable ? "yes" : "no");
-
-  if (!$.fn.DataTable) {
-    console.error("DataTables not loaded, trying again...");
-    return false;
-  }
-
   var table = $("#score_tiering_table").DataTable({
     processing: true,
     serverSide: false,
@@ -55,146 +47,132 @@ function initializeDataTable() {
 }
 
 $(document).ready(function () {
-  var maxRetries = 10;
-  var retryCount = 0;
-  var retryInterval = 100;
-  var table = null;
-
-  function tryInitialize() {
-    table = initializeDataTable();
-    if (table) {
-      console.log("DataTable initialized successfully!");
-    } else {
-      retryCount++;
-      if (retryCount < maxRetries) {
-        console.log("Retry " + retryCount + " of " + maxRetries);
-        setTimeout(tryInitialize, retryInterval);
-      } else {
-        console.error(
-          "DataTables failed to load after " + maxRetries + " attempts!"
-        );
-        alert(
-          "Error: DataTables library failed to load. Please refresh the page."
-        );
-      }
-    }
-  }
-
-  tryInitialize();
-
-  $("#btn-calculate").on("click", function () {
-    let start = $("#score-tiering-start").val();
-    let end = $("#score-tiering-end").val();
-
-    if (!start || !end) {
-      showWarning("Score tiering cannot be empty!");
-      return false;
-    }
-    if (parseFloat(start) > parseFloat(end)) {
-      showWarning("Score start cannot be greater than end!");
-      return false;
+  function waitAndInit() {
+    if (typeof $.fn.DataTable === "undefined") {
+      setTimeout(waitAndInit, 100);
+      return;
     }
 
-    const bucketMap = {
-      "CA1 & CA2": { bucket: "BUCKET 1", oper: "equivalent" },
-      CA3: { bucket: "BUCKET 2", oper: "equivalent" },
-      EARLY: { bucket: "BUCKET 3", oper: "equivalent" },
-      MID: { bucket: "BUCKET 4", oper: "equivalent" },
-      NPL: { bucket: "BUCKET 5|BUCKET 6|BUCKET 7", oper: "in" },
-      WO: { bucket: "REMEDIAL", oper: "equivalent" },
-    };
+    var table = initializeDataTable();
+    console.log("DataTable initialized successfully!");
 
-    const selected = bucketMap[$("#opt_bucket").val()] || {
-      bucket: "",
-      oper: "equivalent",
-    };
+    $("#btn-calculate").on("click", function () {
+      let start = $("#score-tiering-start").val();
+      let end = $("#score-tiering-end").val();
 
-    $.ajax({
-      url: GLOBAL_MAIN_VARS["SITE_URL"] + "scoring/tiering/scoring_result",
-      type: "POST",
-      data: {
-        score_start: start,
-        score_end: end,
-        score_type: $("#opt_type").val(),
-        lob: $("#opt_lob").val(),
-        cycle: $("#opt_cycle").val(),
-        bucket: selected.bucket,
-        operScoring: selected.oper,
-      },
-      dataType: "json",
-      success: function (response) {
-        if (response && response.type === "DivisionByZeroError") {
-          showWarning(
-            "Error: " + response.message + " - No data matches the criteria."
-          );
-          return;
-        }
-
-        if (table) {
-          table.clear();
-          if (response && response.length > 0) {
-            table.rows.add(response);
-          } else {
-            showWarning("No data was found with these criteria.");
-          }
-          table.draw();
-        }
-      },
-      error: function (xhr, status, error) {
-        let errorMessage = "Error loading data";
-
-        try {
-          let errorResponse = JSON.parse(xhr.responseText);
-          if (errorResponse.message) {
-            errorMessage = errorResponse.message;
-          }
-        } catch (e) {
-          errorMessage += ": " + error;
-        }
-
-        showWarning(errorMessage);
-      },
-    });
-  });
-
-  $("#btn-save-form").on("click", function (e) {
-    e.preventDefault();
-
-    let passed = true;
-    $(".mandatory").each(function () {
-      let nm = $(this).attr("id") || $(this).attr("name") || "";
-
-      if (!$(this).val()) {
-        passed = false;
-        let label = $(this).data("label") || $(this).attr("placeholder") || nm;
-        showWarning("Field " + label + " is required!");
-        $(this).focus();
+      if (!start || !end) {
+        showWarning("Score tiering cannot be empty!");
         return false;
       }
+      if (parseFloat(start) > parseFloat(end)) {
+        showWarning("Score start cannot be greater than end!");
+        return false;
+      }
+
+      const bucketMap = {
+        "CA1 & CA2": { bucket: "BUCKET 1", oper: "equivalent" },
+        CA3: { bucket: "BUCKET 2", oper: "equivalent" },
+        EARLY: { bucket: "BUCKET 3", oper: "equivalent" },
+        MID: { bucket: "BUCKET 4", oper: "equivalent" },
+        NPL: { bucket: "BUCKET 5|BUCKET 6|BUCKET 7", oper: "in" },
+        WO: { bucket: "REMEDIAL", oper: "equivalent" },
+      };
+
+      const selected = bucketMap[$("#opt_bucket").val()] || {
+        bucket: "",
+        oper: "equivalent",
+      };
+
+      $.ajax({
+        url: GLOBAL_MAIN_VARS["SITE_URL"] + "scoring/tiering/scoring_result",
+        type: "POST",
+        data: {
+          score_start: start,
+          score_end: end,
+          score_type: $("#opt_type").val(),
+          lob: $("#opt_lob").val(),
+          cycle: $("#opt_cycle").val(),
+          bucket: selected.bucket,
+          operScoring: selected.oper,
+        },
+        dataType: "json",
+        success: function (response) {
+          if (response && response.type === "DivisionByZeroError") {
+            showWarning(
+              "Error: " + response.message + " - No data matches the criteria."
+            );
+            return;
+          }
+
+          if (table) {
+            table.clear();
+            if (response && response.length > 0) {
+              table.rows.add(response);
+            } else {
+              showWarning("No data was found with these criteria.");
+            }
+            table.draw();
+          }
+        },
+        error: function (xhr, status, error) {
+          let errorMessage = "Error loading data";
+
+          try {
+            let errorResponse = JSON.parse(xhr.responseText);
+            if (errorResponse.message) {
+              errorMessage = errorResponse.message;
+            }
+          } catch (e) {
+            errorMessage += ": " + error;
+          }
+
+          showWarning(errorMessage);
+        },
+      });
     });
 
-    if (!passed) return false;
+    $("#btn-save-form").on("click", function (e) {
+      e.preventDefault();
 
-    $.ajax({
-      url: GLOBAL_MAIN_VARS["SITE_URL"] + "scoring/tiering/save_tiering/",
-      type: "post",
-      data: $("#frmTieringSettings").serialize(),
-      dataType: "json",
-      success: function (response) {
-        if (response.success) {
-          showInfo(response.message || "Data saved successfully.");
-          loadMenu(
-            "Preview Tiering",
-            "scoring/tieringPreview",
-            "tieringPreview"
-          );
-        } else {
-          showWarning(response.message || "Failed to save data.");
+      let passed = true;
+      $(".mandatory").each(function () {
+        let nm = $(this).attr("id") || $(this).attr("name") || "";
+
+        if (!$(this).val()) {
+          passed = false;
+          let label =
+            $(this).data("label") || $(this).attr("placeholder") || nm;
+          showWarning("Field " + label + " is required!");
+          $(this).focus();
+          return false;
         }
-      },
-      error: function (xhr, status, error) {
-        showWarning("There was an error: " + error);
-      },
+      });
+
+      if (!passed) return false;
+
+      $.ajax({
+        url: GLOBAL_MAIN_VARS["SITE_URL"] + "scoring/tiering/save_tiering/",
+        type: "post",
+        data: $("#frmTieringSettings").serialize(),
+        dataType: "json",
+        success: function (response) {
+          if (response.success) {
+            showInfo(response.message || "Data saved successfully.");
+            loadMenu(
+              "Preview Tiering",
+              "scoring/tieringPreview",
+              "tieringPreview"
+            );
+          } else {
+            showWarning(response.message || "Failed to save data.");
+          }
+        },
+        error: function (xhr, status, error) {
+          showWarning("There was an error: " + error);
+        },
+      });
     });
-  });
+  }
+
+  waitAndInit();
 });
