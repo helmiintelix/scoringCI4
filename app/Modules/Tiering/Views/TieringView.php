@@ -197,4 +197,20 @@
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-<script src="<?= base_url(); ?>modules/Tiering/js/Tiering.js?v=<?= rand() ?>"></script>
+<script>
+    function waitForDataTables(callback) {
+        if (typeof $.fn.DataTable !== 'undefined') {
+            callback();
+        } else {
+            setTimeout(function() {
+                waitForDataTables(callback);
+            }, 50);
+        }
+    }
+
+    waitForDataTables(function() {
+        var script = document.createElement('script');
+        script.src = '<?= base_url(); ?>modules/Tiering/js/Tiering.js?v=<?= rand() ?>';
+        document.body.appendChild(script);
+    });
+</script>
