@@ -31,6 +31,16 @@ $("#saveForm").click(function () {
 });
 
 function validateForm() {
+  if ($("#score_value_all").val().trim() === "") {
+    showWarning("Score Value 1 is required!");
+    return false;
+  }
+
+  if ($("#score_value_all2").val().trim() === "") {
+    showWarning("Score Value 2 is required!");
+    return false;
+  }
+
   if ($("#score_label").val().trim() === "") {
     showWarning("Label/Title is required!");
     return false;
@@ -50,9 +60,9 @@ $("#uploadForm").click(function (e) {
           <div class="modal fade" id="uploadModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-lg">
               <div class="modal-content">
-                <div class="modal-header bg-primary text-white">
+                <div class="modal-header">
                   <h5 class="modal-title">Upload File</h5>
-                  <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                  <button type="button" class="btn-close btn-close-black" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body" id="uploadModalBody"></div>
               </div>
