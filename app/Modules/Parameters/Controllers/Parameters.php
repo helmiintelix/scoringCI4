@@ -77,9 +77,9 @@ class Parameters extends \App\Controllers\BaseController
         $return = $this->ParametersModel->update_parameter($param_data);
 
         if ($return) {
-            $data = ["success" => true, "message" => "Success"];
+            $data = ["success" => true, "message" => "Successfully updated."];
         } else {
-            $data = ["success" => false, "message" => "Failed"];
+            $data = ["success" => false, "message" => "Failed to update."];
         }
 
         return $this->response->setJSON($data);
@@ -90,9 +90,9 @@ class Parameters extends \App\Controllers\BaseController
         $return = $this->ParametersModel->update_parameter_commit();
 
         if ($return) {
-            $data = ["success" => true, "message" => "Success"];
+            $data = ["success" => true, "message" => "Successfully updated commit."];
         } else {
-            $data = ["success" => false, "message" => "Failed"];
+            $data = ["success" => false, "message" => "Failed to update commit."];
         }
 
         return $this->response->setJSON($data);
