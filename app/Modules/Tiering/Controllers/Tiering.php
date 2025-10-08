@@ -106,14 +106,14 @@ class Tiering extends BaseController
             $return = $this->TieringModel->set_tiering($form_mode, $tiering_data, $tiering_setting);
 
             if ($return) {
-                $response = ["success" => true, "message" => "Save berhasil."];
+                $response = ["success" => true, "message" => "Saved successfully."];
             } else {
-                $response = ["success" => false, "message" => "Save gagal."];
+                $response = ["success" => false, "message" => "Failed to save."];
             }
         } catch (\Exception $e) {
             $response = [
                 "success" => false,
-                "message" => "Save Gagal",
+                "message" => "Failed to save.",
                 "error"   => $e->getMessage()
             ];
         }

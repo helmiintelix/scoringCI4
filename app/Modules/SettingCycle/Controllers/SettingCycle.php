@@ -72,7 +72,7 @@ class SettingCycle extends \App\Controllers\BaseController
                 'SUCCESS',
                 'Cycle ID: ' . $user_data["id"] . ', Name: ' . $user_data["cycle_name"]
             );
-            $data = ["success" => true, "message" => "Success"];
+            $data = ["success" => true, "message" => "Saved successfully."];
         } else {
             $this->Common_model->data_logging(
                 'Setting Cycle',
@@ -80,7 +80,7 @@ class SettingCycle extends \App\Controllers\BaseController
                 'FAILED',
                 'Cycle ID: ' . $user_data["id"] . ', Name: ' . $user_data["cycle_name"]
             );
-            $data = ["success" => false, "message" => "Failed"];
+            $data = ["success" => false, "message" => "Failed to save."];
         }
 
         return $this->response->setJSON($data);
@@ -136,7 +136,7 @@ class SettingCycle extends \App\Controllers\BaseController
                 'SUCCESS',
                 'Cycle ID: ' . $user_data["id"] . ', Name: ' . $user_data["cycle_name"]
             );
-            $data = ["success" => true, "message" => "Success"];
+            $data = ["success" => true, "message" => "Updated successfully."];
         } else {
             $this->Common_model->data_logging(
                 'Setting Cycle',
@@ -144,7 +144,7 @@ class SettingCycle extends \App\Controllers\BaseController
                 'FAILED',
                 'Cycle ID: ' . $user_data["id"] . ', Name: ' . $user_data["cycle_name"]
             );
-            $data = ["success" => false, "message" => "Failed"];
+            $data = ["success" => false, "message" => "Failed to update."];
         }
 
         return $this->response->setJSON($data);
@@ -167,11 +167,11 @@ class SettingCycle extends \App\Controllers\BaseController
             );
 
             if ($this->check_cycle_status($id_user)) {
-                $data = ["success" => false, "message" => "Cycle masih aktif!"];
+                $data = ["success" => false, "message" => "Cycle is active, cannot be deleted."];
             } elseif ($is_used > 0) {
                 $data = [
                     "success" => false,
-                    "message" => "Cycle masih digunakan di tiering, mohon periksa di menu tiering preview!"
+                    "message" => "Cycle is still used in tiering. Check the Tiering Preview menu."
                 ];
             } else {
                 $user_data["id"] = $id_user;
@@ -184,7 +184,7 @@ class SettingCycle extends \App\Controllers\BaseController
                     'Cycle ID: ' . $id_user
                 );
 
-                $data = ["success" => true, "message" => "Success"];
+                $data = ["success" => true, "message" => "Successfully deleted."];
             }
         } catch (\Exception $e) {
             $this->Common_model->data_logging(
@@ -196,7 +196,7 @@ class SettingCycle extends \App\Controllers\BaseController
 
             $data = [
                 "success" => false,
-                "message" => "Failed",
+                "message" => "Failed to delete.",
                 "error"   => $e->getMessage()
             ];
         }
