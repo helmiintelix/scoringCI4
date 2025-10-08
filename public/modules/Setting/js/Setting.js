@@ -94,7 +94,7 @@ if (!window.uploadFormBound) {
 
     let fileInput = $("#userfile")[0]?.files[0];
     if (!fileInput) {
-      showInfo("Please select a file to upload!");
+      showWarning("Please select a file to upload!");
       return;
     }
 

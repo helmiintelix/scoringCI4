@@ -1042,12 +1042,12 @@ class Setting extends \App\Controllers\BaseController
             $return = $this->SettingModel->set_setting($form_mode, $scheme_data, $setting_data);
 
             if ($return) {
-                $response = ["success" => true, "message" => "Save berhasil."];
+                $response = ["success" => true, "message" => "Saved successfully."];
             } else {
-                $response = ["success" => false, "message" => "Save gagal."];
+                $response = ["success" => false, "message" => "Failed to save."];
             }
         } catch (\Exception $e) {
-            $response = ["success" => false, "message" => "Save Gagal", "error" => $e->getMessage()];
+            $response = ["success" => false, "message" => "Failed to save", "error" => $e->getMessage()];
         }
 
         return $this->response->setJSON($response);
@@ -1097,7 +1097,7 @@ class Setting extends \App\Controllers\BaseController
         ];
 
         if (empty($upload_data['file_name'])) {
-            $data = ["success" => false, "message" => "Failed"];
+            $data = ["success" => false, "message" => "Failed."];
             return $this->response->setJSON($data);
         }
 
@@ -1114,9 +1114,9 @@ class Setting extends \App\Controllers\BaseController
         $return = $this->SettingModel->upload_file($scorring_file);
 
         if ($return) {
-            $response = ["success" => true, "message" => "Upload berhasil."];
+            $response = ["success" => true, "message" => "Uploaded successfully."];
         } else {
-            $response = ["success" => false, "message" => "Upload gagal."];
+            $response = ["success" => false, "message" => "Failed to upload."];
         }
 
         return $this->response->setJSON($response);

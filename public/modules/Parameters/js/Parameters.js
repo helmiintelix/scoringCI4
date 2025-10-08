@@ -65,11 +65,11 @@ jQuery(function ($) {
       GLOBAL_MAIN_VARS["SITE_URL"] +
         "scoring/parameters/update_parameter_commit/",
       {},
-      function (responseText) {
-        if (responseText.success) {
-          showInfo("Data berhasil disimpan.");
+      function (response) {
+        if (response.success) {
+          showInfo(response.message || "Data saved successfully.");
         } else {
-          showWarning("Data gagal disimpan.");
+          showWarning(response.message || "Failed to save data.");
         }
       },
       "json"
