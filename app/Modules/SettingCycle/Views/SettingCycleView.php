@@ -1,5 +1,5 @@
 <!-- Bootstrap CSS-->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"> -->
 
 <!-- DataTables CSS -->
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
@@ -18,9 +18,14 @@
     tr.selected {
         background-color: #b8daff !important;
     }
+
+    .container {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
 </style>
 
-<div class="container mt-4">
+<div class="container">
     <div class="row mb-3 align-items-center">
         <div class="col-auto">
             <button class="btn btn-success" id="btn-add">Add</button>
