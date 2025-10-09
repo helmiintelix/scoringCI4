@@ -1,5 +1,5 @@
 <!-- CSS -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"> -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.3.4/dist/css/datepicker.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.10.0/css/bootstrap-datepicker.min.css" />
 
@@ -167,14 +167,14 @@
             <div class="mb-3 row">
                 <label class="col-sm-3 col-form-label" for="score_value_all">Score Value 1</label>
                 <div class="col-sm-6">
-                    <input type="text" id="score_value_all" name="score_value_all" class="form-control" onKeypress="return numbersOnly(this, event)" value="<?= $total_score ?>" />
+                    <input type="text" id="score_value_all" name="score_value_all" placeholder="Score Value 1" class="form-control" onKeypress="return numbersOnly(this, event)" value="<?= $total_score ?>" />
                 </div>
             </div>
 
             <div class="mb-3 row">
                 <label class="col-sm-3 col-form-label" for="score_value_all2">Score Value 2</label>
                 <div class="col-sm-6">
-                    <input type="text" id="score_value_all2" name="score_value_all2" class="form-control" onKeypress="return numbersOnly(this, event)" value="<?= $total_score2 ?>" />
+                    <input type="text" id="score_value_all2" name="score_value_all2" placeholder="Score Value 2" class="form-control" onKeypress="return numbersOnly(this, event)" value="<?= $total_score2 ?>" />
                 </div>
             </div>
 
@@ -201,10 +201,8 @@
     </div>
 </div>
 
-<!-- JS -->
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.3.4/dist/js/datepicker-full.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.10.0/js/bootstrap-datepicker.min.js"></script>
-
 <script src="<?= base_url(); ?>modules/Setting/js/Setting.js?v=<?= rand() ?>"></script>
