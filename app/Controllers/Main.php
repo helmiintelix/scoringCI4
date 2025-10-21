@@ -79,6 +79,7 @@ class Main extends BaseController
 
                 ['menu_id' => '6',  'menu_desc' => 'user and group',  'parent_id' => null, 'order_num' => 6, 'url' => '#', 'icon' => null, 'menu_type' => 'url', 'menu_group' => null],
                 ['menu_id' => '60', 'menu_desc' => 'user management', 'parent_id' => '6',  'order_num' => 1, 'url' => 'user_and_group/user_management', 'icon' => null, 'menu_type' => 'url', 'menu_group' => null],
+                ['menu_id' => '60', 'menu_desc' => 'user Group Management', 'parent_id' => '6',  'order_num' => 1, 'url' => 'user_and_group/user_group_management', 'icon' => null, 'menu_type' => 'url', 'menu_group' => null],
             ];
 
             $this->db->table('cc_menu')->insertBatch($data);
