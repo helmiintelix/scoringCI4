@@ -1,6 +1,9 @@
 var menu_arr = new Array();
 var JSON_MENU = new Array();
 var loadMenu = function (title, link, menu_id) {
+  if(GLOBAL_MAIN_VARS["CURRENT_MENU"] == title){
+    return false;
+  }
   GLOBAL_MAIN_VARS["CURRENT_MENU"] = title;
 
   let placeholder =
