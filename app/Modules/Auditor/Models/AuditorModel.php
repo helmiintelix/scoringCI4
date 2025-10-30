@@ -38,7 +38,7 @@ Class AuditorModel Extends Model
                 $exclude = ["scheme_detail_before", "scheme_detail_after"];
 
                 if (!in_array($key, $exclude)) {
-                    $result['header'][] = array('field' => $key);
+                    $result['header'][] = array('field' => $key, 'width'=> 350 );
                 } 
             }
 
