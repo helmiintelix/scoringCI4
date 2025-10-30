@@ -24,7 +24,7 @@ class Tiering extends BaseController
 
         $data['tiering_id'] = $tiering_id;
 
-        $data['BUCKET_SC'] = $this->Common_model->get_ref_master_df(
+        $data['BUCKET_SC'] = $this->Common_model->get_ref_master_crm(
             "value AS value, concat(value,' - ',description) AS item",
             "cms_reference",
             "status='1' and reference='BUCKET_SC'",
@@ -32,7 +32,7 @@ class Tiering extends BaseController
             false
         );
 
-        $data['LOB_CODE'] = $this->Common_model->get_ref_master_df(
+        $data['LOB_CODE'] = $this->Common_model->get_ref_master_crm(
             "value AS value, concat(value,' - ',description) AS item",
             "cms_reference",
             "status='1' and reference='LOB_CODE'",
@@ -106,14 +106,14 @@ class Tiering extends BaseController
             $return = $this->TieringModel->set_tiering($form_mode, $tiering_data, $tiering_setting);
 
             if ($return) {
-                $response = ["success" => true, "message" => "Save berhasil."];
+                $response = ["success" => true, "message" => "Saved successfully."];
             } else {
-                $response = ["success" => false, "message" => "Save gagal."];
+                $response = ["success" => false, "message" => "Failed to save."];
             }
         } catch (\Exception $e) {
             $response = [
                 "success" => false,
-                "message" => "Save Gagal",
+                "message" => "Failed to save.",
                 "error"   => $e->getMessage()
             ];
         }

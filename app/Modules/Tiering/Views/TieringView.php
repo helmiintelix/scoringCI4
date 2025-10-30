@@ -1,8 +1,8 @@
 <!-- Bootstrap CSS -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"> -->
 
 <!-- DataTables CSS -->
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+<!-- <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css"> -->
 
 <style>
     .profile-info-row {
@@ -42,16 +42,20 @@
     tr.selected {
         background-color: #b8daff !important;
     }
+
+    .container {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
 </style>
 
-<div class="container py-4">
+<div class="container">
     <form id="frmTieringSettings" class="container">
         <input type="hidden" id="form_mode" name="form_mode"
             value="<?= (!empty($tiering_data['id'])) ? 'EDIT' : 'ADD' ?>">
 
         <input type="hidden" id="assign-to" name="assign-to" value="" />
 
-        <!-- Tiering ID -->
         <div class="profile-info-row">
             <div class="profile-info-name">Tiering ID</div>
             <div class="profile-info-value">
@@ -61,7 +65,6 @@
             </div>
         </div>
 
-        <!-- Tiering Label -->
         <div class="profile-info-row">
             <div class="profile-info-name">Tiering Label</div>
             <div class="profile-info-value">
@@ -70,7 +73,6 @@
             </div>
         </div>
 
-        <!-- Score Type -->
         <div class="profile-info-row">
             <div class="profile-info-name">Score Type</div>
             <div class="profile-info-value">
@@ -114,7 +116,6 @@
             </div>
         </div>
 
-        <!-- Cycle -->
         <div class="profile-info-row">
             <div class="profile-info-name">Cycle</div>
             <div class="profile-info-value">
@@ -130,7 +131,6 @@
             </div>
         </div>
 
-        <!-- Score Tiering -->
         <div class="profile-info-row">
             <div class="profile-info-name">Score Tiering</div>
             <div class="profile-info-value d-flex align-items-center">
@@ -141,11 +141,10 @@
                 <input type="text" id="score-tiering-end" name="score-tiering-end"
                     class="form-control text-end me-2" onkeypress="return numbersOnly(event, true)"
                     placeholder="0" style="width: 80px;" value="<?= @$tiering_data['score_tiering_end'] ?>">
-                <span class="small-text">*desimal dengan titik (.)</span>
+                <span class="small-text">*use dot (.) for decimals</span>
             </div>
         </div>
 
-        <!-- Total Data -->
         <div class="profile-info-row">
             <div class="profile-info-name">Total Data</div>
             <div class="profile-info-value d-flex align-items-center">
@@ -155,7 +154,6 @@
             </div>
         </div>
 
-        <!-- Buttons -->
         <div class="profile-info-row mt-3">
             <div class="profile-info-name"></div>
             <div class="profile-info-value">
@@ -188,10 +186,13 @@
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
+<!-- DataTables core -->
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+<!-- DataTables Bootstrap 5 -->
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- DataTables JS -->
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
 <script src="<?= base_url(); ?>modules/Tiering/js/Tiering.js?v=<?= rand() ?>"></script>

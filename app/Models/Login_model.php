@@ -101,7 +101,7 @@ class Login_model extends Model
 							if ($row->password == $hash) {
 								$login_user = true;
 							} else {
-								echo json_encode(array("success" => false, "msg" => "Incorrect username/password"));
+								// echo json_encode(array("success" => false, "msg" => "Incorrect username/password"));
 								//session()->set('password_wrong','Incorrect password');
 								$login_user = false;
 							}

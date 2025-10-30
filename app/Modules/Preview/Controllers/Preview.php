@@ -29,9 +29,9 @@ class Preview extends \App\Controllers\BaseController
         $return = $this->PreviewModel->delete_scheme($scheme_id);
 
         if ($return) {
-            $data = ["success" => true, "message" => "Success"];
+            $data = ["success" => true, "message" => "Successfully deleted."];
         } else {
-            $data = ["success" => false, "message" => "Failed"];
+            $data = ["success" => false, "message" => "Failed to delete."];
         }
 
         return $this->response->setJSON($data);
@@ -46,9 +46,9 @@ class Preview extends \App\Controllers\BaseController
         $return = $this->PreviewModel->active_parameter($param);
 
         if ($return) {
-            $data = ["success" => true, "message" => "Success"];
+            $data = ["success" => true, "message" => "Successfully activated."];
         } else {
-            $data = ["success" => false, "message" => "Failed"];
+            $data = ["success" => false, "message" => "Failed to activate."];
         }
 
         return $this->response->setJSON($data);
