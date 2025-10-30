@@ -37,7 +37,16 @@ var gridOptions = {
     floatingFilter: true,
     resizable: true,
   },
-
+  excelStyles: [
+      {
+        id: 'textStyle',
+        dataType: 'String',
+        numberFormat: { format: "@" } // format teks
+      }
+    ],
+    defaultColDef: {
+      cellClass: 'textStyle'
+    },
   rowSelection: "multiple", // allow rows to be selected
   animateRows: true, // have rows animate to new positions when sorted
   paginationAutoPageSize: true,

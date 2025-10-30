@@ -119,12 +119,14 @@ $("#btn-edit").click(function () {
           var options = {
             url: GLOBAL_MAIN_VARS["SITE_URL"] + "user_and_group/user_and_group/save_user_edit",
             type: "post",
+            data:$("#form_edit_user").serialize(),
+            // beforeSubmit: jqformValidate,
             success: showFormResponse,
             dataType: 'json',
           };
-          // if (TOKEN_VALID == false) { return false; }
 
-          $('form').ajaxSubmit(options);
+          $.ajax(options);
+          
         }
       },
       "button":
@@ -151,12 +153,13 @@ $("#btn-add").click(function () {
         var options = {
           url: GLOBAL_MAIN_VARS["SITE_URL"] + "user_and_group/user_and_group/save_user_add",
           type: "post",
+          data:$("#form_edit_user").serialize(),
           // beforeSubmit: jqformValidate,
           success: showFormResponse,
           dataType: 'json',
         };
 
-        $('form').ajaxSubmit(options);
+        $.ajax(options);
       }
     },
     "button":
