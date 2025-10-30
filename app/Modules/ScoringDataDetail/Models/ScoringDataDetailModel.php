@@ -48,7 +48,12 @@ Class ScoringDataDetailModel Extends Model
 
         if ($rResult->getNumRows() > 0) {
             foreach ($rResult->getResultArray()[0] as $key => $value) {
-                $result['header'][] = array('field' => $key);
+                if($key=='noPinjaman'){
+                    $result['header'][] = array('field' => $key,'cellDataType'=> 'text');
+                }else{
+
+                    $result['header'][] = array('field' => $key);
+                }
             }
             $result['data'] = $return;
             foreach ($result['data'] as $key => $value) {
