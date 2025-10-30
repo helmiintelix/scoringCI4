@@ -569,6 +569,20 @@ class Setting extends \App\Controllers\BaseController
             "description",
             false
         );
+        $data["ref_list"]['LOBCODE'] = $this->Common_model->get_all_ref_master_crm(
+            "reference, value AS value, description AS item",
+            "cms_reference",
+            "status='1' and reference='LOB_CODE'",
+            "description",
+            false
+        );
+        $data["ref_list"]['GENDER'] = $this->Common_model->get_all_ref_master_crm(
+            "reference, value AS value, description AS item",
+            "cms_reference",
+            "status='1' and reference='GENDER'",
+            "order_num",
+            false
+        );
 
         $data["ref_list"]["class"] = $this->Common_model->get_ref_master_crm(
             "classification_id AS value, concat(classification_id,' - ',classification_name) AS item",

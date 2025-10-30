@@ -22,6 +22,10 @@
         margin-top: 20px;
     }
 </style>
+<?php
+    helper('generateDropdown'); 
+    helper('generateInputObject'); 
+?>
 
 <div class="row">
     <div class="col-xs-12">
@@ -57,93 +61,23 @@
                         <?php
                         $total_score = 0;
                         $total_score2 = 0;
+                        // echo "<pre>";
+                        // print_r($scoring_purple_parameter);
+                        // echo "</pre>";
+                        // die;
                         foreach ($scoring_purple_parameter as $row) {
-                            if ($row['score_value'])
-                                $total_score += @$row['score_value'];
-                            if ($row['score_value2'])
-                                $total_score2 += @$row['score_value2'];
+                          	$is_include = ($row['is_include'] == 'YES') ? ' checked' : '';
+							$is_primary = ($row['is_primary'] == 'YES') ? ' checked' : '';
+
+							if ($row['score_value'])
+								$total_score += @$row['score_value'];
+							if ($row['score_value2'])
+								$total_score2 += @$row['score_value2'];
                         ?>
                             <tr>
                                 <td><?= esc($row['name']) ?></td>
-                                <td>
-                                    <?php
-                                    $function_options = $function_list[$row["value_type"]][$row["value_content"]] ?? [];
-                                    echo form_dropdown(
-                                        "opt_function1_SCORING_PURPLE_" . $row['param_id'],
-                                        $function_options,
-                                        $row['parameter_function'],
-                                        'class="form-control"'
-                                    );
-                                    ?>
-                                </td>
-                                <td>
-                                    <?php
-                                    $input_name = "par_SCORING_PURPLE_" . $row['param_id'];
-                                    $input_value = $row['parameter_value'] ?? '';
-
-                                    $decoded_value = '';
-                                    if (!empty($input_value) && $input_value !== '[]') {
-                                        $decoded_array = json_decode($input_value, true);
-                                        if (json_last_error() === JSON_ERROR_NONE && is_array($decoded_array)) {
-                                            if (count($decoded_array) === 1) {
-                                                $decoded_value = $decoded_array[0];
-                                            } else {
-                                                $decoded_value = $decoded_array;
-                                            }
-                                        } else {
-                                            $decoded_value = $input_value;
-                                        }
-                                    }
-                                    switch ($row['value_content']) {
-                                        case 'TEXT':
-                                            echo '<input type="text" name="' . $input_name . '" value="' . esc($decoded_value) . '" class="form-control" />';
-                                            break;
-                                        case 'NUMBER':
-                                            echo '<input type="number" name="' . $input_name . '" value="' . esc($decoded_value) . '" class="form-control" />';
-                                            break;
-                                        case 'DATE':
-                                            echo '<input type="text" name="' . $input_name . '" value="' . esc($decoded_value) . '" class="form-control date-picker" />';
-                                            break;
-                                        case 'MULTIPLE_VALUE':
-                                            if (isset($ref_list[$row['parameter_reference']])) {
-                                                $selected_values = is_array($decoded_value) ? $decoded_value : [];
-                                                echo form_dropdown(
-                                                    $input_name . '[]',
-                                                    $ref_list[$row['parameter_reference']],
-                                                    $selected_values,
-                                                    'class="form-control" multiple'
-                                                );
-                                            } else {
-                                                echo '<input type="text" name="' . $input_name . '" value="' . esc($input_value) . '" class="form-control" />';
-                                            }
-                                            break;
-                                        case 'SINGLE_VALUE':
-                                            if (isset($ref_list[$row['parameter_reference']])) {
-                                                echo form_dropdown(
-                                                    $input_name,
-                                                    $ref_list[$row['parameter_reference']],
-                                                    $decoded_value,
-                                                    'class="form-control"'
-                                                );
-                                            } else {
-                                                echo '<input type="text" name="' . $input_name . '" value="' . esc($decoded_value) . '" class="form-control" placeholder="Enter text value" />';
-                                            }
-                                            break;
-                                        default:
-                                            if (isset($ref_list[$row['parameter_reference']])) {
-                                                echo form_dropdown(
-                                                    $input_name,
-                                                    $ref_list[$row['parameter_reference']],
-                                                    $decoded_value,
-                                                    'class="form-control"'
-                                                );
-                                            } else {
-                                                echo '<input type="text" name="' . $input_name . '" value="' . esc($decoded_value) . '" class="form-control" />';
-                                            }
-                                            break;
-                                    }
-                                    ?>
-                                </td>
+                                <td><?= generate_dropdown("opt_function1_SCORING_PURPLE_" . $row['param_id'], $function_list[$row["value_type"]][$row["value_content"]], $row['parameter_function'], FALSE); ?></td>
+								<td><?= generate_input_object("SCORING_PURPLE", $row, $ref_list); ?></td>
                             </tr>
                         <?php } ?>
                     </tbody>
