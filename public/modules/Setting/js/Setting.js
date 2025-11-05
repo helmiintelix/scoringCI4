@@ -71,7 +71,7 @@ $("#uploadForm").click(function (e) {
         `);
       }
 
-      $("#uploadModalBody").html(response);
+      $("#uploadModalBody").html(DOMPurify.sanitize(response)); 
       $("#uploadModal").modal("show");
     },
     error: function (xhr, status, error) {

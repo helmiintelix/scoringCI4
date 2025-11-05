@@ -339,7 +339,8 @@ var loadPhoneDialSelect = function(){
 						'		<span class="lbl"> Mobile Phone #1 : ' + msg.data.phone_mobile + '</span>' +
 						'	</label>' +
 						'</div>';
-					$('#customerPhoneGroup').append(radioString);
+					var cleanRadioString = DOMPurify.sanitize(radioString);
+					$('#customerPhoneGroup').append(cleanRadioString);
 				}
 				
 				if($.trim(msg.data.phone_mobile2) != '') {
@@ -350,7 +351,8 @@ var loadPhoneDialSelect = function(){
 						'		<span class="lbl"> Mobile Phone #2 : ' + msg.data.phone_mobile2 + '</span>' +
 						'	</label>' +
 						'</div>';
-					$('#customerPhoneGroup').append(radioString);
+					var cleanRadioString = DOMPurify.sanitize(radioString);
+					$('#customerPhoneGroup').append(cleanRadioString);
 				}
 				
 				if($.trim(msg.data.phone1_resi) != '') {
@@ -361,7 +363,8 @@ var loadPhoneDialSelect = function(){
 						'		<span class="lbl"> Home Phone #1 : ' + msg.data.phone1_resi + '</span>' +
 						'	</label>' +
 						'</div>';
-					$('#customerPhoneGroup').append(radioString);
+					var cleanRadioString = DOMPurify.sanitize(radioString);
+					$('#customerPhoneGroup').append(cleanRadioString);
 				}
 				
 				if($.trim(msg.data.phone1_resi2) != '') {
@@ -372,7 +375,8 @@ var loadPhoneDialSelect = function(){
 						'		<span class="lbl"> Home Phone #2 : ' + msg.data.phone1_resi2 + '</span>' +
 						'	</label>' +
 						'</div>';
-					$('#customerPhoneGroup').append(radioString);
+					var cleanRadioString = DOMPurify.sanitize(radioString);
+					$('#customerPhoneGroup').append(cleanRadioString);
 				}
 				
 				if($.trim(msg.data.phone1_co) != '') {
@@ -383,7 +387,8 @@ var loadPhoneDialSelect = function(){
 						'		<span class="lbl"> Company Phone #1 : ' +  msg.data.phone1_area_co + ' ' + msg.data.phone1_co + '</span>' +
 						'	</label>' +
 						'</div>';
-					$('#customerPhoneGroup').append(radioString);
+					var cleanRadioString = DOMPurify.sanitize(radioString);
+					$('#customerPhoneGroup').append(cleanRadioString);
 				}
 				
 				if($.trim(msg.data.phone2_co) != '') {
@@ -394,7 +399,8 @@ var loadPhoneDialSelect = function(){
 						'		<span class="lbl"> Company Phone #2 : ' +  msg.data.phone2_area_co + ' ' + msg.data.phone2_co + '</span>' +
 						'	</label>' +
 						'</div>';
-					$('#customerPhoneGroup').append(radioString);
+					var cleanRadioString = DOMPurify.sanitize(radioString);
+					$('#customerPhoneGroup').append(cleanRadioString);
 				}
 				
 				if($.trim(msg.data.phone_mobile1_co) != '') {
@@ -405,7 +411,8 @@ var loadPhoneDialSelect = function(){
 						'		<span class="lbl"> Co. Mobile Phone #1 : ' + msg.data.phone_mobile1_co + '</span>' +
 						'	</label>' +
 						'</div>';
-					$('#customerPhoneGroup').append(radioString);
+					var cleanRadioString = DOMPurify.sanitize(radioString);
+					$('#customerPhoneGroup').append(cleanRadioString);
 				}
 				
 				if($.trim(msg.data.phone_mobile1_co2) != '') {
@@ -416,7 +423,8 @@ var loadPhoneDialSelect = function(){
 						'		<span class="lbl"> Co. Mobile Phone #2 : ' + msg.data.phone_mobile1_co2 + '</span>' +
 						'	</label>' +
 						'</div>';
-					$('#customerPhoneGroup').append(radioString);
+					var cleanRadioString = DOMPurify.sanitize(radioString);
+					$('#customerPhoneGroup').append(cleanRadioString);
 				}
 				
 				if($.trim(msg.data.phone1_busi) != '') {
@@ -427,7 +435,8 @@ var loadPhoneDialSelect = function(){
 						'		<span class="lbl"> Business Phone #1 : ' + msg.data.phone1_area_busi + ' ' + msg.data.phone1_busi + '</span>' +
 						'	</label>' +
 						'</div>';
-					$('#customerPhoneGroup').append(radioString);
+					var cleanRadioString = DOMPurify.sanitize(radioString);
+					$('#customerPhoneGroup').append(cleanRadioString);
 				}
 				
 				if($.trim(msg.data.phone2_busi) != '') {
@@ -438,7 +447,8 @@ var loadPhoneDialSelect = function(){
 						'		<span class="lbl"> Business Phone #2 : ' + msg.data.phone1_area_busi + ' ' + msg.data.phone2_busi + '</span>' +
 						'	</label>' +
 						'</div>';
-					$('#customerPhoneGroup').append(radioString);
+					var cleanRadioString = DOMPurify.sanitize(radioString);
+					$('#customerPhoneGroup').append(cleanRadioString);
 				}
 				
 				if($.trim(msg.data.phone_mobile1_busi) != '') {
@@ -449,7 +459,8 @@ var loadPhoneDialSelect = function(){
 						'		<span class="lbl"> Bus. Mobile Phone #1 : ' + msg.data.phone_mobile1_busi + '</span>' +
 						'	</label>' +
 						'</div>';
-					$('#customerPhoneGroup').append(radioString);
+          			var cleanRadioString = DOMPurify.sanitize(radioString);
+					$('#customerPhoneGroup').append(cleanRadioString);
 				}
 				
 				if($.trim(msg.data.phone_mobile2_busi) != '') {
@@ -460,7 +471,8 @@ var loadPhoneDialSelect = function(){
 						'		<span class="lbl"> Bus. Mobile Phone #2 : ' + msg.data.phone_mobile2_busi + '</span>' +
 						'	</label>' +
 						'</div>';
-					$('#customerPhoneGroup').append(radioString);
+					var cleanRadioString = DOMPurify.sanitize(radioString);
+					$('#customerPhoneGroup').append(cleanRadioString);
 				}
 			}else{
 				alert(msg.message);

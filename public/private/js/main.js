@@ -279,14 +279,18 @@ var alphanumericsonly = function (myfield, e, dec) {
 
 var enableButtonLoading = function (data, mode) {
 	if (mode == 'add') {
-		$(data).removeAttr('disabled', '').html('Save	<i class="icon-floppy bg-lightBlue"></i>');
+		let htmlClean = DOMPurify.sanitize('Save	<i class="icon-floppy bg-lightBlue"></i>');
+		$(data).removeAttr('disabled', '').html(htmlClean);
 	}
 	else if (mode == 'update') {
-		$(data).removeAttr('disabled', '').html('Update	<i class="icon-pencil bg-lightBlue"></i>');
+		let htmlClean = DOMPurify.sanitize('Update	<i class="icon-pencil bg-lightBlue"></i>');
+		$(data).removeAttr('disabled', '').html(htmlClean);
 	}
 	else {
-		$('button:contains(loading...)').removeAttr('disabled', '').html('Save	<i class="icon-floppy bg-lightBlue"></i>');
-		$('button:contains(Update Loading...)').removeAttr('disabled', '').html('Update	<i class="icon-pencil bg-lightBlue"></i>');
+		let htmlClean = DOMPurify.sanitize('Save	<i class="icon-floppy bg-lightBlue"></i>');
+		$('button:contains(loading...)').removeAttr('disabled', '').html(htmlClean);
+		let htmlClean2 = DOMPurify.sanitize('Update	<i class="icon-pencil bg-lightBlue"></i>');
+		$('button:contains(Update Loading...)').removeAttr('disabled', '').html(htmlClean2);
 	}
 }
 
@@ -300,7 +304,8 @@ var buttonLoading = function (data, mode) {
 	else {
 		constain = 'loading...';
 	}
-	$(data).attr('disabled', 'disabled').html(constain);
+	
+	$(data).attr('disabled', 'disabled').html(DOMPurify.sanitize(constain));
 }
 
 var RefreshTable = function (tableId, urlData) {
@@ -328,7 +333,7 @@ var showInfo = function (message, period) {
 		$("#toast-header-title").html('Information');
 		$("#toast-header").attr('class', 'toast-header text-white bg-primary');
 		$("#showinfo").attr('data-bs-delay', period);
-		$("#body-toast-info").html(message);
+		$("#body-toast-info").html(DOMPurify.sanitize(message));
 		$("#showinfo").toast('show');
 	}, 300);
 
@@ -346,7 +351,7 @@ var showWarning = function (message, period) {
 		$("#toast-header-title").html('Warning');
 		$("#toast-header").attr('class', 'toast-header text-white bg-danger');
 		$("#showinfo").attr('data-bs-delay', period);
-		$("#body-toast-info").html(message);
+		$("#body-toast-info").html(DOMPurify.sanitize(message));
 		$("#showinfo").toast('show');
 	}, 300);
 }
@@ -391,7 +396,7 @@ var showBreakDialog = function (width, height, title, source, button, modal) {
 	});
 
 	$.post(source, {}, function (htm) {
-		$("#CommonDialog").html(htm);
+		$("#CommonDialog").html(DOMPurify.sanitize(htm));
 	}, "html");
 
 };
@@ -453,11 +458,11 @@ var showCommonDialog = function (width, height, title, source, buttons) {
 		url: source,
 		type: 'GET',
 		beforeSend: function (xhr) {
-			$("#modal-body").html(loading);
+			$("#modal-body").html(DOMPurify.sanitize(loading));
 		},
 		success: function (msg) {
 			$("#modal-body").html('');
-			$("#modal-body").html(msg);
+			$("#modal-body").html(DOMPurify.sanitize(msg));
 		}
 	})
 		.done(function (data) {
@@ -513,7 +518,7 @@ var showFullCommonDialog = function (width, height, title, source, buttons) {
 
 	$("#modal-body-full").html('');
 	$.get(source, {}, function (htm) {
-		$("#modal-body-full").html(htm);
+		$("#modal-body-full").html(DOMPurify.sanitize(htm));
 	}, "html");
 	var footer = $("#modal-footer-full");
 	footer.html('');
@@ -570,7 +575,7 @@ var showCommonDialogpic = function (width, height, title, source, buttons) {
 	});
 
 	$.post(source, {}, function (htm) {
-		$("#CommonDialogpic").html(htm);
+		$("#CommonDialogpic").html(DOMPurify.sanitize(htm));
 	}, "html");
 
 	$("#CommonDialogpic").parent().closest('div').parent().closest('div').parent().closest('div').parent().closest('div').css("width", width + "px");
@@ -621,7 +626,7 @@ var showCommonDialog2 = function (width, height, title, source, button) {
 	});
 
 	$.post(source, {}, function (htm) {
-		$("#CommonDialog2").html(htm);
+		$("#CommonDialog2").html(DOMPurify.sanitize(htm));
 	}, "html");
 };
 
@@ -640,7 +645,7 @@ var showCommonDialog3 = function (width, height, title, source, buttons) {
 	});
 
 	$.get(source, {}, function (htm) {
-		$("#CommonDialog3").html(htm);
+		$("#CommonDialog3").html(DOMPurify.sanitize(htm));
 	}, "html");
 
 	$("#CommonDialog3").parent().closest('div').parent().closest('div').parent().closest('div').parent().closest('div').css("width", width + "px");
@@ -686,7 +691,7 @@ var showCommonDialog3y = function (width, height, title, source, button) {
 	});
 
 	$.post(source, {}, function (htm) {
-		$("#CommonDialog3").html(htm);
+		$("#CommonDialog3").html(DOMPurify.sanitize(htm));
 	}, "html");
 };
 
@@ -745,7 +750,7 @@ var showCommonDialog_phdp = function (width, height, title, source, button) {
 	});
 
 	$.post(source, {}, function (htm) {
-		$("#CommonDialog2").html(htm);
+		$("#CommonDialog2").html(DOMPurify.sanitize(htm));
 	}, "html");
 };
 
@@ -857,7 +862,7 @@ var showPdf = function (width, height, title, source, button) {
 	});
 
 	$.post(source, {}, function (htm) {
-		$("#PdfDialog").html(htm);
+		$("#PdfDialog").html(DOMPurify.sanitize(htm));
 	}, "html");
 };
 
@@ -902,7 +907,7 @@ var popUp = function (source, title, width, height, button) {
 	});
 
 	$.post(source, {}, function (htm) {
-		$("#CommonDialog").html(htm);
+		$("#CommonDialog").html(DOMPurify.sanitize(htm));
 	}, "html");
 };
 
@@ -1253,7 +1258,7 @@ var showBillingPrintDialog2 = function (width, height, title, source, button) {
 		}
 	});
 	$.post(source, {}, function (htm) {
-		$("#PrintDialog2").html(htm);
+		$("#PrintDialog2").html(DOMPurify.sanitize(htm));
 	}, "html");
 };
 
