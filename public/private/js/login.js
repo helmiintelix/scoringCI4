@@ -65,8 +65,9 @@ var showFormResponse = function (msg) {
   }, 1000);
 };
 async function encryptData(data, key) {
-  // Ensure the key is 16 bytes long (128 bits)
   const encoder = new TextEncoder();
+
+  // Pastikan key 16 byte (AES-128)
   let keyBuffer = encoder.encode(key);
   if (keyBuffer.length < 16) {
     keyBuffer = new Uint8Array([
@@ -77,20 +78,21 @@ async function encryptData(data, key) {
     keyBuffer = keyBuffer.slice(0, 16);
   }
 
-  const encodedData = encoder.encode(data);
-
+  // Import key
   const cryptoKey = await window.crypto.subtle.importKey(
     "raw",
     keyBuffer,
-    {
-      name: "AES-GCM",
-    },
+    { name: "AES-GCM" },
     false,
     ["encrypt"]
   );
 
-  const iv = window.crypto.getRandomValues(new Uint8Array(16));
-  const encryptedData = await window.crypto.subtle.encrypt(
+  // Gunakan IV 12 byte (standar AES-GCM)
+  const iv = window.crypto.getRandomValues(new Uint8Array(12));
+
+  // Encode data dan enkripsi
+  const encodedData = encoder.encode(data);
+  const encryptedBuffer = await window.crypto.subtle.encrypt(
     {
       name: "AES-GCM",
       iv: iv,
@@ -99,11 +101,13 @@ async function encryptData(data, key) {
     encodedData
   );
 
+  // Kembalikan dalam bentuk array (ciphertext + tag)
   return {
     iv: Array.from(iv),
-    data: Array.from(new Uint8Array(encryptedData)),
+    data: Array.from(new Uint8Array(encryptedBuffer)), // termasuk auth tag di akhir
   };
 }
+
 
 var login = async function () {
   if (!validate()) {

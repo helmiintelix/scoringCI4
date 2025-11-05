@@ -58,25 +58,39 @@ class Login extends BaseController
 		if (!isset($data['iv'], $data['data'])) {
 			return false;
 		}
-		
+
 		$iv = implode(array_map("chr", $data['iv']));
 		$encrypted = implode(array_map("chr", $data['data']));
-		
-		// Ensure the key is 16 bytes long (128 bits)
+
+		// Pastikan panjang key 16 byte (128 bit)
 		$key = mb_convert_encoding($key, 'UTF-8');
 		if (strlen($key) < 16) {
 			$key = str_pad($key, 16, "\0");
-		} else if (strlen($key) > 16) {
+		} elseif (strlen($key) > 16) {
 			$key = substr($key, 0, 16);
 		}
-		// print_r($key);
-	
-		$method = 'AES-128-GCM';
-	
-		$decryptedData = openssl_decrypt($encrypted, $method, $key, OPENSSL_RAW_DATA, $iv);
-	
+
+		$method = 'aes-128-gcm';
+
+		// --- Pisahkan ciphertext dan tag ---
+		// AES-GCM hasil enkripsi = ciphertext + 16-byte auth tag
+		$tagLength = 16;
+		$tag = substr($encrypted, -$tagLength);
+		$ciphertext = substr($encrypted, 0, -$tagLength);
+
+		// --- Dekripsi dengan autentikasi ---
+		$decryptedData = openssl_decrypt(
+			$ciphertext,
+			$method,
+			$key,
+			OPENSSL_RAW_DATA,
+			$iv,
+			$tag
+		);
+
 		return $decryptedData === false ? false : $decryptedData;
 	}
+
 	function post_login()
 	{
 		$encryptedData = $this->input->getPost('data');
