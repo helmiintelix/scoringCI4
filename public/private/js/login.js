@@ -55,7 +55,7 @@ var showFormResponse = function (msg) {
   if (msg.success) {
     $(location).attr("href", GLOBAL_MAIN_VARS["BASE_URL"]);
   } else {
-    $("#toast-body").html(msg.msg);
+    $("#toast-body").html(DOMPurify.sanitize(msg.msg));
     $("#toastpassword").toast("show");
     createCaptcha();
   }
@@ -83,7 +83,7 @@ async function encryptData(data, key) {
     "raw",
     keyBuffer,
     {
-      name: "AES-CBC",
+      name: "AES-GCM",
     },
     false,
     ["encrypt"]
@@ -92,7 +92,7 @@ async function encryptData(data, key) {
   const iv = window.crypto.getRandomValues(new Uint8Array(16));
   const encryptedData = await window.crypto.subtle.encrypt(
     {
-      name: "AES-CBC",
+      name: "AES-GCM",
       iv: iv,
     },
     cryptoKey,

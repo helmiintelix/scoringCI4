@@ -71,7 +71,7 @@ class Login extends BaseController
 		}
 		// print_r($key);
 	
-		$method = 'AES-128-CBC';
+		$method = 'AES-128-GCM';
 	
 		$decryptedData = openssl_decrypt($encrypted, $method, $key, OPENSSL_RAW_DATA, $iv);
 	
