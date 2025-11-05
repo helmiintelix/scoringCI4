@@ -287,7 +287,7 @@ var getFirst = () => {
         //     $("#notif_new_total_1").html(msg.total_unread).show();
         // }
 
-        $("#notif_new_total_2").html(msg.total_unread);
+        $("#notif_new_total_2").html(DOMPurify.sanitize(msg.total_unread));
         $.each(msg.data, (i, val) => {
           renderNotif(val);
         });
