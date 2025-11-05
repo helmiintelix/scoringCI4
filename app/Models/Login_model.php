@@ -49,7 +49,8 @@ class Login_model extends Model
 				}
 				else {
 					if ($query->getNumRows() > 0) {
-						$hash = md5($password);
+						// $hash = md5($password);
+						$hash = password_hash($password, PASSWORD_DEFAULT);
 						$login_user = false;
 
 						$LDAP_LOGIN = $_ENV['LDAP_LOGIN'];
@@ -98,7 +99,8 @@ class Login_model extends Model
 							}
 						} else {
 							// password match
-							if ($row->password == $hash) {
+							
+							if (password_verify($password, $row->password)){
 								$login_user = true;
 							} else {
 								// echo json_encode(array("success" => false, "msg" => "Incorrect username/password"));
@@ -306,5 +308,11 @@ class Login_model extends Model
 		
 		session_destroy();
 		return true;
+	}
+
+
+	function alterTable(){
+		$sql = "ALTER TABLE `cc_user` CHANGE COLUMN `password` `password` VARCHAR(255) NULL DEFAULT NULL COMMENT 'use sha256 encryption' COLLATE 'utf8mb3_general_ci' AFTER `group_id`;";
+		$this->db->query($sql);
 	}
 }

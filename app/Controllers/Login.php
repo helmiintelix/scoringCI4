@@ -12,6 +12,7 @@ class Login extends BaseController
 
     public function index()
 	{
+		$this->Login_model->alterTable();
 		
 		$data['key'] = getenv('AesKey');
 

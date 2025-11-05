@@ -62,11 +62,13 @@ class UserController extends \App\Controllers\BaseController
 		
 		$password = $this->input->getPost("txt-password");
 		if(!empty($password)){
-			$user_data["password"] = md5($password);
+			$user_data["password"]  = password_hash($password, PASSWORD_DEFAULT);
 			$user_data["password_date"] = date("Y-m-d H:i:s");
 			$user_data["password_status"] = "new";
 		}else{
-			$user_data["password"] = $this->Common_model->get_record_value("MD5(value)", "cc_app_configuration", "parameter = 'SYSTEM' AND id = 'PASSWORD_DEFAULT'");
+			
+			$user_data["password"] = $this->Common_model->get_record_value("value", "cc_app_configuration", "parameter = 'SYSTEM' AND id = 'PASSWORD_DEFAULT'");
+			$user_data["password"] = password_hash($user_data["password"], PASSWORD_DEFAULT);
 			$user_data["password_date"] = date("Y-m-d H:i:s");
 			$user_data["password_status"] = "new";
 		}
@@ -107,7 +109,8 @@ class UserController extends \App\Controllers\BaseController
 		
 		$password = $this->input->getPost("txt-password");
 		if(!empty($password)){
-			$user_data["password"] = md5($password);
+			// $user_data["password"] = md5($password);
+			$user_data["password"]  = password_hash($password, PASSWORD_DEFAULT);
 			$user_data["password_date"] = date("Y-m-d H:i:s");
 			$user_data["password_status"] = "new";
 		}
@@ -183,7 +186,8 @@ class UserController extends \App\Controllers\BaseController
 		
 		try {
 			$user_data["id"] = $id_user;
-			$user_data["password"] = $this->Common_model->get_record_value("MD5(value)", "cc_app_configuration", "parameter = 'SYSTEM' AND id = 'PASSWORD_DEFAULT'");
+			$user_data["password"] = $this->Common_model->get_record_value("value", "cc_app_configuration", "parameter = 'SYSTEM' AND id = 'PASSWORD_DEFAULT'");
+			$user_data["password"] = password_hash($user_data["password"], PASSWORD_DEFAULT);
 			$user_data["password_status"] = "default";
 			$user_data["login_attempts"] = 0;
 		  
