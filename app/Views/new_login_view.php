@@ -74,6 +74,7 @@
   <link href="<?= base_url(); ?>assets/nice_admin/vendor/simple-datatables/style.css" rel="stylesheet">
   <script src="<?= base_url(); ?>assets/bootstrap-5.0.2/js/jquery-3.6.4.min.js"></script>
   <script src="<?= base_url(); ?>assets/js/jquery/jquery.form.js"></script>
+  <script src="<?= base_url(); ?>assets/js/purify.min.js"></script>
   <script>
     var key = '<?= $key; ?>';
   </script>

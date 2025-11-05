@@ -367,7 +367,7 @@
   <script src="<?= base_url(); ?>assets/js/jquery.inputlimiter.1.3.1.min.js"></script>
   <script src="<?= base_url(); ?>assets/js/sweetalert.min.js"></script>
   <script src="<?= base_url(); ?>assets/select2-4.0.13/dist/js/select2.min.js"></script>
-
+  <script src="<?= base_url(); ?>assets/js/purify.min.js"></script>
 
   <!-- <script src="<?= base_url(); ?>assets/agGrid/ag-grid-community.min.noStyle.js"></script> -->
   <script src="<?= base_url(); ?>assets/agGrid/ag-grid-enterprise.min.js"></script>
