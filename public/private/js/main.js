@@ -862,7 +862,7 @@ var showPdf = function (width, height, title, source, button) {
 	});
 
 	$.post(source, {}, function (htm) {
-		$("#PdfDialog").html(htm);
+		$("#PdfDialog").html(DOMPurify.sanitize(htm));
 	}, "html");
 };
 
@@ -907,7 +907,7 @@ var popUp = function (source, title, width, height, button) {
 	});
 
 	$.post(source, {}, function (htm) {
-		$("#CommonDialog").html(htm);
+		$("#CommonDialog").html(DOMPurify.sanitize(htm));
 	}, "html");
 };
 
@@ -1258,7 +1258,7 @@ var showBillingPrintDialog2 = function (width, height, title, source, button) {
 		}
 	});
 	$.post(source, {}, function (htm) {
-		$("#PrintDialog2").html(htm);
+		$("#PrintDialog2").html(DOMPurify.sanitize(htm));
 	}, "html");
 };
 
